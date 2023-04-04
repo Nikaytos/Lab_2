@@ -7,10 +7,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import sample.dlg.NewChangeUnitDlg;
 import java.awt.*;
 
-public class SeaOfThieves extends Application { 
+import static sample.Operations.*;
+
+public class SeaOfThieves extends Application {
 //---------------------------------------------------------
     public static Group group = new Group();
 //---------------------------------------------------------
@@ -39,26 +40,13 @@ public class SeaOfThieves extends Application {
 //---------------------------------------------------------
         scene.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                boolean newbieActivated = NewbieManager.newbies.stream()
-                        .filter(n -> n.mouseActivate(mouseEvent.getX(), mouseEvent.getY()))
-                        .peek(n -> { if (n.isActive()) Operations.lastActive = n; })
-                        .findFirst().isPresent();
-                if (!newbieActivated) {
-                    NewChangeUnitDlg.display(mouseEvent.getX(), mouseEvent.getY(), -1, stage);
-                    System.out.println("Got control back!");
-                }
-            }
-            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                NewbieManager.newbies.stream()
-                        .filter(Newbie::isActive)
-                        .forEach(Newbie::flipActivation);
+                mouseLeftClick(mouseEvent, stage);
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                mouseRightClick();
             }
         });
 //---------------------------------------------------------
-        scene.setOnMouseMoved(event -> {
-            Operations.mouseX = event.getX();
-            Operations.mouseY = event.getY();
-        });
+        scene.setOnMouseMoved(Operations::mouseMove);
 //---------------------------------------------------------
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
@@ -66,7 +54,7 @@ public class SeaOfThieves extends Application {
                 Operations.deleteNewbies();
             }
             else if (keyCode == KeyCode.INSERT && !NewbieManager.newbies.isEmpty()) {
-                Operations.openChooseUnitToChangeDlg(stage);
+                Operations.openCUTCD(stage);
             }
             else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
                 Operations.activateNewbies();
