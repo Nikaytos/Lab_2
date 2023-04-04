@@ -4,10 +4,12 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import sample.dlg.ChooseUnitToChangeDlg;
 import sample.dlg.HelpWindow;
+import sample.dlg.NewChangeUnitDlg;
 
 import java.util.Objects;
 
@@ -71,7 +73,7 @@ public class Operations {
         }
     }
 //---------------------------------------------------------
-    public static void openChooseUnitToChangeDlg(Stage stage) {
+    public static void openCUTCD(Stage stage) {
         ChooseUnitToChangeDlg.display(stage);
         System.out.println("Got control back!");
     }
@@ -129,5 +131,27 @@ public class Operations {
         for (int i = 0; i <= Math.random() * 10; i++) {
             createNewUnit();
         }
+    }
+//---------------------------------------------------------
+    public static void mouseLeftClick(MouseEvent mouseEvent, Stage stage) {
+        boolean newbieActivated = NewbieManager.newbies.stream()
+                .filter(n -> n.mouseActivate(mouseEvent.getX(), mouseEvent.getY()))
+                .peek(n -> { if (n.isActive()) Operations.lastActive = n; })
+                .findFirst().isPresent();
+        if (!newbieActivated) {
+            NewChangeUnitDlg.display(mouseEvent.getX(), mouseEvent.getY(), -1, stage);
+            System.out.println("Got control back!");
+        }
+    }
+//---------------------------------------------------------
+    public static void mouseRightClick() {
+        NewbieManager.newbies.stream()
+                .filter(Newbie::isActive)
+                .forEach(Newbie::flipActivation);
+    }
+//---------------------------------------------------------
+    public static void mouseMove(MouseEvent event) {
+        mouseX = event.getX();
+        mouseY = event.getY();
     }
 }
