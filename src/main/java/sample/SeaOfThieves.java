@@ -12,9 +12,9 @@ import java.awt.*;
 import static sample.Operations.*;
 
 public class SeaOfThieves extends Application {
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static Group group = new Group();
-//---------------------------------------------------------
+    //---------------------------------------------------------
     @Override
     public void start(Stage stage) {
 //---------------------------------------------------------
@@ -38,13 +38,7 @@ public class SeaOfThieves extends Application {
 //---------------------------------------------------------
         Scene scene = new Scene(group);
 //---------------------------------------------------------
-        scene.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                mouseLeftClick(mouseEvent, stage);
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                mouseRightClick();
-            }
-        });
+        scene.setOnMouseClicked(mouseEvent -> mouseLeftClick(mouseEvent, stage));
 //---------------------------------------------------------
         scene.setOnMouseMoved(Operations::mouseMove);
 //---------------------------------------------------------
@@ -68,6 +62,9 @@ public class SeaOfThieves extends Application {
             else if (keyCode == KeyCode.H) {
                 Operations.openHelpWindow(stage);
             }
+            else if (keyCode == KeyCode.ESCAPE) {
+                Operations.deleteActivationUnits();
+            }
             else {
                 Operations.handleArrowKeys(keyCode);
             }
@@ -77,7 +74,7 @@ public class SeaOfThieves extends Application {
         stage.show();
         Operations.createStartNewbie();
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void main(String[] args) {
         launch();
     }
