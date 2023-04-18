@@ -14,29 +14,29 @@ import sample.dlg.NewChangeUnitDlg;
 import java.util.Objects;
 
 public class Operations {
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static int MAX_X;
     public static int MIN_X = 5;
     public static int MAX_Y;
     public static int MIN_Y = 5;
-//---------------------------------------------------------
+    //---------------------------------------------------------
     static Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
     static int width = (int) visualBounds.getMaxX();
     static double taskbarSize = (Screen.getPrimary().getBounds().getMaxY() - visualBounds.getMaxY())*1.5;
     static int height = (int) (Screen.getPrimary().getBounds().getMaxY() - taskbarSize);
-//---------------------------------------------------------
+    //---------------------------------------------------------
     static double mouseX = -1;
     static double mouseY = -1;
-//---------------------------------------------------------
+    //---------------------------------------------------------
     static ImageView bg;
-//---------------------------------------------------------
+    //---------------------------------------------------------
     static Newbie lastActive;
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void setMaxXY(int maxX, int maxY) {
-            MAX_X = maxX - 5;
-            MAX_Y = maxY - 5;
+        MAX_X = maxX - 5;
+        MAX_Y = maxY - 5;
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void createStage(Stage stage) {
         stage.setTitle("Sea of Thieves");
         Image icon = new Image(Objects.requireNonNull(SeaOfThieves.class.getResource("iconSOT.png")).toString());
@@ -45,7 +45,7 @@ public class Operations {
         stage.setHeight(Operations.MAX_Y);
         stage.setMaximized(true);
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void createBackgroundImage() {
         Image mapImage = new Image(Objects.requireNonNull(SeaOfThieves.class.getResource("bg.jpeg")).toString());
         bg = new ImageView(mapImage);
@@ -55,7 +55,7 @@ public class Operations {
         bg.setSmooth(true);
         SeaOfThieves.group.getChildren().add(bg);
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void deleteNewbies() {
         int activeCount = Math.toIntExact(NewbieManager.newbies.stream()
                 .filter(Newbie::isActive)
@@ -72,30 +72,30 @@ public class Operations {
             NewbieManager.newbies.removeIf(Newbie::isActive);
         }
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void openCUTCD(Stage stage) {
         ChooseUnitToChangeDlg.display(stage);
         System.out.println("Got control back!");
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void activateNewbies() {
         NewbieManager.newbies.stream().filter(n -> !n.isActive()).forEach(n -> { n.flipActivation(); lastActive = n; });
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void createNewUnit() {
 
         NewbieManager.newbies.add(new Newbie());
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void createNewUnit(String team, double x, double y) {
         Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y));
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void openHelpWindow(Stage stage) {
         HelpWindow.display(stage);
         System.out.println("Got control back!");
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void handleArrowKeys(KeyCode keyCode) {
         Newbie activeNewbie = lastActive;
         if (activeNewbie == null || NewbieManager.newbies.isEmpty()) {
@@ -126,13 +126,13 @@ public class Operations {
         activeNewbie.flipActivation();
         activeNewbie.move(dx, dy, direction);
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void createStartNewbie() {
         for (int i = 0; i <= Math.random() * 10; i++) {
             createNewUnit();
         }
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void mouseLeftClick(MouseEvent mouseEvent, Stage stage) {
         boolean newbieActivated = NewbieManager.newbies.stream()
                 .filter(n -> n.mouseActivate(mouseEvent.getX(), mouseEvent.getY()))
@@ -143,13 +143,13 @@ public class Operations {
             System.out.println("Got control back!");
         }
     }
-//---------------------------------------------------------
-    public static void mouseRightClick() {
+    //---------------------------------------------------------
+    public static void deleteActivationUnits() {
         NewbieManager.newbies.stream()
                 .filter(Newbie::isActive)
                 .forEach(Newbie::flipActivation);
     }
-//---------------------------------------------------------
+    //---------------------------------------------------------
     public static void mouseMove(MouseEvent event) {
         mouseX = event.getX();
         mouseY = event.getY();
