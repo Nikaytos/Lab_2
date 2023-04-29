@@ -4,8 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import sample.objects.Newbie;
-import sample.objects.NewbieManager;
+import sample.objects.Micro.Newbie;
+import sample.objects.SeaOfThieves;
 
 import java.util.ArrayList;
 
@@ -77,7 +77,7 @@ public class NewChangeUnitDlgController {
 
         ArrayList<String> paramsToChange;
         if (!(getUnitIndex() == -1)) {
-            paramsToChange = NewbieManager.getParamsToChange(getUnitIndex());
+            paramsToChange = SeaOfThieves.getParamsToChange(getUnitIndex());
             nameText.setText(paramsToChange.get(0));
             healthText.setText(paramsToChange.get(1));
             teamBox.setValue(paramsToChange.get(2));
