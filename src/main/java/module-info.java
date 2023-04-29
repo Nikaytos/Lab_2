@@ -8,4 +8,6 @@ module sample.oop_game {
     exports sample;
     exports sample.dlg;
     opens sample.dlg to javafx.fxml;
+    exports sample.objects;
+    opens sample.objects to javafx.fxml;
 }

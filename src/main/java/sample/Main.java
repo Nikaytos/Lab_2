@@ -1,46 +1,68 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import sample.objects.NewbieManager;
+import sample.objects.SeaOfThieves;
+
 import java.awt.*;
+import java.io.IOException;
 
 import static sample.Operations.*;
 
-public class SeaOfThieves extends Application {
+public class Main extends Application {
     //---------------------------------------------------------
-    public static Group group = new Group();
+    private static SeaOfThieves world = new SeaOfThieves();
+    private static ScrollPane scrollPane = new ScrollPane(world.getRoot());
+    private static Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
+    private static double scrollX;
+    private static double scrollY;
     //---------------------------------------------------------
     @Override
     public void start(Stage stage) {
 //---------------------------------------------------------
-        Operations.createBackgroundImage();
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
 //---------------------------------------------------------
-        Operations.setMaxXY(Operations.width, Operations.height);
-        stage.xProperty().addListener((observable, oldValue, newValue) -> {
-            GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-            if (device != null) {
-                Operations.visualBounds = Screen.getPrimary().getVisualBounds();
-                Operations.taskbarSize = (Screen.getPrimary().getBounds().getMaxY() - Operations.visualBounds.getMaxY())*1.5;
-                Operations.width = (int) (Operations.visualBounds.getMaxX());
-                Operations.height = (int) ((Screen.getPrimary().getBounds().getMaxY() - Operations.taskbarSize));
-                Operations.setMaxXY(Operations.width, Operations.height);
-                Operations.bg.setFitWidth(Operations.MAX_X+5);
-                Operations.bg.setFitHeight(Operations.MAX_Y+5);
-            }
-        });
+//        scrollPane.viewportBoundsProperty().addListener(new ChangeListener<Bounds>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Bounds>
+//                                        observable, Bounds oldBounds,
+//                                Bounds bounds) {
+//                double scrollWidth;
+//                double scrollHeight;
+//                scrollX = -1 * (int) bounds.getMinX();
+//                scrollWidth = -1 * (int) bounds.getMinX() + (int) bounds.getWidth();
+//                scrollY = -1 * (int) bounds.getMinY();
+//                scrollHeight = -1 * (int) bounds.getMinY() + bounds.getHeight();
+//
+//                SeaOfThieves.getBg().setLayoutX(-scrollX);
+//                SeaOfThieves.getBg().setLayoutY(-scrollY);
+//                SeaOfThieves.getBg().setFitWidth(SeaOfThieves.MAX_X-scrollX);
+//                SeaOfThieves.getBg().setFitHeight(SeaOfThieves.MAX_Y-scrollY);
+//            }
+//        });
 //---------------------------------------------------------
         Operations.createStage(stage);
 //---------------------------------------------------------
-        Scene scene = new Scene(group);
+        SeaOfThieves.getRoot().setOnMouseClicked(mouseEvent -> {
+            try {
+                mouseLeftClick(mouseEvent, stage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 //---------------------------------------------------------
-        scene.setOnMouseClicked(mouseEvent -> mouseLeftClick(mouseEvent, stage));
-//---------------------------------------------------------
-        scene.setOnMouseMoved(Operations::mouseMove);
+        SeaOfThieves.getRoot().setOnScroll(Operations::handleEvent);
+        SeaOfThieves.getRoot().setOnMouseMoved(Operations::handleEvent);
 //---------------------------------------------------------
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
@@ -53,10 +75,10 @@ public class SeaOfThieves extends Application {
             else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
                 Operations.activateNewbies();
             }
-            else if (keyCode == KeyCode.B) {
+            else if (keyCode == KeyCode.G) {
                 Operations.createNewUnit("BLUE", Operations.mouseX, Operations.mouseY);
             }
-            else if (keyCode == KeyCode.R) {
+            else if (keyCode == KeyCode.B) {
                 Operations.createNewUnit("RED", Operations.mouseX, Operations.mouseY);
             }
             else if (keyCode == KeyCode.H) {

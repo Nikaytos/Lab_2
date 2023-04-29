@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sample.SeaOfThieves;
+import sample.Main;
 
 import java.util.Objects;
 
@@ -25,7 +25,7 @@ public class HelpWindow {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Довідка");
-        Image icon = new Image(Objects.requireNonNull(SeaOfThieves.class.getResource("iconHW.png")).toString());
+        Image icon = new Image(Objects.requireNonNull(Main.class.getResource("images/iconHW.png")).toString());
         window.getIcons().add(icon);
         window.setResizable(false);
 //---------------------------------------------------------
@@ -57,8 +57,8 @@ public class HelpWindow {
         addKeyDescription(keysGrid, 3, "D або →", "Рух вправо");
         addKeyDescription(keysGrid, 4, "ЛКМ", "Створення або виділення об'єкта");
         addKeyDescription(keysGrid, 5, "ПКМ", "Видалити виділення всіх об'єктів");
-        addKeyDescription(keysGrid, 6, "R", "Добавити юніт червоної команди");
-        addKeyDescription(keysGrid, 7, "B", "Добавити юніт синьої команди");
+        addKeyDescription(keysGrid, 6, "G", "Добавити юніт альянсу Хороших");
+        addKeyDescription(keysGrid, 7, "B", "Добавити юніт лагерю Поганих");
         addKeyDescription(keysGrid, 8, "CTRL+A", "Виділити всі об'єкти");
         addKeyDescription(keysGrid, 9, "INS", "Змінити об'єкти");
         addKeyDescription(keysGrid, 10, "DEL", "Видалити об'єкти");

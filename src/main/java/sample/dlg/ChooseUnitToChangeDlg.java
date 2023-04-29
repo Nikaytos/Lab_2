@@ -15,9 +15,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sample.NewbieManager;
-import sample.SeaOfThieves;
+import sample.objects.NewbieManager;
+import sample.Main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -46,7 +47,11 @@ public class ChooseUnitToChangeDlg {
         okButton.setOnAction(e -> {
             if (cBox.getValue() != null) {
                 String[] strChoice = cBox.getValue().split(" ");
-                NewChangeUnitDlg.display(-1, -1, Integer.parseInt(strChoice[0])-1, parentWindow);
+                try {
+                    new NewChangeUnitDlg(-1, -1, Integer.parseInt(strChoice[0])-1).display();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             window.close();
         });
@@ -68,7 +73,7 @@ public class ChooseUnitToChangeDlg {
                 window.close();
             }
         });
-        Image icon = new Image(Objects.requireNonNull(SeaOfThieves.class.getResource("iconCUTCD.png")).toString());
+        Image icon = new Image(Objects.requireNonNull(Main.class.getResource("images/iconCUTCD.png")).toString());
         window.getIcons().add(icon);
         window.setScene(scene);
         window.setWidth(550);

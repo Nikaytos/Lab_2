@@ -1,6 +1,7 @@
-package sample;
+package sample.objects;
 
 import javafx.animation.*;
+import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -14,27 +15,25 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import sample.Main;
+
 import java.util.Objects;
 import java.util.Random;
 import static javafx.util.Duration.millis;
 import static javafx.util.Duration.seconds;
 
-import static sample.Operations.MAX_Y;
-import static sample.Operations.MIN_Y;
-import static sample.Operations.MAX_X;
-import static sample.Operations.MIN_X;
-
 public class Newbie {
-//---------------------------------------------------------
-    public static final int MAX_X_NEWBIE = MAX_X - 100;
-    public static final int MIN_X_NEWBIE = MIN_X;
-    public static final int MAX_Y_NEWBIE = MAX_Y - 130;
-    public static final int MIN_Y_NEWBIE = MIN_Y;
+//---------------------------------------------------------PUBLIC_VARIABLES
+    public static final double SIZE = 1.5;
+    public static final int MAX_X_NEWBIE = SeaOfThieves.MAX_X - 5 - 100;
+    public static final int MIN_X_NEWBIE = 5;
+    public static final int MAX_Y_NEWBIE = SeaOfThieves.MAX_Y - 5 - 130;
+    public static final int MIN_Y_NEWBIE = 5;
     public static final int MAX_LENGTH_NAME = 12;
     public static final int MAX_HEALTH = 100;
     public static final int MIN_HEALTH = 1;
-    public static final int SPEED = 10;
-//---------------------------------------------------------
+    public static final double SPEED = 30;
+//---------------------------------------------------------RANDOM_VALUES
     private static final Random rand = new Random();
     private static final Color[] TEAM_COLORS = {Color.RED, Color.BLUE};
     private static final String[] NAMES =  {"Adam", "Benjamin", "Charles", "David", "Ethan", "Frank", "George", "Henry",
@@ -43,51 +42,58 @@ public class Newbie {
     private static int defaultValueHealth() {return rand.nextInt(MAX_HEALTH-MIN_HEALTH+1)+MIN_HEALTH;}
     private static int defaultValueX() {return rand.nextInt(MAX_X_NEWBIE-MIN_X_NEWBIE+1)+MIN_X_NEWBIE;}
     private static int defaultValueY() {return rand.nextInt(MAX_Y_NEWBIE-MIN_Y_NEWBIE+1)+MIN_Y_NEWBIE;}
-//---------------------------------------------------------
+//---------------------------------------------------------PRIVATE_VARIABLES
     private final Group newbieContainer;
-    private double x;
-    private double y;
+    private final Label labelName;
+    private final TranslateTransition nameTransition;
+    private final DropShadow nameEffect;
     private double health;
     private final Rectangle healthBar;
     private final Rectangle healthBarBackground;
-    private boolean active;
-    private final ImageView iNewbie;
-    private final Label name;
+    private final ImageView imageNewbie;
     private final DropShadow shadow;
     private final DropShadow shadowActive;
     private String team;
-    private int direction = 1;
+    private double x;
+    private double y;
+    private boolean active;
+    private int direction;
 //---------------------------------------------------------
-    public Newbie(String n, double h, Color team, double _x, double _y) {
-        Image img = new Image(Objects.requireNonNull(SeaOfThieves.class.getResource("newbie.png")).toString(), 100, 100, false, true);
-        iNewbie = new ImageView(img);
-        healthBar = new Rectangle(0, 0, 100, 5);
-        healthBarBackground = new Rectangle(0, 0, 100, 5);
+    public Newbie(String name, double health, Color team, double x, double y) {
+//---------------------------------------------------------VARIABLES
+        Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), 100*SIZE, 100*SIZE, false, true);
+        imageNewbie = new ImageView(img);
+        healthBar = new Rectangle(0, 0, 100*SIZE, 5*SIZE);
+        healthBarBackground = new Rectangle(0, 0, 100*SIZE, 5*SIZE);
         newbieContainer = new Group();
-        name = new Label();
-        TranslateTransition nameTransition = new TranslateTransition();
+        labelName = new Label();
+        nameTransition = new TranslateTransition();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
-        DropShadow nameEffect = new DropShadow();
-        Bloom bloom = new Bloom();
+        nameEffect = new DropShadow();
         active = false;
-//---------------------------------------------------------
-        x = _x;
-        y = _y;
-        setCoordinates();
-//---------------------------------------------------------
-        setName(n);
-        name.setFont(Font.font("System", FontWeight.BOLD, 14));
-        name.setTextFill(Color.WHITE);
-        name.setEffect(bloom);
+//---------------------------------------------------------NAME
+        setName(name);
+        this.labelName.setFont(Font.font("System", FontWeight.BOLD, 14*SIZE));
+        this.labelName.setTextFill(Color.WHITE);
+        this.labelName.setEffect(new Bloom());
         nameEffect.setBlurType(BlurType.GAUSSIAN);
         nameEffect.setColor(Color.BLACK);
         nameEffect.setRadius(4);
         nameEffect.setSpread(0.6);
-        nameEffect.setInput(name.getEffect());
-        name.setEffect(nameEffect);
-        newbieContainer.getChildren().addAll(name);
-//---------------------------------------------------------
+        nameEffect.setInput(this.labelName.getEffect());
+        this.labelName.setEffect(nameEffect);
+        newbieContainer.getChildren().addAll(this.labelName);
+//---------------------------------------------------------ANIMATION_NAME
+        nameTransition.setNode(this.labelName);
+        nameTransition.setDuration(seconds(0.4));
+        nameTransition.setFromY(0);
+        nameTransition.setToY(-5);
+        nameTransition.setInterpolator(Interpolator.EASE_OUT);
+        nameTransition.setCycleCount(Animation.INDEFINITE);
+        nameTransition.setAutoReverse(true);
+        nameTransition.play();
+//---------------------------------------------------------HEALTH
         healthBar.setStroke(Color.BLACK);
         healthBar.setStrokeWidth(0.4);
         healthBar.setArcWidth(5);
@@ -97,51 +103,47 @@ public class Newbie {
         healthBarBackground.setStrokeWidth(0.4);
         healthBarBackground.setArcWidth(5);
         healthBarBackground.setArcHeight(5);
-        setHealth(h);
+        setHealth(health);
         newbieContainer.getChildren().addAll(healthBarBackground, healthBar);
-//---------------------------------------------------------
-        iNewbie.setPreserveRatio(true);
-        iNewbie.setSmooth(true);
-        iNewbie.setCache(true);
-        iNewbie.setCacheHint(CacheHint.QUALITY);
-        newbieContainer.getChildren().add(iNewbie);
-//---------------------------------------------------------
+//---------------------------------------------------------IMAGE
+        direction = 1;
+        imageNewbie.setPreserveRatio(true);
+        imageNewbie.setSmooth(true);
+        imageNewbie.setCache(true);
+        imageNewbie.setCacheHint(CacheHint.QUALITY);
+        newbieContainer.getChildren().add(imageNewbie);
+//---------------------------------------------------------TEAM
         setTeam(team);
         shadow.setRadius(7);
         shadow.setSpread(0.8);
-        iNewbie.setEffect(shadow);
-//---------------------------------------------------------
+        imageNewbie.setEffect(shadow);
+//---------------------------------------------------------SHADOW
         shadowActive.setColor(Color.GREENYELLOW);
         shadowActive.setRadius(10);
         shadowActive.setSpread(0.8);
-        shadowActive.setInput(iNewbie.getEffect());
-//---------------------------------------------------------
-        nameTransition.setNode(name);
-        nameTransition.setDuration(seconds(0.4));
-        nameTransition.setFromY(0);
-        nameTransition.setToY(-5);
-        nameTransition.setInterpolator(Interpolator.EASE_OUT);
-        nameTransition.setCycleCount(Animation.INDEFINITE);
-        nameTransition.setAutoReverse(true);
-        nameTransition.play();
-//---------------------------------------------------------
-        iNewbie.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), iNewbie);
+        shadowActive.setInput(imageNewbie.getEffect());
+//---------------------------------------------------------ANIMATION_IMAGE
+        imageNewbie.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            ScaleTransition scaleTransition = new ScaleTransition(millis(100), imageNewbie);
             scaleTransition.setToX(1.1* direction);
             scaleTransition.setToY(1.1);
             scaleTransition.play();
         });
-//---------------------------------------------------------
-        iNewbie.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), iNewbie);
+//---------------------------------------------------------ANIMATION_IMAGE
+        imageNewbie.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            ScaleTransition scaleTransition = new ScaleTransition(millis(100), imageNewbie);
             scaleTransition.setToX(direction);
             scaleTransition.setToY(1);
             scaleTransition.play();
         });
+//---------------------------------------------------------COORDINATES
+        this.x = x;
+        this.y = y;
+        setCoordinates();
 //---------------------------------------------------------
-        jump();
+        spawnTransition();
 //---------------------------------------------------------
-        SeaOfThieves.group.getChildren().add(newbieContainer);
+        SeaOfThieves.getRoot().getChildren().add(newbieContainer);
     }
 //---------------------------------------------------------
     public Newbie() {
@@ -223,21 +225,25 @@ public class Newbie {
         NewbieManager.newbies.add(n);
     }
 //---------------------------------------------------------
-    public String getName(){
-        return name.getText();
+    public Group getNewbieContainer() {
+        return newbieContainer;
     }
 //---------------------------------------------------------
-    public void setName(String n){
-        name.setText(n);
+    public String getName(){
+        return labelName.getText();
+    }
+//---------------------------------------------------------
+    public void setName(String name){
+        labelName.setText(name);
     }
 //---------------------------------------------------------
     public String getHealth() {
         return Double.toString(health);
     }
 //---------------------------------------------------------
-    public void setHealth(Double h){
-        health = h;
-        double healthPercentage = health / MAX_HEALTH;
+    public void setHealth(Double health){
+        this.health = health;
+        double healthPercentage = this.health / MAX_HEALTH;
         if (healthPercentage > 0.7) {
             healthBar.setFill(Color.LIMEGREEN);
         } else if (healthPercentage > 0.4) {
@@ -245,7 +251,7 @@ public class Newbie {
         } else {
             healthBar.setFill(Color.RED);
         }
-        healthBar.setWidth(healthPercentage * 100);
+        healthBar.setWidth(healthPercentage * 100*SIZE);
     }
 //---------------------------------------------------------
     public String getTeam() {
@@ -281,41 +287,37 @@ public class Newbie {
     }
 //---------------------------------------------------------
     public void setCoordinates(){
-        name.setLayoutX(x);
-        name.setLayoutY(y);
+        labelName.setLayoutX(x);
+        labelName.setLayoutY(y);
 
-        healthBar.setLayoutX(x);
-        healthBar.setLayoutY(y + 20);
-        healthBarBackground.setLayoutX(x);
-        healthBarBackground.setLayoutY(y + 20);
+        healthBarBackground.setLayoutX(labelName.getLayoutX());
+        healthBarBackground.setLayoutY(labelName.getLayoutY() + labelName.getFont().getSize()*1.3);
+        healthBar.setLayoutX(healthBarBackground.getLayoutX());
+        healthBar.setLayoutY(healthBarBackground.getLayoutY());
 
-        iNewbie.setX(x);
-        iNewbie.setY(y+30);
+
+        imageNewbie.setX(healthBarBackground.getLayoutX());
+        imageNewbie.setY(healthBarBackground.getLayoutY()+healthBarBackground.getHeight());
     }
 //---------------------------------------------------------
-    public void jump() {
-        TranslateTransition translateTransition = new TranslateTransition(millis(150), iNewbie);
+    public void spawnTransition() {
+        TranslateTransition translateTransition = new TranslateTransition(millis(150), newbieContainer);
         translateTransition.setToY(-100);
         translateTransition.setInterpolator(Interpolator.EASE_IN);
-        TranslateTransition backTransition = new TranslateTransition(millis(150), iNewbie);
+        TranslateTransition backTransition = new TranslateTransition(millis(150), newbieContainer);
         backTransition.setToY(0);
         backTransition.setInterpolator(Interpolator.EASE_OUT);
-        SequentialTransition sequentialTransition = new SequentialTransition(iNewbie, translateTransition, backTransition);
+        SequentialTransition sequentialTransition = new SequentialTransition(newbieContainer, translateTransition, backTransition);
         sequentialTransition.play();
     }
 //---------------------------------------------------------
-    public void move( double dx, double dy, int dir ){
-        setX(x+dx);
-        setY(y+dy);
+    public void move(double dx, double dy, int dir){
+        setX(Math.max(Math.min(x+dx, MAX_X_NEWBIE), MIN_X_NEWBIE));
+        setY(Math.max(Math.min(y+dy, MAX_Y_NEWBIE), MIN_Y_NEWBIE));
         if (dir != 0) {
             direction = dir;
-            iNewbie.setScaleX(direction);
+            imageNewbie.setScaleX(direction);
         }
-
-        if (x>MAX_X_NEWBIE) setX(MAX_X_NEWBIE);
-        if (x<MIN_X_NEWBIE) setX(MIN_X_NEWBIE);
-        if (y>MAX_Y_NEWBIE) setY(MAX_Y_NEWBIE);
-        if (y<MIN_Y_NEWBIE) setY(MIN_Y_NEWBIE);
     }
 //---------------------------------------------------------
     public boolean isActive() {
@@ -323,22 +325,18 @@ public class Newbie {
     }
 //---------------------------------------------------------
     public void flipActivation(){
-        if (active) iNewbie.setEffect(shadow);
-        else iNewbie.setEffect(shadowActive);
+        if (active) imageNewbie.setEffect(shadow);
+        else imageNewbie.setEffect(shadowActive);
         active = !active;
     }
 //---------------------------------------------------------
-    public boolean mouseActivate( double mx, double my ){
-        if(iNewbie.boundsInParentProperty().get().contains(mx,my)){
-            flipActivation();
-            return true;
-        }
-        return false;
+    public boolean mouseIsActive(double mx, double my ){
+        return imageNewbie.getBoundsInParent().contains(new Point2D(mx, my));
     }
 //---------------------------------------------------------
     public void delete(){
         System.out.println(getName() + " попрощався з життям. . .");
-        SeaOfThieves.group.getChildren().removeAll(newbieContainer);
+        SeaOfThieves.getRoot().getChildren().removeAll(newbieContainer);
     }
 //---------------------------------------------------------
     @Override

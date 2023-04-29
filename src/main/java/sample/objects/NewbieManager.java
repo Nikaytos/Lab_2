@@ -1,4 +1,6 @@
-package sample;
+package sample.objects;
+
+import sample.objects.Newbie;
 
 import java.util.ArrayList;
 
