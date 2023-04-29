@@ -15,8 +15,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sample.objects.NewbieManager;
 import sample.Main;
+import sample.objects.SeaOfThieves;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class ChooseUnitToChangeDlg {
         window.setTitle("Оберіть об'єкт для зміни:");
         window.setResizable(false);
 //---------------------------------------------------------
-        ArrayList<String> units = NewbieManager.getNames();
+        ArrayList<String> units = SeaOfThieves.getNames();
 //---------------------------------------------------------
         ComboBox<String> cBox = new ComboBox<>();
         cBox.setMaxWidth(410);
