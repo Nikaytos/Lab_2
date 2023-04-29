@@ -9,8 +9,7 @@ import javafx.stage.Stage;
 import sample.dlg.ChooseUnitToChangeDlg;
 import sample.dlg.HelpWindow;
 import sample.dlg.NewChangeUnitDlg;
-import sample.objects.Newbie;
-import sample.objects.NewbieManager;
+import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
 import java.io.IOException;
@@ -33,20 +32,10 @@ public class Operations {
     }
     //---------------------------------------------------------
     public static void deleteNewbies() {
-        int activeCount = Math.toIntExact(NewbieManager.newbies.stream()
+        SeaOfThieves.getNewbies().stream()
                 .filter(Newbie::isActive)
-                .count());
-        if (activeCount == NewbieManager.newbies.size()) {
-            NewbieManager.newbies.clear();
-            SeaOfThieves.getRoot().getChildren().clear();
-            SeaOfThieves.getRoot().getChildren().add(SeaOfThieves.getBg());
-            System.out.println("Живих не залишилося. . .");
-        } else {
-            NewbieManager.newbies.stream()
-                    .filter(Newbie::isActive)
-                    .forEach(Newbie::delete);
-            NewbieManager.newbies.removeIf(Newbie::isActive);
-        }
+                .forEach(Newbie::delete);
+        SeaOfThieves.getNewbies().removeIf(Newbie::isActive);
     }
     //---------------------------------------------------------
     public static void openCUTCD(Stage stage) {
@@ -55,11 +44,11 @@ public class Operations {
     }
     //---------------------------------------------------------
     public static void activateNewbies() {
-        NewbieManager.newbies.stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
+        SeaOfThieves.getNewbies().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
     }
     //---------------------------------------------------------
     public static void createNewUnit() {
-        NewbieManager.newbies.add(new Newbie());
+        SeaOfThieves.getNewbies().add(new Newbie());
     }
     //---------------------------------------------------------
     public static void createNewUnit(String team, double x, double y) {
@@ -76,14 +65,14 @@ public class Operations {
         double dy = 0.0;
         int direction = 0;
         switch (keyCode) {
-            case W -> dy = -Newbie.SPEED;
-            case S -> dy = Newbie.SPEED;
+            case W -> dy = -10;
+            case S -> dy = 10;
             case A -> {
-                dx = -Newbie.SPEED;
+                dx = -10;
                 direction = 1;
             }
             case D -> {
-                dx = Newbie.SPEED;
+                dx = 10;
                 direction = -1;
             }
             default -> {
@@ -93,7 +82,7 @@ public class Operations {
         double finalDx = dx;
         double finalDy = dy;
         int finalDirection = direction;
-        NewbieManager.newbies.stream()
+        SeaOfThieves.getNewbies().stream()
                 .filter(Newbie::isActive)
                 .forEach(newbie -> newbie.move(finalDx, finalDy, finalDirection));
     }
@@ -104,8 +93,8 @@ public class Operations {
         }
     }
     //---------------------------------------------------------
-    public static void mouseLeftClick(MouseEvent mouseEvent, Stage stage) throws IOException {
-        Optional<Newbie> lastNewbie = NewbieManager.newbies.stream()
+    public static void mouseLeftClick(MouseEvent mouseEvent) throws IOException {
+        Optional<Newbie> lastNewbie = SeaOfThieves.getNewbies().stream()
                 .filter(n -> n.mouseIsActive(mouseEvent.getX(), mouseEvent.getY()))
                 .reduce((n1, n2) -> n2);
         if (lastNewbie.isPresent()) {
@@ -118,7 +107,7 @@ public class Operations {
     }
     //---------------------------------------------------------
     public static void deleteActivationUnits() {
-        NewbieManager.newbies.stream()
+        SeaOfThieves.getNewbies().stream()
                 .filter(Newbie::isActive)
                 .forEach(Newbie::flipActivation);
     }
