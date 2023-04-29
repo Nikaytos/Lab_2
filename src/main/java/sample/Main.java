@@ -1,25 +1,21 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Bounds;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import sample.objects.NewbieManager;
 import sample.objects.SeaOfThieves;
 
-import java.awt.*;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Random;
 
 import static sample.Operations.*;
 
 public class Main extends Application {
     //---------------------------------------------------------
+    public static Random random = new Random(new Date().getTime());
     private static SeaOfThieves world = new SeaOfThieves();
     private static ScrollPane scrollPane = new ScrollPane(world.getRoot());
     private static Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
@@ -55,7 +51,7 @@ public class Main extends Application {
 //---------------------------------------------------------
         SeaOfThieves.getRoot().setOnMouseClicked(mouseEvent -> {
             try {
-                mouseLeftClick(mouseEvent, stage);
+                mouseLeftClick(mouseEvent);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -66,10 +62,10 @@ public class Main extends Application {
 //---------------------------------------------------------
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
-            if (keyCode == KeyCode.DELETE && !NewbieManager.newbies.isEmpty()) {
+            if (keyCode == KeyCode.DELETE && !SeaOfThieves.getNewbies().isEmpty()) {
                 Operations.deleteNewbies();
             }
-            else if (keyCode == KeyCode.INSERT && !NewbieManager.newbies.isEmpty()) {
+            else if (keyCode == KeyCode.INSERT && !SeaOfThieves.getNewbies().isEmpty()) {
                 Operations.openCUTCD(stage);
             }
             else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
