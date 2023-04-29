@@ -10,4 +10,8 @@ module sample.oop_game {
     opens sample.dlg to javafx.fxml;
     exports sample.objects;
     opens sample.objects to javafx.fxml;
+    exports sample.objects.Macro;
+    opens sample.objects.Macro to javafx.fxml;
+    exports sample.objects.Micro;
+    opens sample.objects.Micro to javafx.fxml;
 }
