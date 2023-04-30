@@ -4,6 +4,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import sample.Main;
+import sample.objects.Macro.BaseBad;
+import sample.objects.Macro.BaseGood;
+import sample.objects.Macro.Macro;
+import sample.objects.Macro.TreasuresCastle;
 import sample.objects.Micro.Newbie;
 
 import java.util.ArrayList;
@@ -14,17 +18,20 @@ public class SeaOfThieves {
     final public static int MAX_X = 3000;
     final public static  int MAX_Y = 2000;
     public static final double SIZE = 1.5;
-    //---------------------------------------------------------
-    private static Pane root;
-    private static ImageView bg;
-    private static ArrayList<Newbie> newbies;
-    private HashMap<String, ArrayList> objects;
+
+    private Pane root;
+    private ImageView bg;
+    private ArrayList<Newbie> units;
+    private ArrayList<Macro> macros;
+    private HashMap<String, ArrayList> objects = new HashMap<>();
+
     public SeaOfThieves() {
         root = new Pane();
         root.setMinWidth(MAX_X);
         root.setMinHeight(MAX_Y);
 
-        newbies = new ArrayList<>();
+        units = new ArrayList<>();
+        macros = new ArrayList<>();
 
         Image mapImage = new Image(Objects.requireNonNull(Main.class.getResource("images/bg.jpeg")).toString());
         bg = new ImageView(mapImage);
@@ -34,34 +41,60 @@ public class SeaOfThieves {
         bg.setSmooth(true);
         root.getChildren().add(bg);
 
+        objects.put("Newbie", new ArrayList<Newbie>());
+        objects.put("BaseGood", new ArrayList<BaseGood>());
+        objects.put("BaseBad", new ArrayList<BaseBad>());
+        objects.put("TreasuresCastle", new ArrayList<TreasuresCastle>());
     }
 
-    public static Pane getRoot() {
+    public void addNewUnit(Newbie newbie) {
+        units.add(newbie);
+
+        objects.get(newbie.getType()).add(newbie);
+    }
+
+    public void deleteUnit(Newbie newbie) {
+        System.out.println(newbie.getName() + " попрощався з життям. . .");
+
+        root.getChildren().remove(newbie.getUnitContainer());
+        units.remove(newbie);
+
+        objects.get(newbie.getType()).remove(newbie);
+    }
+
+    public void addNewMacro(Macro macro) {
+        macros.add(macro);
+        root.getChildren().add(macro.getMacroContainer());
+
+        objects.get(macro.getType()).add(macro);
+    }
+
+    public Pane getRoot() {
         return root;
     }
 
-    public static ImageView getBg() {
-        return bg;
+    public ArrayList<Newbie> getUnits() {
+        return units;
     }
 
-    public static ArrayList<Newbie> getNewbies() {
-        return newbies;
+    public ArrayList<Macro> getMacros() {
+        return macros;
     }
 
-    public static ArrayList<String> getParamsToChange( int index ){
-            Newbie n = newbies.get(index);
+    public ArrayList<String> getParamsToChange(int index ){
+            Newbie n = units.get(index);
             ArrayList<String> arr= new ArrayList<>();
             arr.add( n.getName() );
-            arr.add( n.getNewbieHealth() );
+            arr.add( n.getHealth() );
             arr.add( n.getTeam() );
             arr.add( n.getX() );
             arr.add( n.getY() );
             return arr;
         }
 
-    public static ArrayList<String> getNames() {
+    public ArrayList<String> getNames() {
         ArrayList<String> arr = new ArrayList<>();
-        newbies.forEach(n -> arr.add(n.toString()));
+        units.forEach(n -> arr.add(n.toString()));
         return arr;
     }
 }
