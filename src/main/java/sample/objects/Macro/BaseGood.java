@@ -1,49 +1,72 @@
 package sample.objects.Macro;
 
-import javafx.scene.CacheHint;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import sample.Main;
+import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
-import static sample.Main.random;
-import static sample.objects.SeaOfThieves.MAX_X;
+import static sample.Main.getRandom;
 import static sample.objects.SeaOfThieves.MAX_Y;
 
-public class BaseGood extends Macro{
-    private static final double FONT_SIZE = 16 * SeaOfThieves.SIZE;
-    private static final double IMAGE_W = 144 * SeaOfThieves.SIZE;
-    private static final double IMAGE_H = 81 * SeaOfThieves.SIZE;
-    private static final Rectangle2D.Double BASE_GOOD_WH = new Rectangle2D.Double(0, 0, IMAGE_W, IMAGE_H + FONT_SIZE*1.3);
-    private static final int MAX_X_BASE_GOOD = (int) (MAX_X - BASE_GOOD_WH.width - 5);
-    private static final int MIN_X_BASE_GOOD = MAX_X - 500;
-    private static final int MAX_Y_BASE_GOOD = (int) (MAX_Y - BASE_GOOD_WH.height - 5);
-    private static final int MIN_Y_BASE_GOOD = 0;
+public class BaseGood extends Macro {
 
     public BaseGood() {
-        x = random.nextInt(MAX_X_BASE_GOOD - MIN_X_BASE_GOOD) + MAX_X_BASE_GOOD;
-        y = random.nextInt(MAX_Y_BASE_GOOD - MIN_Y_BASE_GOOD) + MAX_Y_BASE_GOOD;
-        macroType = "BaseGood";
-        macroImage = new ImageView(new Image(Objects.requireNonNull(Main.class.getResource("BaseGood.jpg")).toString()));
-        macroImage.setPreserveRatio(true);
-        macroImage.setSmooth(true);
-        macroImage.setCache(true);
-        macroImage.setCacheHint(CacheHint.QUALITY);
-        macroContainer.getChildren().add(macroImage);
+        FONT_SIZE = 16 * SeaOfThieves.SIZE;
+        BORDER_WH = new Rectangle2D.Double(-10, -5, 10, 10);
+        IMAGE_WH = new Rectangle2D.Double(0, 0, 144 * SeaOfThieves.SIZE, 81 * SeaOfThieves.SIZE);
+        MACRO_WH = new Rectangle2D.Double(BORDER_WH.x, BORDER_WH.y, IMAGE_WH.getWidth() + BORDER_WH.width, IMAGE_WH.getHeight() + FONT_SIZE * 1.3 + 5 + BORDER_WH.height);
+        MAX_MACRO = new Point((int) (500 - MACRO_WH.width - 5), (int) (MAX_Y - MACRO_WH.height - 5));
+        MIN_MACRO = new Point((int) (5 - MACRO_WH.x), (int) (5 - MACRO_WH.y));
 
-        macroName = new Label("Аванпост хороших піратів");
-        macroName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
+        macroContainer = new Group();
+        type = "BaseGood";
+
+        border = new Rectangle();
+        border.setFill(Color.rgb(0, 100, 255, 0.5));
+
+        macroName = new Label("Base Good");
+
+        macroImage = new ImageView(new Image(Objects.requireNonNull(Main.class.getResource("images/BaseGood.jpg")).toString()));
+
+        setCoordinates();
+        initialize();
+        macroContainer.getChildren().addAll(border, macroName, macroImage);
     }
 
     @Override
     public void setCoordinates() {
-
+        x = getRandom().nextInt((int) (MAX_MACRO.getX() - MIN_MACRO.getX())) + MIN_MACRO.getX();
+        y = getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY())) + MIN_MACRO.getY();
+        macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 60);
+        macroName.setLayoutY(y);
+        macroImage.setLayoutX(x);
+        macroImage.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3 + 5);
+        border.setLayoutX(x + BORDER_WH.x);
+        border.setLayoutY(y + BORDER_WH.y);
+        border.setWidth(MACRO_WH.width + BORDER_WH.width);
+        border.setHeight(MACRO_WH.height + BORDER_WH.height + BORDER_WH.y);
     }
+
+    @Override
+    public void interact(Newbie newbie) {
+        if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
+            if (newbie.getTeam().equals("GOOD")) {
+                newbie.setHealth(100.0);
+            }
+            else {
+                System.out.println("вон атсудава");
+            }
+        }
+    }
+
 }
