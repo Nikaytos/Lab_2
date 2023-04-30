@@ -9,6 +9,10 @@ import javafx.stage.Stage;
 import sample.dlg.ChooseUnitToChangeDlg;
 import sample.dlg.HelpWindow;
 import sample.dlg.NewChangeUnitDlg;
+import sample.objects.Macro.BaseBad;
+import sample.objects.Macro.BaseGood;
+import sample.objects.Macro.Macro;
+import sample.objects.Macro.TreasuresCastle;
 import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
@@ -16,12 +20,10 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-
 public class Operations {
-    //---------------------------------------------------------
-    static double mouseX = -1;
-    static double mouseY = -1;
-    //---------------------------------------------------------
+    private static double mouseX = -1;
+    private static double mouseY = -1;
+
     public static void createStage(Stage stage) {
         stage.setTitle("Sea of Thieves");
         Image icon = new Image(Objects.requireNonNull(Main.class.getResource("images/iconSOT.png")).toString());
@@ -30,36 +32,39 @@ public class Operations {
         stage.setHeight(SeaOfThieves.MAX_Y);
         stage.setMaximized(true);
     }
-    //---------------------------------------------------------
+
     public static void deleteNewbies() {
-        SeaOfThieves.getNewbies().stream()
-                .filter(Newbie::isActive)
-                .forEach(Newbie::delete);
-        SeaOfThieves.getNewbies().removeIf(Newbie::isActive);
+        for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
+            Newbie newbie = Main.getWorld().getUnits().get(i);
+            if (newbie.isActive()) {
+                Main.getWorld().deleteUnit(newbie);
+                i--;
+            }
+        }
     }
-    //---------------------------------------------------------
+
     public static void openCUTCD(Stage stage) {
         ChooseUnitToChangeDlg.display(stage);
         System.out.println("Got control back!");
     }
-    //---------------------------------------------------------
+
     public static void activateNewbies() {
-        SeaOfThieves.getNewbies().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
+        Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
     }
-    //---------------------------------------------------------
+
     public static void createNewUnit() {
-        SeaOfThieves.getNewbies().add(new Newbie());
+        Main.getWorld().addNewUnit(new Newbie());
     }
-    //---------------------------------------------------------
+
     public static void createNewUnit(String team, double x, double y) {
         Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y));
     }
-    //---------------------------------------------------------
+
     public static void openHelpWindow(Stage stage) {
         HelpWindow.display(stage);
         System.out.println("Got control back!");
     }
-    //---------------------------------------------------------
+
     public static void handleArrowKeys(KeyCode keyCode) {
         double dx = 0.0;
         double dy = 0.0;
@@ -82,36 +87,42 @@ public class Operations {
         double finalDx = dx;
         double finalDy = dy;
         int finalDirection = direction;
-        SeaOfThieves.getNewbies().stream()
+        Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
                 .forEach(newbie -> newbie.move(finalDx, finalDy, finalDirection));
     }
-    //---------------------------------------------------------
+
     public static void createStartNewbie() {
         for (int i = 0; i <= Math.random() * 10; i++) {
             createNewUnit();
         }
     }
-    //---------------------------------------------------------
+
+    public static void createStartMacro() {
+        Main.getWorld().addNewMacro(new BaseGood());
+        Main.getWorld().addNewMacro(new BaseBad());
+        Main.getWorld().addNewMacro(new TreasuresCastle());
+    }
+
     public static void mouseLeftClick(MouseEvent mouseEvent) throws IOException {
-        Optional<Newbie> lastNewbie = SeaOfThieves.getNewbies().stream()
+        Optional<Newbie> lastNewbie = Main.getWorld().getUnits().stream()
                 .filter(n -> n.mouseIsActive(mouseEvent.getX(), mouseEvent.getY()))
                 .reduce((n1, n2) -> n2);
         if (lastNewbie.isPresent()) {
             lastNewbie.get().flipActivation();
-        } else {
+        }
+        else {
             new NewChangeUnitDlg(mouseEvent.getX(), mouseEvent.getY(), -1).display();
             System.out.println("Got control back!");
         }
-
     }
-    //---------------------------------------------------------
+
     public static void deleteActivationUnits() {
-        SeaOfThieves.getNewbies().stream()
+        Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
                 .forEach(Newbie::flipActivation);
     }
-    //---------------------------------------------------------
+
     public static void handleEvent(Event event) {
         if (event instanceof MouseEvent) {
             mouseX = ((MouseEvent) event).getX();
@@ -119,6 +130,24 @@ public class Operations {
         } else if (event instanceof ScrollEvent) {
             mouseX = ((ScrollEvent) event).getX();
             mouseY = ((ScrollEvent) event).getY();
+        }
+    }
+
+    public static double getMouseX() {
+        return mouseX;
+    }
+
+    public static double getMouseY() {
+        return mouseY;
+    }
+
+    public static void interact() {
+        for (Newbie newbie : Main.getWorld().getUnits()) {
+            if (newbie.isActive()) {
+                for (Macro macro : Main.getWorld().getMacros()) {
+                    macro.interact(newbie);
+                }
+            }
         }
     }
 }
