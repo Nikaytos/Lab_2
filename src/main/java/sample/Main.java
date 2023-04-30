@@ -14,14 +14,23 @@ import java.util.Random;
 import static sample.Operations.*;
 
 public class Main extends Application {
-    //---------------------------------------------------------
-    public static Random random = new Random(new Date().getTime());
+
+    private static final Random random = new Random(new Date().getTime());
+
     private static SeaOfThieves world = new SeaOfThieves();
     private static ScrollPane scrollPane = new ScrollPane(world.getRoot());
     private static Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
     private static double scrollX;
     private static double scrollY;
-    //---------------------------------------------------------
+
+    public static Random getRandom() {
+        return random;
+    }
+
+    public static SeaOfThieves getWorld() {
+        return world;
+    }
+
     @Override
     public void start(Stage stage) {
 //---------------------------------------------------------
@@ -49,7 +58,7 @@ public class Main extends Application {
 //---------------------------------------------------------
         Operations.createStage(stage);
 //---------------------------------------------------------
-        SeaOfThieves.getRoot().setOnMouseClicked(mouseEvent -> {
+        world.getRoot().setOnMouseClicked(mouseEvent -> {
             try {
                 mouseLeftClick(mouseEvent);
             } catch (IOException e) {
@@ -57,28 +66,31 @@ public class Main extends Application {
             }
         });
 //---------------------------------------------------------
-        SeaOfThieves.getRoot().setOnScroll(Operations::handleEvent);
-        SeaOfThieves.getRoot().setOnMouseMoved(Operations::handleEvent);
+        world.getRoot().setOnScroll(Operations::handleEvent);
+        world.getRoot().setOnMouseMoved(Operations::handleEvent);
 //---------------------------------------------------------
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
-            if (keyCode == KeyCode.DELETE && !SeaOfThieves.getNewbies().isEmpty()) {
+            if (keyCode == KeyCode.DELETE && !world.getUnits().isEmpty()) {
                 Operations.deleteNewbies();
             }
-            else if (keyCode == KeyCode.INSERT && !SeaOfThieves.getNewbies().isEmpty()) {
+            else if (keyCode == KeyCode.INSERT && !world.getUnits().isEmpty()) {
                 Operations.openCUTCD(stage);
             }
             else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
                 Operations.activateNewbies();
             }
             else if (keyCode == KeyCode.G) {
-                Operations.createNewUnit("BLUE", Operations.mouseX, Operations.mouseY);
+                Operations.createNewUnit("BLUE", Operations.getMouseX(), Operations.getMouseY());
             }
             else if (keyCode == KeyCode.B) {
-                Operations.createNewUnit("RED", Operations.mouseX, Operations.mouseY);
+                Operations.createNewUnit("RED", Operations.getMouseX(), Operations.getMouseY());
             }
             else if (keyCode == KeyCode.H) {
                 Operations.openHelpWindow(stage);
+            }
+            else if (keyCode == KeyCode.J) {
+                Operations.interact();
             }
             else if (keyCode == KeyCode.ESCAPE) {
                 Operations.deleteActivationUnits();
@@ -90,6 +102,7 @@ public class Main extends Application {
 //---------------------------------------------------------
         stage.setScene(scene);
         stage.show();
+        Operations.createStartMacro();
         Operations.createStartNewbie();
     }
     //---------------------------------------------------------
