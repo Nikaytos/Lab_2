@@ -31,7 +31,7 @@ public class ChooseUnitToChangeDlg {
         window.setTitle("Оберіть об'єкт для зміни:");
         window.setResizable(false);
 //---------------------------------------------------------
-        ArrayList<String> units = SeaOfThieves.getNames();
+        ArrayList<String> units = Main.getWorld().getNames();
 //---------------------------------------------------------
         ComboBox<String> cBox = new ComboBox<>();
         cBox.setMaxWidth(410);
