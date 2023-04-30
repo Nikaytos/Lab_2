@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import sample.Main;
 import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
@@ -40,9 +41,9 @@ public class NewChangeUnitDlgController {
         healthText.setPromptText(String.format("Від %d до %d", Newbie.MIN_HEALTH, Newbie.MAX_HEALTH));
         teamBox.getItems().add("GOOD");
         teamBox.getItems().add("BAD");
-        xText.setPromptText(String.format("Від %d до %d", Newbie.MIN_X_NEWBIE, Newbie.MAX_X_NEWBIE));
+        xText.setPromptText(String.format("Від %d до %d", Newbie.MIN_X_UNIT, Newbie.MAX_X_UNIT));
         xText.setText(Double.toString(getX()));
-        yText.setPromptText(String.format("Від %d до %d", Newbie.MIN_Y_NEWBIE, Newbie.MAX_Y_NEWBIE));
+        yText.setPromptText(String.format("Від %d до %d", Newbie.MIN_Y_UNIT, Newbie.MAX_Y_UNIT));
         yText.setText(Double.toString(getY()));
 
         okButton.setOnAction(e -> {
@@ -77,7 +78,7 @@ public class NewChangeUnitDlgController {
 
         ArrayList<String> paramsToChange;
         if (!(getUnitIndex() == -1)) {
-            paramsToChange = SeaOfThieves.getParamsToChange(getUnitIndex());
+            paramsToChange = Main.getWorld().getParamsToChange(getUnitIndex());
             nameText.setText(paramsToChange.get(0));
             healthText.setText(paramsToChange.get(1));
             teamBox.setValue(paramsToChange.get(2));
