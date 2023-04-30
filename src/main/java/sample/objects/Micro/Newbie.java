@@ -15,82 +15,94 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
+
 import static javafx.util.Duration.millis;
 import static javafx.util.Duration.seconds;
 
 import sample.Main;
 import sample.objects.SeaOfThieves;
-import static sample.Main.random;
 
-public class Newbie {
-//---------------------------------------------------------
-    private static final double IMAGE_SIZE = 100 * SeaOfThieves.SIZE;
-    private static final double HEALTH_HEIGHT = 5 * SeaOfThieves.SIZE;
-    private static final double FONT_SIZE = 14 * SeaOfThieves.SIZE;
-    private static final Rectangle2D.Double NEWBIE_CONTAINER_BOUNDS = new Rectangle2D.Double(0, 0, IMAGE_SIZE, IMAGE_SIZE + HEALTH_HEIGHT + FONT_SIZE*1.3);
-    private static final int MAX_X_NEWBIE = (int) (SeaOfThieves.MAX_X - 5 - NEWBIE_CONTAINER_BOUNDS.width);
-    private static final int MIN_X_NEWBIE = 5;
-    private static final int MAX_Y_NEWBIE = (int) (SeaOfThieves.MAX_Y - 5 - NEWBIE_CONTAINER_BOUNDS.height);
-    private static final int MIN_Y_NEWBIE = 5;
-    private static final double SPEED = 3;
+import static sample.Main.getRandom;
+
+public class Newbie implements Cloneable {
+
+    protected static final double IMAGE_SIZE = 100 * SeaOfThieves.SIZE;
+    protected static final double HEALTH_HEIGHT = 5 * SeaOfThieves.SIZE;
+    protected static final double FONT_SIZE = 14 * SeaOfThieves.SIZE;
+    protected static final Rectangle2D.Double UNIT_CONTAINER_BOUNDS = new Rectangle2D.Double(0, 0, IMAGE_SIZE, IMAGE_SIZE + HEALTH_HEIGHT + FONT_SIZE * 1.3 + 5);
+    public static final int MAX_X_UNIT = (int) (SeaOfThieves.MAX_X - 5 - UNIT_CONTAINER_BOUNDS.width);
+    public static final int MIN_X_UNIT = 5;
+    public static final int MAX_Y_UNIT = (int) (SeaOfThieves.MAX_Y - 5 - UNIT_CONTAINER_BOUNDS.height);
+    public static final int MIN_Y_UNIT = 5;
+    public static final double SPEED = 3;
 
     public static final int MAX_LENGTH_NAME = 12;
     public static final int MAX_HEALTH = 100;
     public static final int MIN_HEALTH = 1;
-//---------------------------------------------------------RANDOM_VALUES
-    private static final Color[] TEAM_COLORS = {Color.RED, Color.BLUE};
-    private static final String[] NAMES =  {"Adam", "Benjamin", "Charles", "David", "Ethan", "Frank", "George", "Henry",
+
+    protected static final Color[] TEAM_COLORS = {Color.RED, Color.BLUE};
+    protected static final String[] NAMES = {"Adam", "Benjamin", "Charles", "David", "Ethan", "Frank", "George", "Henry",
             "Isaac", "John", "Kevin", "Liam", "Matthew", "Nathan", "Oliver", "Peter", "Quentin",
             "Robert", "Samuel", "Thomas", "Ulysses", "Victor", "William", "Xavier", "Yves", "Zachary"};
-    private static int defaultValueHealth() {return random.nextInt(MAX_HEALTH-MIN_HEALTH+1)+MIN_HEALTH;}
-    private static int defaultValueX() {return random.nextInt(MAX_X_NEWBIE-MIN_X_NEWBIE+1)+MIN_X_NEWBIE;}
-    private static int defaultValueY() {return random.nextInt(MAX_Y_NEWBIE-MIN_Y_NEWBIE+1)+MIN_Y_NEWBIE;}
-//---------------------------------------------------------PRIVATE_VARIABLES
-    private final Group newbieContainer;
-    private final Label newbieName;
-    private double newbieHealth;
-    private String team;
-    private double x;
-    private double y;
-    private final ImageView imageNewbie;
-    private final TranslateTransition nameTransition;
-    private final DropShadow nameEffect;
-    private final Rectangle healthBar;
-    private final Rectangle healthBarBackground;
-    private final DropShadow shadow;
-    private final DropShadow shadowActive;
-    private boolean active;
-    private int direction;
-//---------------------------------------------------------
+
+    protected static int defaultValueHealth() {
+        return getRandom().nextInt(MAX_HEALTH - MIN_HEALTH + 1) + MIN_HEALTH;
+    }
+
+    protected static int defaultValueX() {
+        return getRandom().nextInt(MAX_X_UNIT - MIN_X_UNIT + 1) + MIN_X_UNIT;
+    }
+
+    protected static int defaultValueY() {
+        return getRandom().nextInt(MAX_Y_UNIT - MIN_Y_UNIT + 1) + MIN_Y_UNIT;
+    }
+
+    protected final Group unitContainer;
+    protected String type;
+    protected final Label unitName;
+    protected double health;
+    protected String team;
+    protected double x;
+    protected double y;
+    protected final ImageView unitImage;
+    protected final Rectangle healthBar;
+    protected final Rectangle healthBarBackground;
+    protected final DropShadow shadow;
+    protected final DropShadow shadowActive;
+    protected boolean active;
+    protected int direction;
+
     public Newbie(String name, double health, Color team, double x, double y) {
-//---------------------------------------------------------VARIABLES
+
+        type = "Newbie";
         Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
-        imageNewbie = new ImageView(img);
+        unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
-        newbieContainer = new Group();
-        newbieName = new Label();
-        nameTransition = new TranslateTransition();
+        unitContainer = new Group();
+        unitName = new Label();
+        TranslateTransition nameTransition = new TranslateTransition();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
-        nameEffect = new DropShadow();
+        DropShadow nameEffect = new DropShadow();
         active = false;
-//---------------------------------------------------------NAME
+
         setName(name);
-        this.newbieName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
-        this.newbieName.setTextFill(Color.WHITE);
-        this.newbieName.setEffect(new Bloom());
+        unitName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
+        unitName.setTextFill(Color.WHITE);
+        unitName.setEffect(new Bloom());
         nameEffect.setBlurType(BlurType.GAUSSIAN);
         nameEffect.setColor(Color.BLACK);
         nameEffect.setRadius(4);
         nameEffect.setSpread(0.6);
-        nameEffect.setInput(this.newbieName.getEffect());
-        this.newbieName.setEffect(nameEffect);
-        newbieContainer.getChildren().addAll(this.newbieName);
-//---------------------------------------------------------ANIMATION_NAME
-        nameTransition.setNode(this.newbieName);
+        nameEffect.setInput(unitName.getEffect());
+        unitName.setEffect(nameEffect);
+        unitContainer.getChildren().addAll(unitName);
+
+        nameTransition.setNode(unitName);
         nameTransition.setDuration(seconds(0.4));
         nameTransition.setFromY(0);
         nameTransition.setToY(-5);
@@ -98,7 +110,7 @@ public class Newbie {
         nameTransition.setCycleCount(Animation.INDEFINITE);
         nameTransition.setAutoReverse(true);
         nameTransition.play();
-//---------------------------------------------------------HEALTH
+
         healthBar.setStroke(Color.BLACK);
         healthBar.setStrokeWidth(0.4);
         healthBar.setArcWidth(5);
@@ -108,65 +120,66 @@ public class Newbie {
         healthBarBackground.setStrokeWidth(0.4);
         healthBarBackground.setArcWidth(5);
         healthBarBackground.setArcHeight(5);
-        setNewbieHealth(health);
-        newbieContainer.getChildren().addAll(healthBarBackground, healthBar);
-//---------------------------------------------------------IMAGE
+        setHealth(health);
+        unitContainer.getChildren().addAll(healthBarBackground, healthBar);
+
         direction = 1;
-        imageNewbie.setPreserveRatio(true);
-        imageNewbie.setSmooth(true);
-        imageNewbie.setCache(true);
-        imageNewbie.setCacheHint(CacheHint.QUALITY);
-        newbieContainer.getChildren().add(imageNewbie);
-//---------------------------------------------------------TEAM
+        unitImage.setPreserveRatio(true);
+        unitImage.setSmooth(true);
+        unitImage.setCache(true);
+        unitImage.setCacheHint(CacheHint.QUALITY);
+        unitContainer.getChildren().add(unitImage);
+
         setTeam(team);
         shadow.setRadius(7);
         shadow.setSpread(0.8);
-        imageNewbie.setEffect(shadow);
-//---------------------------------------------------------SHADOW
+        unitImage.setEffect(shadow);
+
         shadowActive.setColor(Color.GREENYELLOW);
         shadowActive.setRadius(10);
         shadowActive.setSpread(0.8);
-        shadowActive.setInput(imageNewbie.getEffect());
-//---------------------------------------------------------ANIMATION_IMAGE
-        imageNewbie.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), imageNewbie);
-            scaleTransition.setToX(1.1* direction);
+        shadowActive.setInput(unitImage.getEffect());
+
+        unitImage.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            ScaleTransition scaleTransition = new ScaleTransition(millis(100), unitImage);
+            scaleTransition.setToX(1.1 * direction);
             scaleTransition.setToY(1.1);
             scaleTransition.play();
         });
-//---------------------------------------------------------ANIMATION_IMAGE
-        imageNewbie.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), imageNewbie);
+
+        unitImage.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            ScaleTransition scaleTransition = new ScaleTransition(millis(100), unitImage);
             scaleTransition.setToX(direction);
             scaleTransition.setToY(1);
             scaleTransition.play();
         });
-//---------------------------------------------------------COORDINATES
+
         this.x = x;
         this.y = y;
         setCoordinates();
-//---------------------------------------------------------
+
         spawnTransition();
-//---------------------------------------------------------
-        SeaOfThieves.getRoot().getChildren().add(newbieContainer);
+
+        Main.getWorld().getRoot().getChildren().add(unitContainer);
     }
-//---------------------------------------------------------
+
     public Newbie() {
-        this(NAMES[random.nextInt(NAMES.length)],
+        this(NAMES[getRandom().nextInt(NAMES.length)],
                 defaultValueHealth(),
-                TEAM_COLORS[random.nextInt(TEAM_COLORS.length)],
+                TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)],
                 defaultValueX(),
                 defaultValueY());
         System.out.print("Random newbie appeared: " + this + "\n");
     }
-//---------------------------------------------------------
+
     static {
         System.out.println("Та нехай почнеться битва!");
     }
+
     {
         System.out.println("Ласкаво просимо до світу піратів!");
     }
-//---------------------------------------------------------
+
     private static double parseDouble(String value, double defaultValue, double minValue, double maxValue) {
         try {
             double result = Double.parseDouble(value);
@@ -181,7 +194,7 @@ public class Newbie {
             return defaultValue;
         }
     }
-//---------------------------------------------------------
+
     private static String limitString(String value, String defaultValue) {
         if (value.equals("")) {
             return defaultValue;
@@ -191,9 +204,9 @@ public class Newbie {
         }
         return value;
     }
-//---------------------------------------------------------
+
     private static Color parseColor(String sTeam) {
-        Color defaultValue = TEAM_COLORS[random.nextInt(TEAM_COLORS.length)];
+        Color defaultValue = TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)];
         try {
             if (sTeam.equals("")) {
                 return defaultValue;
@@ -203,52 +216,56 @@ public class Newbie {
             return defaultValue;
         }
     }
-//---------------------------------------------------------
+
     public static void changeUnit(int unitIndex, String sName, String sHealth, String cTeam, String sX, String sY) {
-        Newbie n = SeaOfThieves.getNewbies().get(unitIndex);
+        Newbie n = Main.getWorld().getUnits().get(unitIndex);
 
         String s1 = n.toString();
 
-        n.setName(limitString(sName, NAMES[random.nextInt(NAMES.length)]));
-        n.setNewbieHealth(parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
+        n.setName(limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]));
+        n.setHealth(parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
         n.setTeam(parseColor(cTeam));
-        n.setX(parseDouble(sX, defaultValueX(), MIN_X_NEWBIE, MAX_X_NEWBIE));
-        n.setY(parseDouble(sY, defaultValueY(), MIN_Y_NEWBIE, MAX_Y_NEWBIE));
+        n.setX(parseDouble(sX, defaultValueX(), MIN_X_UNIT, MAX_X_UNIT));
+        n.setY(parseDouble(sY, defaultValueY(), MIN_Y_UNIT, MAX_Y_UNIT));
 
         String s2 = n.toString();
         if (!s1.equals(s2)) System.out.println("Edited:\n" + s1 + "\nto:\n" + s2);
     }
-//---------------------------------------------------------
+
     public static void createNewUnit(String sName, String sHealth, String cTeam, String sX, String sY) {
-        String name = limitString(sName, NAMES[random.nextInt(NAMES.length)]);
+        String name = limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]);
         double h = parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH);
         Color team = parseColor(cTeam);
-        double x = parseDouble(sX, defaultValueX(), MIN_X_NEWBIE, MAX_X_NEWBIE);
-        double y = parseDouble(sY, defaultValueY(), MIN_Y_NEWBIE, MAX_Y_NEWBIE);
+        double x = parseDouble(sX, defaultValueX(), MIN_X_UNIT, MAX_X_UNIT);
+        double y = parseDouble(sY, defaultValueY(), MIN_Y_UNIT, MAX_Y_UNIT);
         Newbie n = new Newbie(name, h, team, x, y);
         System.out.println(n);
-        SeaOfThieves.getNewbies().add(n);
+        Main.getWorld().addNewUnit(n);
     }
-//---------------------------------------------------------
-    public Group getNewbieContainer() {
-        return newbieContainer;
+
+    public Group getUnitContainer() {
+        return unitContainer;
     }
-//---------------------------------------------------------
-    public String getName(){
-        return newbieName.getText();
+
+    public String getType() {
+        return type;
     }
-//---------------------------------------------------------
-    public void setName(String name){
-        newbieName.setText(name);
+
+    public String getName() {
+        return unitName.getText();
     }
-//---------------------------------------------------------
-    public String getNewbieHealth() {
-        return Double.toString(newbieHealth);
+
+    public void setName(String name) {
+        unitName.setText(name);
     }
-//---------------------------------------------------------
-    public void setNewbieHealth(Double newbieHealth){
-        this.newbieHealth = newbieHealth;
-        double healthPercentage = this.newbieHealth / MAX_HEALTH;
+
+    public String getHealth() {
+        return Double.toString(health);
+    }
+
+    public void setHealth(Double health) {
+        this.health = health;
+        double healthPercentage = this.health / MAX_HEALTH;
         if (healthPercentage > 0.7) {
             healthBar.setFill(Color.LIMEGREEN);
         } else if (healthPercentage > 0.4) {
@@ -258,93 +275,91 @@ public class Newbie {
         }
         healthBar.setWidth(healthPercentage * IMAGE_SIZE);
     }
-//---------------------------------------------------------
+
+    public ImageView getUnitImage() {
+        return unitImage;
+    }
+
     public String getTeam() {
         return team;
     }
-//---------------------------------------------------------
-    public void setTeam(Color color){
+
+    public void setTeam(Color color) {
         shadow.setColor(color);
         if (shadow.getColor() == Color.BLUE) {
             team = "GOOD";
-        }
-        else if (shadow.getColor() == Color.RED) {
+        } else if (shadow.getColor() == Color.RED) {
             team = "BAD";
         }
     }
-//---------------------------------------------------------
-    public String getX(){
+
+    public String getX() {
         return Double.toString(x);
     }
-//---------------------------------------------------------
-    public void setX( double _x ){
-        x= _x;
+
+    public void setX(double x) {
+        this.x = x;
         setCoordinates();
     }
-//---------------------------------------------------------
-    public String getY(){
+
+    public String getY() {
         return Double.toString(y);
     }
-//---------------------------------------------------------
-    public void setY( double _y ){
-        y= _y;
+
+    public void setY(double y) {
+        this.y = y;
         setCoordinates();
     }
-//---------------------------------------------------------
-    public void setCoordinates(){
-        newbieName.setLayoutX(x);
-        newbieName.setLayoutY(y);
 
-        healthBarBackground.setLayoutX(newbieName.getLayoutX());
-        healthBarBackground.setLayoutY(newbieName.getLayoutY() + newbieName.getFont().getSize()*1.3);
+    public void setCoordinates() {
+        unitName.setLayoutX(x);
+        unitName.setLayoutY(y);
+
+        healthBarBackground.setLayoutX(unitName.getLayoutX());
+        healthBarBackground.setLayoutY(unitName.getLayoutY() + unitName.getFont().getSize() * 1.3 + 5);
         healthBar.setLayoutX(healthBarBackground.getLayoutX());
         healthBar.setLayoutY(healthBarBackground.getLayoutY());
 
-        imageNewbie.setX(healthBarBackground.getLayoutX());
-        imageNewbie.setY(healthBarBackground.getLayoutY()+healthBarBackground.getHeight());
+        unitImage.setX(healthBarBackground.getLayoutX());
+        unitImage.setY(healthBarBackground.getLayoutY() + healthBarBackground.getHeight());
     }
-//---------------------------------------------------------
+
     public void spawnTransition() {
-        TranslateTransition translateTransition = new TranslateTransition(millis(150), newbieContainer);
+        TranslateTransition translateTransition = new TranslateTransition(millis(150), unitContainer);
         translateTransition.setToY(-100);
         translateTransition.setInterpolator(Interpolator.EASE_IN);
-        TranslateTransition backTransition = new TranslateTransition(millis(150), newbieContainer);
+        TranslateTransition backTransition = new TranslateTransition(millis(150), unitContainer);
         backTransition.setToY(0);
         backTransition.setInterpolator(Interpolator.EASE_OUT);
-        SequentialTransition sequentialTransition = new SequentialTransition(newbieContainer, translateTransition, backTransition);
+        SequentialTransition sequentialTransition = new SequentialTransition(unitContainer, translateTransition, backTransition);
         sequentialTransition.play();
     }
-//---------------------------------------------------------
-    public void move(double dx, double dy, int dir){
-        double finalDX = dx * SPEED;
-        double finalDY = dy * SPEED;
-        setX(Math.max(Math.min(finalDX, MAX_X_NEWBIE), MIN_X_NEWBIE));
-        setY(Math.max(Math.min(finalDY, MAX_Y_NEWBIE), MIN_Y_NEWBIE));
+
+    public void move(double dx, double dy, int dir) {
+        double finalDX = x + dx * SPEED;
+        double finalDY = y + dy * SPEED;
+        setX(Math.max(Math.min(finalDX, MAX_X_UNIT), MIN_X_UNIT));
+        setY(Math.max(Math.min(finalDY, MAX_Y_UNIT), MIN_Y_UNIT));
         if (dir != 0) {
             direction = dir;
-            imageNewbie.setScaleX(direction);
+            unitImage.setScaleX(direction);
         }
     }
-//---------------------------------------------------------
+
     public boolean isActive() {
         return active;
     }
-//---------------------------------------------------------
-    public void flipActivation(){
-        if (active) imageNewbie.setEffect(shadow);
-        else imageNewbie.setEffect(shadowActive);
+
+    public void flipActivation() {
+        if (active) unitImage.setEffect(shadow);
+        else unitImage.setEffect(shadowActive);
         active = !active;
     }
-//---------------------------------------------------------
-    public boolean mouseIsActive(double mx, double my ){
-        return imageNewbie.getBoundsInParent().contains(new Point2D(mx, my));
+
+    public boolean mouseIsActive(double mx, double my) {
+        return unitImage.getBoundsInParent().contains(new Point2D(mx, my));
     }
-//---------------------------------------------------------
-    public void delete(){
-        System.out.println(getName() + " попрощався з життям. . .");
-        SeaOfThieves.getRoot().getChildren().removeAll(newbieContainer);
-    }
-//---------------------------------------------------------
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -362,10 +377,21 @@ public class Newbie {
     public String toString() {
         return "Newbie{" +
                 "name=" + getName() +
-                ", health=" + newbieHealth +
+                ", health=" + health +
                 ", team=" + team +
                 ", x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    @Override
+    public Newbie clone() {
+        try {
+            Newbie clone = (Newbie) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
