@@ -2,6 +2,7 @@ package sample.objects.Micro;
 
 import javafx.animation.*;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
@@ -16,6 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
@@ -33,18 +35,16 @@ public class Newbie implements Cloneable {
     protected static final double HEALTH_HEIGHT = 5 * SeaOfThieves.SIZE;
     protected static final double FONT_SIZE = 14 * SeaOfThieves.SIZE;
     protected static final Rectangle2D.Double UNIT_CONTAINER_BOUNDS = new Rectangle2D.Double(0, 0, IMAGE_SIZE, IMAGE_SIZE + HEALTH_HEIGHT + FONT_SIZE * 1.3 + 5);
-    public static final int MAX_X_UNIT = (int) (SeaOfThieves.MAX_X - 5 - UNIT_CONTAINER_BOUNDS.width);
-    public static final int MIN_X_UNIT = 5;
-    public static final int MAX_Y_UNIT = (int) (SeaOfThieves.MAX_Y - 5 - UNIT_CONTAINER_BOUNDS.height);
-    public static final int MIN_Y_UNIT = 5;
+    protected static final Point MAX_UNIT = new Point((int) (SeaOfThieves.MAX_X - 5 - UNIT_CONTAINER_BOUNDS.width), (int) (SeaOfThieves.MAX_Y - 5 - UNIT_CONTAINER_BOUNDS.height));
+    protected static final Point MIN_UNIT = new Point(5, 5);
     public static final double SPEED = 3;
 
-    public static final int MAX_LENGTH_NAME = 12;
+    public static final int MAX_LENGTH_NAME = 7;
     public static final int MAX_HEALTH = 100;
     public static final int MIN_HEALTH = 1;
 
     protected static final Color[] TEAM_COLORS = {Color.RED, Color.BLUE};
-    protected static final String[] NAMES = {"Adam", "Benjamin", "Charles", "David", "Ethan", "Frank", "George", "Henry",
+    protected static final String[] NAMES = {"Adam", "Brandon", "Charles", "David", "Ethan", "Frank", "George", "Henry",
             "Isaac", "John", "Kevin", "Liam", "Matthew", "Nathan", "Oliver", "Peter", "Quentin",
             "Robert", "Samuel", "Thomas", "Ulysses", "Victor", "William", "Xavier", "Yves", "Zachary"};
 
@@ -53,55 +53,126 @@ public class Newbie implements Cloneable {
     }
 
     protected static int defaultValueX() {
-        return getRandom().nextInt(MAX_X_UNIT - MIN_X_UNIT + 1) + MIN_X_UNIT;
+        return getRandom().nextInt(MAX_UNIT.x - MIN_UNIT.x + 1) + MIN_UNIT.x;
     }
 
     protected static int defaultValueY() {
-        return getRandom().nextInt(MAX_Y_UNIT - MIN_Y_UNIT + 1) + MIN_Y_UNIT;
+        return getRandom().nextInt(MAX_UNIT.y - MIN_UNIT.y + 1) + MIN_UNIT.y;
     }
 
-    protected final Group unitContainer;
+    protected Group unitContainer;
     protected String type;
-    protected final Label unitName;
-    protected double health;
-    protected String team;
+    protected Label unitName;
+    protected double unitHealth;
+    protected String unitTeam;
     protected double x;
     protected double y;
-    protected final ImageView unitImage;
-    protected final Rectangle healthBar;
-    protected final Rectangle healthBarBackground;
-    protected final DropShadow shadow;
-    protected final DropShadow shadowActive;
+    protected ImageView unitImage;
+    protected Rectangle healthBar;
+    protected Rectangle healthBarBackground;
+    protected DropShadow shadow;
+    protected DropShadow shadowActive;
     protected boolean active;
     protected int direction;
+
+    public Group getUnitContainer() {
+        return unitContainer;
+    }
+    public String getType() {
+        return type;
+    }
+    public String getName() {
+        return unitName.getText();
+    }
+    public double getUnitHealth() {
+        return unitHealth;
+    }
+    public ImageView getUnitImage() {
+        return unitImage;
+    }
+    public String getUnitTeam() {
+        return unitTeam;
+    }
+    public double getX() {
+        return x;
+    }
+    public double getY() {
+        return y;
+    }
+    public static Point getMAX_UNIT() {
+        return MAX_UNIT;
+    }
+    public static Point getMIN_UNIT() {
+        return MIN_UNIT;
+    }
 
     public Newbie(String name, double health, Color team, double x, double y) {
 
         type = "Newbie";
+
+        unitName = new Label();
         Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         unitContainer = new Group();
-        unitName = new Label();
-        TranslateTransition nameTransition = new TranslateTransition();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
-        DropShadow nameEffect = new DropShadow();
+
         active = false;
 
         setName(name);
+
+        setUnitHealth(health);
+
+        setUnitTeam(team);
+
+        initialize();
+
+        this.x = x;
+        this.y = y;
+        setCoordinates();
+
+        spawnTransition();
+
+        unitContainer.getChildren().addAll(unitName, healthBarBackground, healthBar, unitImage);
+    }
+
+    public Newbie() {
+        this(NAMES[getRandom().nextInt(NAMES.length)],
+                0,
+                TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)],
+                0,
+                0);
+        setUnitHealth((double) defaultValueHealth());
+        setX(defaultValueX());
+        setY(defaultValueY());
+        System.out.print("Random newbie appeared: " + this + "\n");
+    }
+
+    static {
+        System.out.println("Та нехай почнеться битва!");
+    }
+
+    {
+        System.out.println("Ласкаво просимо до світу піратів!");
+    }
+
+    private void initialize() {
         unitName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
         unitName.setTextFill(Color.WHITE);
+        unitName.setAlignment(Pos.CENTER);
+        unitName.setPrefWidth(IMAGE_SIZE);
         unitName.setEffect(new Bloom());
+        DropShadow nameEffect = new DropShadow();
         nameEffect.setBlurType(BlurType.GAUSSIAN);
         nameEffect.setColor(Color.BLACK);
         nameEffect.setRadius(4);
         nameEffect.setSpread(0.6);
         nameEffect.setInput(unitName.getEffect());
         unitName.setEffect(nameEffect);
-        unitContainer.getChildren().addAll(unitName);
 
+        TranslateTransition nameTransition = new TranslateTransition();
         nameTransition.setNode(unitName);
         nameTransition.setDuration(seconds(0.4));
         nameTransition.setFromY(0);
@@ -120,17 +191,13 @@ public class Newbie implements Cloneable {
         healthBarBackground.setStrokeWidth(0.4);
         healthBarBackground.setArcWidth(5);
         healthBarBackground.setArcHeight(5);
-        setHealth(health);
-        unitContainer.getChildren().addAll(healthBarBackground, healthBar);
 
         direction = 1;
         unitImage.setPreserveRatio(true);
         unitImage.setSmooth(true);
         unitImage.setCache(true);
         unitImage.setCacheHint(CacheHint.QUALITY);
-        unitContainer.getChildren().add(unitImage);
 
-        setTeam(team);
         shadow.setRadius(7);
         shadow.setSpread(0.8);
         unitImage.setEffect(shadow);
@@ -153,34 +220,9 @@ public class Newbie implements Cloneable {
             scaleTransition.setToY(1);
             scaleTransition.play();
         });
-
-        this.x = x;
-        this.y = y;
-        setCoordinates();
-
-        spawnTransition();
-
-        Main.getWorld().getRoot().getChildren().add(unitContainer);
     }
 
-    public Newbie() {
-        this(NAMES[getRandom().nextInt(NAMES.length)],
-                defaultValueHealth(),
-                TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)],
-                defaultValueX(),
-                defaultValueY());
-        System.out.print("Random newbie appeared: " + this + "\n");
-    }
-
-    static {
-        System.out.println("Та нехай почнеться битва!");
-    }
-
-    {
-        System.out.println("Ласкаво просимо до світу піратів!");
-    }
-
-    private static double parseDouble(String value, double defaultValue, double minValue, double maxValue) {
+    public static double parseDouble(String value, double defaultValue, double minValue, double maxValue) {
         try {
             double result = Double.parseDouble(value);
             if (result < minValue) {
@@ -195,7 +237,7 @@ public class Newbie implements Cloneable {
         }
     }
 
-    private static String limitString(String value, String defaultValue) {
+    public static String limitString(String value, String defaultValue) {
         if (value.equals("")) {
             return defaultValue;
         }
@@ -205,7 +247,7 @@ public class Newbie implements Cloneable {
         return value;
     }
 
-    private static Color parseColor(String sTeam) {
+    public static Color parseColor(String sTeam) {
         Color defaultValue = TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)];
         try {
             if (sTeam.equals("")) {
@@ -223,10 +265,10 @@ public class Newbie implements Cloneable {
         String s1 = n.toString();
 
         n.setName(limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]));
-        n.setHealth(parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
-        n.setTeam(parseColor(cTeam));
-        n.setX(parseDouble(sX, defaultValueX(), MIN_X_UNIT, MAX_X_UNIT));
-        n.setY(parseDouble(sY, defaultValueY(), MIN_Y_UNIT, MAX_Y_UNIT));
+        n.setUnitHealth(parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
+        n.setUnitTeam(parseColor(cTeam));
+        n.setX(parseDouble(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x));
+        n.setY(parseDouble(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y));
 
         String s2 = n.toString();
         if (!s1.equals(s2)) System.out.println("Edited:\n" + s1 + "\nto:\n" + s2);
@@ -236,36 +278,22 @@ public class Newbie implements Cloneable {
         String name = limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]);
         double h = parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH);
         Color team = parseColor(cTeam);
-        double x = parseDouble(sX, defaultValueX(), MIN_X_UNIT, MAX_X_UNIT);
-        double y = parseDouble(sY, defaultValueY(), MIN_Y_UNIT, MAX_Y_UNIT);
+        double x = parseDouble(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x);
+        double y = parseDouble(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y);
         Newbie n = new Newbie(name, h, team, x, y);
         System.out.println(n);
         Main.getWorld().addNewUnit(n);
     }
 
-    public Group getUnitContainer() {
-        return unitContainer;
-    }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getName() {
-        return unitName.getText();
-    }
 
     public void setName(String name) {
         unitName.setText(name);
     }
 
-    public String getHealth() {
-        return Double.toString(health);
-    }
-
-    public void setHealth(Double health) {
-        this.health = health;
-        double healthPercentage = this.health / MAX_HEALTH;
+    public void setUnitHealth(Double unitHealth) {
+        this.unitHealth = unitHealth;
+        double healthPercentage = this.unitHealth / MAX_HEALTH;
         if (healthPercentage > 0.7) {
             healthBar.setFill(Color.LIMEGREEN);
         } else if (healthPercentage > 0.4) {
@@ -276,34 +304,18 @@ public class Newbie implements Cloneable {
         healthBar.setWidth(healthPercentage * IMAGE_SIZE);
     }
 
-    public ImageView getUnitImage() {
-        return unitImage;
-    }
-
-    public String getTeam() {
-        return team;
-    }
-
-    public void setTeam(Color color) {
+    public void setUnitTeam(Color color) {
         shadow.setColor(color);
         if (shadow.getColor() == Color.BLUE) {
-            team = "GOOD";
+            unitTeam = "GOOD";
         } else if (shadow.getColor() == Color.RED) {
-            team = "BAD";
+            unitTeam = "BAD";
         }
-    }
-
-    public String getX() {
-        return Double.toString(x);
     }
 
     public void setX(double x) {
         this.x = x;
         setCoordinates();
-    }
-
-    public String getY() {
-        return Double.toString(y);
     }
 
     public void setY(double y) {
@@ -315,13 +327,13 @@ public class Newbie implements Cloneable {
         unitName.setLayoutX(x);
         unitName.setLayoutY(y);
 
-        healthBarBackground.setLayoutX(unitName.getLayoutX());
+        healthBarBackground.setLayoutX(x);
         healthBarBackground.setLayoutY(unitName.getLayoutY() + unitName.getFont().getSize() * 1.3 + 5);
-        healthBar.setLayoutX(healthBarBackground.getLayoutX());
+        healthBar.setLayoutX(x);
         healthBar.setLayoutY(healthBarBackground.getLayoutY());
 
-        unitImage.setX(healthBarBackground.getLayoutX());
-        unitImage.setY(healthBarBackground.getLayoutY() + healthBarBackground.getHeight());
+        unitImage.setLayoutX(x);
+        unitImage.setLayoutY(healthBarBackground.getLayoutY() + healthBarBackground.getHeight());
     }
 
     public void spawnTransition() {
@@ -338,8 +350,8 @@ public class Newbie implements Cloneable {
     public void move(double dx, double dy, int dir) {
         double finalDX = x + dx * SPEED;
         double finalDY = y + dy * SPEED;
-        setX(Math.max(Math.min(finalDX, MAX_X_UNIT), MIN_X_UNIT));
-        setY(Math.max(Math.min(finalDY, MAX_Y_UNIT), MIN_Y_UNIT));
+        setX(Math.max(Math.min(finalDX, MAX_UNIT.x), MIN_UNIT.x));
+        setY(Math.max(Math.min(finalDY, MAX_UNIT.y), MIN_UNIT.y));
         if (dir != 0) {
             direction = dir;
             unitImage.setScaleX(direction);
@@ -365,20 +377,20 @@ public class Newbie implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Newbie newbie = (Newbie) o;
-        return Objects.equals(team, newbie.team);
+        return Objects.equals(unitTeam, newbie.unitTeam);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(team);
+        return Objects.hash(unitTeam);
     }
 
     @Override
     public String toString() {
         return "Newbie{" +
                 "name=" + getName() +
-                ", health=" + health +
-                ", team=" + team +
+                ", health=" + unitHealth +
+                ", team=" + unitTeam +
                 ", x=" + x +
                 ", y=" + y +
                 '}';
@@ -388,7 +400,28 @@ public class Newbie implements Cloneable {
     public Newbie clone() {
         try {
             Newbie clone = (Newbie) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            clone.unitName = new Label();
+            clone.unitImage = new ImageView(this.unitImage.getImage());
+            clone.healthBar = new Rectangle(0, 0, this.healthBar.getWidth(), this.healthBar.getHeight());
+            clone.healthBarBackground = new Rectangle(0, 0, this.healthBarBackground.getWidth(), this.healthBarBackground.getHeight());
+            clone.unitContainer = new Group();
+            clone.shadow = new DropShadow();
+            clone.shadowActive = new DropShadow();
+            clone.active = false;
+            clone.setName(this.getName());
+            clone.setUnitHealth(this.getUnitHealth());
+            clone.setUnitTeam(this.shadow.getColor());
+
+            clone.initialize();
+
+            clone.setX(parseDouble(Double.toString(this.getX()+this.getUnitImage().getLayoutBounds().getMaxX() + 10), this.getX(), MIN_UNIT.x, MAX_UNIT.x));
+            clone.setY(this.getY());
+
+            clone.flipActivation();
+
+            clone.spawnTransition();
+
+            clone.unitContainer.getChildren().addAll(clone.unitName, clone.healthBarBackground, clone.healthBar, clone.unitImage);
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

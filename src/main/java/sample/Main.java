@@ -2,6 +2,7 @@ package sample;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -11,24 +12,26 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
-import static sample.Operations.*;
-
 public class Main extends Application {
 
     private static final Random random = new Random(new Date().getTime());
 
-    private static SeaOfThieves world = new SeaOfThieves();
-    private static ScrollPane scrollPane = new ScrollPane(world.getRoot());
-    private static Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
-    private static double scrollX;
-    private static double scrollY;
+    private static final SeaOfThieves world = new SeaOfThieves();
+    private static final Operations operations = new Operations();
+
+    private static final ScrollPane scrollPane = new ScrollPane(world.getRoot());
+    private static final Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
+//    private static double scrollX;
+//    private static double scrollY;
 
     public static Random getRandom() {
         return random;
     }
-
     public static SeaOfThieves getWorld() {
         return world;
+    }
+    public static Operations getOperations() {
+        return operations;
     }
 
     @Override
@@ -56,54 +59,58 @@ public class Main extends Application {
 //            }
 //        });
 //---------------------------------------------------------
-        Operations.createStage(stage);
+        getOperations().createStage(stage);
 //---------------------------------------------------------
         world.getRoot().setOnMouseClicked(mouseEvent -> {
             try {
-                mouseLeftClick(mouseEvent);
+                getOperations().mouseLeftClick(mouseEvent);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
 //---------------------------------------------------------
-        world.getRoot().setOnScroll(Operations::handleEvent);
-        world.getRoot().setOnMouseMoved(Operations::handleEvent);
+        world.getRoot().setOnScroll(getOperations()::handleEvent);
+        world.getRoot().setOnMouseMoved(getOperations()::handleEvent);
 //---------------------------------------------------------
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
             if (keyCode == KeyCode.DELETE && !world.getUnits().isEmpty()) {
-                Operations.deleteNewbies();
+                getOperations().deleteNewbies();
             }
             else if (keyCode == KeyCode.INSERT && !world.getUnits().isEmpty()) {
-                Operations.openCUTCD(stage);
+                getOperations().openCUTCD(stage);
             }
             else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
-                Operations.activateNewbies();
+                getOperations().activateNewbies();
             }
             else if (keyCode == KeyCode.G) {
-                Operations.createNewUnit("BLUE", Operations.getMouseX(), Operations.getMouseY());
+                operations.createNewUnit("BLUE", getOperations().getMouseX(), getOperations().getMouseY());
             }
             else if (keyCode == KeyCode.B) {
-                Operations.createNewUnit("RED", Operations.getMouseX(), Operations.getMouseY());
+                operations.createNewUnit("RED", getOperations().getMouseX(), getOperations().getMouseY());
             }
             else if (keyCode == KeyCode.H) {
-                Operations.openHelpWindow(stage);
+                getOperations().openHelpWindow(stage);
             }
             else if (keyCode == KeyCode.J) {
-                Operations.interact();
+                getOperations().interact();
+            }
+            else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
+                System.out.println("1");
+                getOperations().copyPast();
             }
             else if (keyCode == KeyCode.ESCAPE) {
-                Operations.deleteActivationUnits();
+                getOperations().deleteActivationUnits();
             }
             else {
-                Operations.handleArrowKeys(keyCode);
+                getOperations().handleArrowKeys(keyCode);
             }
         });
 //---------------------------------------------------------
         stage.setScene(scene);
         stage.show();
-        Operations.createStartMacro();
-        Operations.createStartNewbie();
+        getOperations().createStartMacro();
+        getOperations().createStartNewbie();
     }
     //---------------------------------------------------------
     public static void main(String[] args) {

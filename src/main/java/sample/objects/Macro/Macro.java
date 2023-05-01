@@ -59,6 +59,11 @@ public abstract class Macro {
         macroImage.setSmooth(true);
         macroImage.setCache(true);
         macroImage.setCacheHint(CacheHint.QUALITY);
+
+        Rectangle clipRect = new Rectangle(macroImage.getFitWidth(), macroImage.getFitHeight());
+        clipRect.setArcWidth(20);
+        clipRect.setArcHeight(20);
+        macroImage.setClip(clipRect);
     }
 
     public double getX() {

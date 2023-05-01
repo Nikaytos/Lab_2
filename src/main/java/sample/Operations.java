@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.event.Event;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -21,10 +22,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Operations {
-    private static double mouseX = -1;
-    private static double mouseY = -1;
+    private double mouseX = -1;
+    private double mouseY = -1;
 
-    public static void createStage(Stage stage) {
+    public void createStage(Stage stage) {
         stage.setTitle("Sea of Thieves");
         Image icon = new Image(Objects.requireNonNull(Main.class.getResource("images/iconSOT.png")).toString());
         stage.getIcons().add(icon);
@@ -33,7 +34,7 @@ public class Operations {
         stage.setMaximized(true);
     }
 
-    public static void deleteNewbies() {
+    public void deleteNewbies() {
         for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
             Newbie newbie = Main.getWorld().getUnits().get(i);
             if (newbie.isActive()) {
@@ -43,29 +44,29 @@ public class Operations {
         }
     }
 
-    public static void openCUTCD(Stage stage) {
+    public void openCUTCD(Stage stage) {
         ChooseUnitToChangeDlg.display(stage);
         System.out.println("Got control back!");
     }
 
-    public static void activateNewbies() {
+    public void activateNewbies() {
         Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
     }
 
-    public static void createNewUnit() {
+    public void createNewUnit() {
         Main.getWorld().addNewUnit(new Newbie());
     }
 
-    public static void createNewUnit(String team, double x, double y) {
+    public void createNewUnit(String team, double x, double y) {
         Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y));
     }
 
-    public static void openHelpWindow(Stage stage) {
+    public void openHelpWindow(Stage stage) {
         HelpWindow.display(stage);
         System.out.println("Got control back!");
     }
 
-    public static void handleArrowKeys(KeyCode keyCode) {
+    public void handleArrowKeys(KeyCode keyCode) {
         double dx = 0.0;
         double dy = 0.0;
         int direction = 0;
@@ -92,19 +93,19 @@ public class Operations {
                 .forEach(newbie -> newbie.move(finalDx, finalDy, finalDirection));
     }
 
-    public static void createStartNewbie() {
+    public void createStartNewbie() {
         for (int i = 0; i <= Math.random() * 10; i++) {
             createNewUnit();
         }
     }
 
-    public static void createStartMacro() {
+    public void createStartMacro() {
         Main.getWorld().addNewMacro(new BaseGood());
         Main.getWorld().addNewMacro(new BaseBad());
         Main.getWorld().addNewMacro(new TreasuresCastle());
     }
 
-    public static void mouseLeftClick(MouseEvent mouseEvent) throws IOException {
+    public void mouseLeftClick(MouseEvent mouseEvent) throws IOException {
         Optional<Newbie> lastNewbie = Main.getWorld().getUnits().stream()
                 .filter(n -> n.mouseIsActive(mouseEvent.getX(), mouseEvent.getY()))
                 .reduce((n1, n2) -> n2);
@@ -117,13 +118,13 @@ public class Operations {
         }
     }
 
-    public static void deleteActivationUnits() {
+    public void deleteActivationUnits() {
         Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
                 .forEach(Newbie::flipActivation);
     }
 
-    public static void handleEvent(Event event) {
+    public void handleEvent(Event event) {
         if (event instanceof MouseEvent) {
             mouseX = ((MouseEvent) event).getX();
             mouseY = ((MouseEvent) event).getY();
@@ -133,20 +134,30 @@ public class Operations {
         }
     }
 
-    public static double getMouseX() {
+    public double getMouseX() {
         return mouseX;
     }
 
-    public static double getMouseY() {
+    public double getMouseY() {
         return mouseY;
     }
 
-    public static void interact() {
-        for (Newbie newbie : Main.getWorld().getUnits()) {
-            if (newbie.isActive()) {
+    public void interact() {
+        for (Newbie unit : Main.getWorld().getUnits()) {
+            if (unit.isActive()) {
                 for (Macro macro : Main.getWorld().getMacros()) {
-                    macro.interact(newbie);
+                    macro.interact(unit);
                 }
+            }
+        }
+    }
+
+    public void copyPast() {
+        for (Newbie unit : Main.getWorld().getUnits()) {
+            if (unit.isActive()) {
+                Newbie clone = unit.clone();
+                Main.getWorld().addNewUnit(clone);
+                break;
             }
         }
     }

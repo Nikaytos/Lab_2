@@ -56,7 +56,12 @@ public class TreasuresCastle extends Macro {
     @Override
     public void interact(Newbie newbie) {
         if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            System.out.println("pipyao");
+            if (newbie.getUnitTeam().equals("GOOD")) {
+                border.setFill(Color.rgb(0, 100, 255, 0.5));
+            }
+            else {
+                border.setFill(Color.rgb(255, 0, 0, 0.5));
+            }
         }
     }
 

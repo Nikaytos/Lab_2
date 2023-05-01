@@ -49,6 +49,7 @@ public class SeaOfThieves {
 
     public void addNewUnit(Newbie newbie) {
         units.add(newbie);
+        root.getChildren().add(newbie.getUnitContainer());
 
         objects.get(newbie.getType()).add(newbie);
     }
@@ -85,10 +86,10 @@ public class SeaOfThieves {
             Newbie n = units.get(index);
             ArrayList<String> arr= new ArrayList<>();
             arr.add( n.getName() );
-            arr.add( n.getHealth() );
-            arr.add( n.getTeam() );
-            arr.add( n.getX() );
-            arr.add( n.getY() );
+            arr.add( Double.toString(n.getUnitHealth()) );
+            arr.add( n.getUnitTeam() );
+            arr.add( Double.toString(n.getX()) );
+            arr.add( Double.toString(n.getY()) );
             return arr;
         }
 

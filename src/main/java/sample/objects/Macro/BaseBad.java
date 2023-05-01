@@ -41,13 +41,15 @@ public class BaseBad extends Macro {
 
         setCoordinates();
         initialize();
+
+
         macroContainer.getChildren().addAll(border, macroName, macroImage);
     }
 
 
     @Override
     public void setCoordinates() {
-        x = getRandom().nextInt((int) (MAX_MACRO.getX() - MIN_MACRO.getX())) + MIN_MACRO.getX();
+        x = MAX_MACRO.getX() - 200;
         y = getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY())) + MIN_MACRO.getY();
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 55);
         macroName.setLayoutY(y);
@@ -55,15 +57,15 @@ public class BaseBad extends Macro {
         macroImage.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3 + 5);
         border.setLayoutX(x + BORDER_WH.x);
         border.setLayoutY(y + BORDER_WH.y);
-        border.setWidth(MACRO_WH.width + BORDER_WH.width + BORDER_WH.x);
+        border.setWidth(MACRO_WH.width + BORDER_WH.width);
         border.setHeight(MACRO_WH.height + BORDER_WH.height + BORDER_WH.y);
     }
 
     @Override
     public void interact(Newbie newbie) {
         if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            if (newbie.getTeam().equals("BAD")) {
-                newbie.setHealth(100.0);
+            if (newbie.getUnitTeam().equals("BAD")) {
+                newbie.setUnitHealth(100.0);
             }
             else {
                 System.out.println("вон атсудава");

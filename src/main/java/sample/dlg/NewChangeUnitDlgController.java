@@ -41,9 +41,9 @@ public class NewChangeUnitDlgController {
         healthText.setPromptText(String.format("Від %d до %d", Newbie.MIN_HEALTH, Newbie.MAX_HEALTH));
         teamBox.getItems().add("GOOD");
         teamBox.getItems().add("BAD");
-        xText.setPromptText(String.format("Від %d до %d", Newbie.MIN_X_UNIT, Newbie.MAX_X_UNIT));
+        xText.setPromptText(String.format("Від %d до %d", Newbie.getMIN_UNIT().x, Newbie.getMAX_UNIT().x));
         xText.setText(Double.toString(getX()));
-        yText.setPromptText(String.format("Від %d до %d", Newbie.MIN_Y_UNIT, Newbie.MAX_Y_UNIT));
+        yText.setPromptText(String.format("Від %d до %d", Newbie.getMIN_UNIT().y, Newbie.getMAX_UNIT().y));
         yText.setText(Double.toString(getY()));
 
         okButton.setOnAction(e -> {

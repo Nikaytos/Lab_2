@@ -45,7 +45,7 @@ public class BaseGood extends Macro {
 
     @Override
     public void setCoordinates() {
-        x = getRandom().nextInt((int) (MAX_MACRO.getX() - MIN_MACRO.getX())) + MIN_MACRO.getX();
+        x = 200;
         y = getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY())) + MIN_MACRO.getY();
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 60);
         macroName.setLayoutY(y);
@@ -60,8 +60,8 @@ public class BaseGood extends Macro {
     @Override
     public void interact(Newbie newbie) {
         if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            if (newbie.getTeam().equals("GOOD")) {
-                newbie.setHealth(100.0);
+            if (newbie.getUnitTeam().equals("GOOD")) {
+                newbie.setUnitHealth(100.0);
             }
             else {
                 System.out.println("вон атсудава");
