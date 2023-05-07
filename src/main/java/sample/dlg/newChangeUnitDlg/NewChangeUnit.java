@@ -1,4 +1,4 @@
-package sample.dlg.NewChangeUnitDlg;
+package sample.dlg.newChangeUnitDlg;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static javafx.stage.Modality.APPLICATION_MODAL;
 
-public class NewChangeUnitDlg {
+public class NewChangeUnit {
 
     private static Stage window;
     private static double x;
@@ -21,14 +21,14 @@ public class NewChangeUnitDlg {
     private static int unitIndex;
 
 
-    public NewChangeUnitDlg(double x, double y, int unitIndex){
+    public NewChangeUnit(double x, double y, int unitIndex){
         window = new Stage();
         window.initModality(APPLICATION_MODAL);
         window.setResizable(false);
 
-        NewChangeUnitDlg.x = x;
-        NewChangeUnitDlg.y = y;
-        NewChangeUnitDlg.unitIndex = unitIndex;
+        NewChangeUnit.x = x;
+        NewChangeUnit.y = y;
+        NewChangeUnit.unitIndex = unitIndex;
     }
 
     public static void display()  {
@@ -36,7 +36,7 @@ public class NewChangeUnitDlg {
 
         Parent alert;
         try {
-            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/NewChangeUnitDlg.fxml")));
+            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/newChangeUnitDlg.fxml")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +46,7 @@ public class NewChangeUnitDlg {
                 window.close();
             }
         });
-        window.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResource("images/iconNCUD.png")).toString()));
+        window.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResource("images/iconNCU.png")).toString()));
         window.setScene(scene);
         window.showAndWait();
     }

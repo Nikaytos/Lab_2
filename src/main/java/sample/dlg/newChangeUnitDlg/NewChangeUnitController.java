@@ -1,4 +1,4 @@
-package sample.dlg.NewChangeUnitDlg;
+package sample.dlg.newChangeUnitDlg;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -6,13 +6,13 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import sample.Main;
-import sample.objects.Micro.Newbie;
+import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
 
-import static sample.dlg.NewChangeUnitDlg.NewChangeUnitDlg.*;
+import static sample.dlg.newChangeUnitDlg.NewChangeUnit.*;
 
-public class NewChangeUnitDlgController {
+public class NewChangeUnitController {
 
     @FXML
     TextField nameText;
@@ -54,11 +54,7 @@ public class NewChangeUnitDlgController {
             String sHealth = healthText.getText();
             String cTeam = "";
             if (teamBox.getValue() != null) {
-                if (teamBox.getValue().equals("GOOD")) {
-                    cTeam = "BLUE";
-                } else if (teamBox.getValue().equals("BAD")) {
-                    cTeam = "RED";
-                }
+                cTeam = teamBox.getValue();
             }
             String sX = xText.getText();
             String sY = yText.getText();
@@ -69,7 +65,7 @@ public class NewChangeUnitDlgController {
             else{
                 Newbie.changeUnit(getUnitIndex(), sName, sHealth, cTeam, sX, sY, action);
             }
-            NewChangeUnitDlg.getWindow().close();
+            NewChangeUnit.getWindow().close();
         });
 
         xButton.setOnAction(e -> {

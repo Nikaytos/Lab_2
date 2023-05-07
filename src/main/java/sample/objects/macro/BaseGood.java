@@ -1,4 +1,4 @@
-package sample.objects.Macro;
+package sample.objects.macro;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -13,10 +13,9 @@ import java.util.Objects;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import sample.Main;
-import sample.objects.Micro.Newbie;
+import sample.objects.micro.Newbie;
 import sample.objects.SeaOfThieves;
 
-import static sample.Main.getRandom;
 import static sample.objects.SeaOfThieves.MAX_Y;
 
 public class BaseGood extends Macro {
@@ -49,7 +48,7 @@ public class BaseGood extends Macro {
     @Override
     public void setCoordinates() {
         x = 200;
-        y = (int) (getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY() + 1)) + MIN_MACRO.getY());
+        y = (int) (MAX_Y/2 - MACRO_WH.height/2);
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 60);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);

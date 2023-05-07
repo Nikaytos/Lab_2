@@ -7,8 +7,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import sample.objects.Macro.Macro;
-import sample.objects.Micro.Newbie;
+import sample.objects.macro.Macro;
+import sample.objects.micro.Newbie;
 import sample.objects.SeaOfThieves;
 
 import java.util.Date;
@@ -24,19 +24,25 @@ public class Main extends Application {
     private static final ScrollPane scrollPane = new ScrollPane(world.getRoot());
     private static final Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
 
-    private boolean stayBase = false;
-    private boolean leave = true;
+    private static boolean stayBase = false;
+    public static void setStayBase(boolean stayBase) {
+        Main.stayBase = stayBase;
+    }
+    public static boolean isStayBase() {
+        return stayBase;
+    }
 
     public static Random getRandom() {
         return random;
     }
-
     public static SeaOfThieves getWorld() {
         return world;
     }
-
     public static Operations getOperations() {
         return operations;
+    }
+    public static Scene getScene() {
+        return scene;
     }
 
     @Override
@@ -56,38 +62,33 @@ public class Main extends Application {
 
         });
 
-        world.getRoot().setOnScroll(getOperations()::handleEvent);
-        world.getRoot().setOnMouseMoved(getOperations()::handleEvent);
+        world.getRoot().setOnScroll(getOperations()::mouseMove);
+        world.getRoot().setOnMouseMoved(getOperations()::mouseMove);
 
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
             if (keyCode == KeyCode.DELETE && !world.getUnits().isEmpty()) {
                 getOperations().deleteNewbies();
             } else if (keyCode == KeyCode.INSERT && !world.getUnits().isEmpty()) {
-                getOperations().openCUTCD(stage);
+                getOperations().openCUTC();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
                 getOperations().activateNewbies();
             } else if (keyCode == KeyCode.G) {
-                operations.createNewUnit("BLUE", getOperations().getMouseX(), getOperations().getMouseY());
+                System.out.println("Створення юніта альянсу Добрих. . .");
+                operations.createNewUnit("GOOD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.B) {
-                operations.createNewUnit("RED", getOperations().getMouseX(), getOperations().getMouseY());
+                System.out.println("Створення юніта лагерю Поганих. . .");
+                operations.createNewUnit("BAD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.H) {
-                getOperations().openHelpWindow(stage);
+                getOperations().openHW();
             } else if (keyCode == KeyCode.J) {
-                stayBase = !stayBase;
-                if (!stayBase) {
-                    for (Macro macro : world.getMacros())
-                        if (!macro.getType().equals("TreasuresCastle"))
-                            for (int j = 0; j < macro.getUnitsIn().size(); j++) {
-                                Newbie unitIn = macro.getUnitsIn().get(j);
-                                macro.removeUnit(unitIn);
-                                j--;
-                            }
-                }
+                getOperations().moveToBase();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
-                getOperations().copyPast();
+                getOperations().copyPaste();
             } else if (keyCode == KeyCode.ESCAPE) {
-                getOperations().deleteActivationUnits();
+                getOperations().deactivationUnits();
+            } else if (keyEvent.isControlDown() && keyEvent.isAltDown() && keyCode == KeyCode.S) {
+                getOperations().settings();
             } else {
                 getOperations().handleArrowKeys(keyCode);
             }
@@ -121,7 +122,6 @@ public class Main extends Application {
                             break;
                         }
                     }
-
                 }
             }
         };

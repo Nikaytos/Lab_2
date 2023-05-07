@@ -1,4 +1,4 @@
-package sample.objects.Macro;
+package sample.objects.macro;
 
 import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import sample.objects.Micro.Newbie;
+import sample.objects.micro.Newbie;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;

@@ -1,4 +1,4 @@
-package sample.objects.Macro;
+package sample.objects.macro;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;

@@ -4,8 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import sample.Main;
-import sample.objects.Macro.Macro;
-import sample.objects.Micro.Newbie;
+import sample.objects.macro.Macro;
+import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -52,6 +52,11 @@ public class SeaOfThieves {
         root.getChildren().add(macro.getMacroContainer());
     }
 
+    public void deleteMacro(Macro macro) {
+        root.getChildren().remove(macro.getMacroContainer());
+        macros.remove(macro);
+    }
+
     public Pane getRoot() {
         return root;
     }
@@ -67,7 +72,7 @@ public class SeaOfThieves {
     public ArrayList<String> getParamsToChange(int index ){
             Newbie n = units.get(index);
             ArrayList<String> arr= new ArrayList<>();
-            arr.add( n.getName() );
+            arr.add( n.getUnitName() );
             arr.add( Double.toString(n.getUnitHealth()) );
             arr.add( n.getUnitTeam() );
             arr.add( Integer.toString(n.getX()) );

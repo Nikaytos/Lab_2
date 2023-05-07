@@ -10,10 +10,16 @@ module sample.oop_game {
     opens sample.dlg to javafx.fxml;
     exports sample.objects;
     opens sample.objects to javafx.fxml;
-    exports sample.objects.Macro;
-    opens sample.objects.Macro to javafx.fxml;
-    exports sample.objects.Micro;
-    opens sample.objects.Micro to javafx.fxml;
-    exports sample.dlg.NewChangeUnitDlg;
-    opens sample.dlg.NewChangeUnitDlg to javafx.fxml;
+    exports sample.objects.macro;
+    opens sample.objects.macro to javafx.fxml;
+    exports sample.objects.micro;
+    opens sample.objects.micro to javafx.fxml;
+    exports sample.dlg.newChangeUnitDlg;
+    opens sample.dlg.newChangeUnitDlg to javafx.fxml;
+    exports sample.dlg.settings;
+    opens sample.dlg.settings to javafx.fxml;
+    exports sample.dlg.helpWindow;
+    opens sample.dlg.helpWindow to javafx.fxml;
+    exports sample.dlg.chooseUnitToChange;
+    opens sample.dlg.chooseUnitToChange to javafx.fxml;
 }

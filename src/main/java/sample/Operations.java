@@ -7,15 +7,17 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
-import sample.dlg.ChooseUnitToChangeDlg;
-import sample.dlg.HelpWindow;
-import sample.dlg.NewChangeUnitDlg.NewChangeUnitDlg;
-import sample.objects.Macro.BaseBad;
-import sample.objects.Macro.BaseGood;
-import sample.objects.Macro.Macro;
-import sample.objects.Macro.TreasuresCastle;
-import sample.objects.Micro.Newbie;
+import sample.dlg.chooseUnitToChange.CUTC;
+import sample.dlg.helpWindow.HelpWindow;
+import sample.dlg.newChangeUnitDlg.NewChangeUnit;
+import sample.dlg.settings.Settings;
 import sample.objects.SeaOfThieves;
+import sample.objects.macro.BaseBad;
+import sample.objects.macro.BaseGood;
+import sample.objects.macro.Macro;
+import sample.objects.macro.TreasuresCastle;
+import sample.objects.micro.Newbie;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class Operations {
     }
 
     public void createStage(Stage stage) {
+        System.out.println("Створення вікна. . .");
         stage.setTitle("Sea of Thieves");
         Image icon = new Image(Objects.requireNonNull(Main.class.getResource("images/iconSOT.png")).toString());
         stage.getIcons().add(icon);
@@ -41,6 +44,7 @@ public class Operations {
     }
 
     public void deleteNewbies() {
+        System.out.println("Видалення всіх виділенних юнітів. . .");
         for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
             Newbie newbie = Main.getWorld().getUnits().get(i);
             if (newbie.isActive()) {
@@ -50,12 +54,13 @@ public class Operations {
         }
     }
 
-    public void openCUTCD(Stage stage) {
-        ChooseUnitToChangeDlg.display(stage);
-        System.out.println("Got control back!");
+    public void openCUTC() {
+        System.out.println("Відкриття меню зміни юнітів. . .");
+        new CUTC().display();
     }
 
     public void activateNewbies() {
+        System.out.println("Виділення всіх юнітів на карті. . .");
         Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
     }
 
@@ -67,9 +72,56 @@ public class Operations {
         Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y), false);
     }
 
-    public void openHelpWindow(Stage stage) {
-        HelpWindow.display(stage);
-        System.out.println("Got control back!");
+    public void openHW() {
+        System.out.println("Відкриття довідки. . .");
+        new HelpWindow().display();
+    }
+
+    public void moveToBase() {
+        Main.setStayBase(!Main.isStayBase());
+        if (!Main.isStayBase()) {
+            System.out.println("Вигнання юнітів з баз. . .");
+            for (Macro macro : Main.getWorld().getMacros())
+                if (!macro.getType().equals("TreasuresCastle"))
+                    for (int j = 0; j < macro.getUnitsIn().size(); j++) {
+                        Newbie unitIn = macro.getUnitsIn().get(j);
+                        macro.removeUnit(unitIn);
+                        j--;
+                    }
+        } else System.out.println("Юніти йдуть до своєї бази. . .");
+    }
+
+    public void copyPaste() {
+        System.out.println("Клонування юніта. . .");
+        ArrayList<Newbie> temp = new ArrayList<>();
+        for (Newbie unit : Main.getWorld().getUnits()) {
+            if (unit.isActive()) {
+                try {
+                    Newbie clone = unit.clone();
+                    temp.add(clone);
+                }
+                catch (CloneNotSupportedException e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Помилка кронування");
+                    alert.showAndWait();
+                }
+            }
+        }
+        for (Newbie unit : temp) {
+            Main.getWorld().addNewUnit(unit);
+        }
+    }
+
+    public void deactivationUnits() {
+        System.out.println("Деактивація юнітів. . .");
+        Main.getWorld().getUnits().stream()
+                .filter(Newbie::isActive)
+                .forEach(Newbie::flipActivation);
+    }
+
+    public void settings() {
+        System.out.println("Відкриття налаштувань. . .");
+        new Settings().display();
     }
 
     public void handleArrowKeys(KeyCode keyCode) {
@@ -118,25 +170,29 @@ public class Operations {
                 .reduce((n1, n2) -> n2);
 
         if (lastNewbie.isPresent()) {
+            System.out.println("Виділення юніта. . .");
             lastNewbie.get().flipActivation();
             return;
         }
 
         for (Macro macro : Main.getWorld().getMacros()) {
             if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
+                boolean flg = false;
                 for (Newbie unit : Main.getWorld().getUnits()) {
                     if (unit.isActive()
                             && macro.getTeam().equals(unit.getUnitTeam())) {
                         unit.setOrder(true);
                         unit.setBigTarget(macro);
+                        flg = true;
                     }
                 }
+                if (flg) System.out.println("Рух виділених юнітів до макрооб'єкту. . .");
                 return;
             }
         }
 
-        new NewChangeUnitDlg(mouseEvent.getX(), mouseEvent.getY(), -1).display();
-        System.out.println("Got control back!");
+        System.out.println("Створення юніта. . .");
+        new NewChangeUnit(mouseEvent.getX(), mouseEvent.getY(), -1).display();
     }
 
     public void mouseRightClick(MouseEvent mouseEvent) {
@@ -152,13 +208,7 @@ public class Operations {
                 });
     }
 
-    public void deleteActivationUnits() {
-        Main.getWorld().getUnits().stream()
-                .filter(Newbie::isActive)
-                .forEach(Newbie::flipActivation);
-    }
-
-    public void handleEvent(Event event) {
+    public void mouseMove(Event event) {
         if (event instanceof MouseEvent) {
             mouseX = ((MouseEvent) event).getX();
             mouseY = ((MouseEvent) event).getY();
@@ -166,26 +216,5 @@ public class Operations {
             mouseX = ((ScrollEvent) event).getX();
             mouseY = ((ScrollEvent) event).getY();
         }
-    }
-
-    public void copyPast() {
-        ArrayList<Newbie> temp = new ArrayList<>();
-        for (Newbie unit : Main.getWorld().getUnits()) {
-            if (unit.isActive()) {
-                try {
-                    Newbie clone = unit.clone();
-                    temp.add(clone);
-                }
-                catch (CloneNotSupportedException e) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setContentText("Помилка кронування");
-                    alert.showAndWait();
-                }
-            }
-        }
-        for (Newbie unit : temp) {
-            Main.getWorld().addNewUnit(unit);
-        }
-
     }
 }
