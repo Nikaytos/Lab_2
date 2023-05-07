@@ -15,10 +15,9 @@ public class SeaOfThieves {
     final public static  int MAX_Y = 2000;
     public static final double SIZE = 1.5;
 
-    private Pane root;
-    private ImageView bg;
-    private ArrayList<Newbie> units;
-    private ArrayList<Macro> macros;
+    private final Pane root;
+    private final ArrayList<Newbie> units;
+    private final ArrayList<Macro> macros;
 
     public SeaOfThieves() {
         root = new Pane();
@@ -29,7 +28,7 @@ public class SeaOfThieves {
         macros = new ArrayList<>();
 
         Image mapImage = new Image(Objects.requireNonNull(Main.class.getResource("images/bg.jpeg")).toString());
-        bg = new ImageView(mapImage);
+        ImageView bg = new ImageView(mapImage);
         bg.setFitWidth(MAX_X);
         bg.setFitHeight(MAX_Y);
         bg.setPreserveRatio(false);
@@ -71,8 +70,9 @@ public class SeaOfThieves {
             arr.add( n.getName() );
             arr.add( Double.toString(n.getUnitHealth()) );
             arr.add( n.getUnitTeam() );
-            arr.add( Double.toString(n.getX()) );
-            arr.add( Double.toString(n.getY()) );
+            arr.add( Integer.toString(n.getX()) );
+            arr.add( Integer.toString(n.getY()) );
+            arr.add( Boolean.toString(n.isActive()));
             return arr;
         }
 
