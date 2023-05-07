@@ -47,11 +47,7 @@ public class ChooseUnitToChangeDlg {
         okButton.setOnAction(e -> {
             if (cBox.getValue() != null) {
                 String[] strChoice = cBox.getValue().split(" ");
-                try {
-                    new NewChangeUnitDlg(-1, -1, Integer.parseInt(strChoice[0])-1).display();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                new NewChangeUnitDlg(-1, -1, Integer.parseInt(strChoice[0])-1).display();
             }
             window.close();
         });
