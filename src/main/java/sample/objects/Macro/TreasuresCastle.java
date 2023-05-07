@@ -41,8 +41,8 @@ public class TreasuresCastle extends Macro {
 
     @Override
     public void setCoordinates() {
-        x = (double) MAX_X / 2 - MACRO_WH.width / 2;
-        y = (double) MAX_Y / 2 - MACRO_WH.height / 2;
+        x = (int) ( MAX_X / 2 - MACRO_WH.width / 2);
+        y = (int) ( MAX_Y / 2 - MACRO_WH.height / 2);
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 115);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);
@@ -53,16 +53,5 @@ public class TreasuresCastle extends Macro {
         border.setHeight(MACRO_WH.height + 20);
     }
 
-    @Override
-    public void interact(Newbie newbie) {
-        if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            if (newbie.getUnitTeam().equals("GOOD")) {
-                border.setFill(Color.rgb(0, 100, 255, 0.5));
-            }
-            else {
-                border.setFill(Color.rgb(255, 0, 0, 0.5));
-            }
-        }
-    }
 
 }
