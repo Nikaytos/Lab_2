@@ -70,10 +70,6 @@ public abstract class Macro {
         macroImage.setClip(clipRect);
     }
 
-    public Rectangle getBorder() {
-        return border;
-    }
-
     public int getX() {
         return x;
     }
@@ -102,6 +98,6 @@ public abstract class Macro {
         return macroContainer.getBoundsInParent().contains(new Point2D(mx, my));
     }
     public abstract void setCoordinates();
-    public void addUnit(Newbie newbie) {};
-    public void removeUnit(Newbie newbie) {};
+    public void addUnit(Newbie newbie) {}
+    public void removeUnit(Newbie newbie) {}
 }
