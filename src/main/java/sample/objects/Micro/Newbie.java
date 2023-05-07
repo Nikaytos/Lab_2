@@ -52,11 +52,9 @@ public class Newbie implements Cloneable {
     protected static int defaultValueHealth() {
         return getRandom().nextInt(MAX_HEALTH - MIN_HEALTH + 1) + MIN_HEALTH;
     }
-
     protected static int defaultValueX() {
         return getRandom().nextInt(MAX_UNIT.x - MIN_UNIT.x + 1) + MIN_UNIT.x;
     }
-
     protected static int defaultValueY() {
         return getRandom().nextInt(MAX_UNIT.y - MIN_UNIT.y + 1) + MIN_UNIT.y;
     }
@@ -73,16 +71,13 @@ public class Newbie implements Cloneable {
     protected Rectangle healthBarBackground;
     protected DropShadow shadow;
     protected DropShadow shadowActive;
-
     protected boolean active;
     protected int direction;
+    protected boolean order;
+    protected Macro bigTarget;
 
     public Group getUnitContainer() {
         return unitContainer;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getName() {
@@ -109,6 +104,10 @@ public class Newbie implements Cloneable {
         return y;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public static Point getMAX_UNIT() {
         return MAX_UNIT;
     }
@@ -117,7 +116,15 @@ public class Newbie implements Cloneable {
         return MIN_UNIT;
     }
 
-    public Newbie(String name, double health, Color team, double x, double y) {
+    public boolean isOrder() {
+        return order;
+    }
+
+    public Macro getBigTarget() {
+        return bigTarget;
+    }
+
+    public Newbie(String name, double health, Color team, int x, int y, boolean active) {
 
         type = "Newbie";
 
@@ -129,19 +136,15 @@ public class Newbie implements Cloneable {
         unitContainer = new Group();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
-        active = false;
+        order = false;
 
         setName(name);
-
         setUnitHealth(health);
-
         setUnitTeam(team);
-
         initialize();
-
-        this.x = (int) x;
-        this.y = (int) y;
-        setCoordinates();
+        setX(x);
+        setY(y);
+        setActive(active);
 
         spawnTransition();
 
@@ -153,7 +156,8 @@ public class Newbie implements Cloneable {
                 0,
                 TEAM_COLORS[getRandom().nextInt(TEAM_COLORS.length)],
                 0,
-                0);
+                0,
+                false);
         setUnitHealth((double) defaultValueHealth());
         setX(defaultValueX());
         setY(defaultValueY());
@@ -232,7 +236,7 @@ public class Newbie implements Cloneable {
         });
     }
 
-    public static double parseDouble(String value, double defaultValue, double minValue, double maxValue) {
+    public static double parseValue(String value, double defaultValue, double minValue, double maxValue) {
         try {
             double result = Double.parseDouble(value);
             if (result < minValue) {
@@ -269,32 +273,32 @@ public class Newbie implements Cloneable {
         }
     }
 
-    public static void changeUnit(int unitIndex, String sName, String sHealth, String cTeam, String sX, String sY) {
+    public static void createNewUnit(String sName, String sHealth, String cTeam, String sX, String sY, boolean active) {
+        String name = limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]);
+        double h = parseValue(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH);
+        Color team = parseColor(cTeam);
+        int x = (int) parseValue(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x);
+        int y = (int) parseValue(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y);
+        Newbie n = new Newbie(name, h, team, x, y, active);
+        System.out.println(n);
+        Main.getWorld().addNewUnit(n);
+    }
+
+    public static void changeUnit(int unitIndex, String sName, String sHealth, String cTeam, String sX, String sY, boolean active) {
         Newbie n = Main.getWorld().getUnits().get(unitIndex);
 
         String s1 = n.toString();
 
         n.setName(limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]));
-        n.setUnitHealth(parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
+        n.setUnitHealth(parseValue(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH));
         n.setUnitTeam(parseColor(cTeam));
-        n.setX((int) parseDouble(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x));
-        n.setY((int) parseDouble(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y));
+        n.setX((int) parseValue(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x));
+        n.setY((int) parseValue(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y));
+        n.setActive(active);
 
         String s2 = n.toString();
         if (!s1.equals(s2)) System.out.println("Edited:\n" + s1 + "\nto:\n" + s2);
     }
-
-    public static void createNewUnit(String sName, String sHealth, String cTeam, String sX, String sY) {
-        String name = limitString(sName, NAMES[getRandom().nextInt(NAMES.length)]);
-        double h = parseDouble(sHealth, defaultValueHealth(), MIN_HEALTH, MAX_HEALTH);
-        Color team = parseColor(cTeam);
-        double x = parseDouble(sX, defaultValueX(), getMIN_UNIT().x, getMAX_UNIT().x);
-        double y = parseDouble(sY, defaultValueY(), getMIN_UNIT().y, getMAX_UNIT().y);
-        Newbie n = new Newbie(name, h, team, x, y);
-        System.out.println(n);
-        Main.getWorld().addNewUnit(n);
-    }
-
 
     public void setName(String name) {
         unitName.setText(name);
@@ -332,6 +336,24 @@ public class Newbie implements Cloneable {
         setCoordinates();
     }
 
+    public void setActive(boolean active) {
+        if (!active) {
+            unitImage.setEffect(shadow);
+            order = false;
+            bigTarget = null;
+        }
+        else unitImage.setEffect(shadowActive);
+        this.active = active;
+    }
+
+    public void setOrder(boolean order) {
+        this.order = order;
+    }
+
+    public void setBigTarget(Macro bigTarget) {
+        this.bigTarget = bigTarget;
+    }
+
     public void setCoordinates() {
         unitName.setLayoutX(x);
         unitName.setLayoutY(y);
@@ -356,12 +378,12 @@ public class Newbie implements Cloneable {
         sequentialTransition.play();
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public void flipActivation() {
-        if (active) unitImage.setEffect(shadow);
+        if (active) {
+            unitImage.setEffect(shadow);
+            order = false;
+            bigTarget = null;
+        }
         else unitImage.setEffect(shadowActive);
         active = !active;
     }
@@ -370,14 +392,13 @@ public class Newbie implements Cloneable {
         return unitImage.getBoundsInParent().contains(new Point2D(mx, my));
     }
 
-    public void moveToBase() {
-
+    public void moveToBase(Macro m) {
+        if (m == null) {
             for (Macro macro : Main.getWorld().getMacros()) {
-                if (macro.getTeam().equals(unitTeam)) {
-                    simpleMove(macro.getX(), macro.getY());
-                }
+                if (!macro.getTeam().equals(unitTeam)) continue;
+                simpleMove(macro.getX(), macro.getY());
             }
-
+        } else simpleMove(m.getX(), m.getY());
     }
 
     public void move(int dx, int dy, int dir) {
@@ -440,7 +461,7 @@ public class Newbie implements Cloneable {
 
         clone.initialize();
 
-        clone.setX((int) parseDouble(Double.toString(this.getX() + this.getUnitImage().getLayoutBounds().getMaxX() + 10), this.getX(), MIN_UNIT.x, MAX_UNIT.x));
+        clone.setX((int) parseValue(Double.toString(this.getX() + this.getUnitImage().getLayoutBounds().getMaxX() + 10), this.getX(), MIN_UNIT.x, MAX_UNIT.x));
 
         clone.spawnTransition();
 
