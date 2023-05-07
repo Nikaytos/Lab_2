@@ -31,9 +31,15 @@ public class NewChangeUnitDlg {
         NewChangeUnitDlg.unitIndex = unitIndex;
     }
 
-    public static void display() throws IOException {
+    public static void display()  {
         window.setTitle("Створення нового персонажа");
-        Parent alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/NewChangeUnitDlg.fxml")));
+
+        Parent alert = null;
+        try {
+            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/NewChangeUnitDlg.fxml")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Scene scene = new Scene(alert);
         scene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
