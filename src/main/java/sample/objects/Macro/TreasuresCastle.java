@@ -11,7 +11,6 @@ import java.util.Objects;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import sample.Main;
-import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
 import static sample.objects.SeaOfThieves.MAX_X;
@@ -52,6 +51,4 @@ public class TreasuresCastle extends Macro {
         border.setWidth(MACRO_WH.width + 20);
         border.setHeight(MACRO_WH.height + 20);
     }
-
-
 }
