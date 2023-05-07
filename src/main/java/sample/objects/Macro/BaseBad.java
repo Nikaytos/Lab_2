@@ -45,7 +45,6 @@ public class BaseBad extends Macro {
         setCoordinates();
         initialize();
 
-
         macroContainer.getChildren().addAll(border, macroName, macroImage);
     }
 
@@ -63,6 +62,7 @@ public class BaseBad extends Macro {
         border.setWidth(MACRO_WH.width + BORDER_WH.width);
         border.setHeight(MACRO_WH.height + BORDER_WH.height + BORDER_WH.y);
     }
+
     @Override
     public void addUnit(Newbie newbie) {
         if (newbie.getUnitTeam().equals("BAD")) {
