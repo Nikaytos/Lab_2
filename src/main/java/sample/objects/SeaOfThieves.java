@@ -4,14 +4,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import sample.Main;
-import sample.objects.Macro.BaseBad;
-import sample.objects.Macro.BaseGood;
 import sample.objects.Macro.Macro;
-import sample.objects.Macro.TreasuresCastle;
 import sample.objects.Micro.Newbie;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class SeaOfThieves {
@@ -23,7 +19,6 @@ public class SeaOfThieves {
     private ImageView bg;
     private ArrayList<Newbie> units;
     private ArrayList<Macro> macros;
-    private HashMap<String, ArrayList> objects = new HashMap<>();
 
     public SeaOfThieves() {
         root = new Pane();
@@ -41,33 +36,21 @@ public class SeaOfThieves {
         bg.setSmooth(true);
         root.getChildren().add(bg);
 
-        objects.put("Newbie", new ArrayList<Newbie>());
-        objects.put("BaseGood", new ArrayList<BaseGood>());
-        objects.put("BaseBad", new ArrayList<BaseBad>());
-        objects.put("TreasuresCastle", new ArrayList<TreasuresCastle>());
     }
 
-    public void addNewUnit(Newbie newbie) {
-        units.add(newbie);
-        root.getChildren().add(newbie.getUnitContainer());
-
-        objects.get(newbie.getType()).add(newbie);
+    public void addNewUnit(Newbie unit) {
+        units.add(unit);
+        root.getChildren().add(unit.getUnitContainer());
     }
 
-    public void deleteUnit(Newbie newbie) {
-        System.out.println(newbie.getName() + " попрощався з життям. . .");
-
-        root.getChildren().remove(newbie.getUnitContainer());
-        units.remove(newbie);
-
-        objects.get(newbie.getType()).remove(newbie);
+    public void deleteUnit(Newbie unit) {
+        root.getChildren().remove(unit.getUnitContainer());
+        units.remove(unit);
     }
 
     public void addNewMacro(Macro macro) {
         macros.add(macro);
         root.getChildren().add(macro.getMacroContainer());
-
-        objects.get(macro.getType()).add(macro);
     }
 
     public Pane getRoot() {
