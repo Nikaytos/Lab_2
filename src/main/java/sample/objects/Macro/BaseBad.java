@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javafx.scene.paint.Color;
@@ -29,8 +30,10 @@ public class BaseBad extends Macro {
         MAX_MACRO = new Point((int) (MAX_X - 5 - MACRO_WH.width), (int) (MAX_Y - 5 - MACRO_WH.height));
         MIN_MACRO = new Point((int) (MAX_X - 500 - MACRO_WH.x), (int) (5 - MACRO_WH.y));
 
+        unitsIn = new ArrayList<>();
         macroContainer = new Group();
         type = "BaseBad";
+        team = "BAD";
 
         border = new Rectangle();
         border.setFill(Color.rgb(255, 0, 0, 0.5));
@@ -49,8 +52,8 @@ public class BaseBad extends Macro {
 
     @Override
     public void setCoordinates() {
-        x = MAX_MACRO.getX() - 200;
-        y = getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY())) + MIN_MACRO.getY();
+        x = (int) (MAX_MACRO.getX() - 200);
+        y = (int) (getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY() + 1)) + MIN_MACRO.getY());
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 55);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);
@@ -60,16 +63,20 @@ public class BaseBad extends Macro {
         border.setWidth(MACRO_WH.width + BORDER_WH.width);
         border.setHeight(MACRO_WH.height + BORDER_WH.height + BORDER_WH.y);
     }
+    @Override
+    public void addUnit(Newbie newbie) {
+        if (newbie.getUnitTeam().equals("BAD")) {
+            unitsIn.add(newbie);
+            Main.getWorld().deleteUnit(newbie);
+        }
+        else {
+            System.out.println("вон атсудава");
+        }
+    }
 
     @Override
-    public void interact(Newbie newbie) {
-        if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            if (newbie.getUnitTeam().equals("BAD")) {
-                newbie.setUnitHealth(100.0);
-            }
-            else {
-                System.out.println("вон атсудава");
-            }
-        }
+    public void removeUnit(Newbie newbie) {
+        Main.getWorld().addNewUnit(newbie);
+        unitsIn.remove(newbie);
     }
 }
