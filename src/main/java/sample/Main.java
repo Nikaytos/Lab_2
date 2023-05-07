@@ -1,14 +1,16 @@
 package sample;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+import sample.objects.Macro.Macro;
+import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
@@ -21,6 +23,10 @@ public class Main extends Application {
 
     private static final ScrollPane scrollPane = new ScrollPane(world.getRoot());
     private static final Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
+
+    private boolean stayBase = false;
+    private boolean leave = true;
+
 //    private static double scrollX;
 //    private static double scrollY;
 
@@ -62,11 +68,12 @@ public class Main extends Application {
         getOperations().createStage(stage);
 //---------------------------------------------------------
         world.getRoot().setOnMouseClicked(mouseEvent -> {
-            try {
+            MouseButton mouseButton = mouseEvent.getButton();
+            if (mouseButton == MouseButton.PRIMARY)
                 getOperations().mouseLeftClick(mouseEvent);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            else if (mouseButton == MouseButton.SECONDARY && !stayBase)
+                getOperations().mouseRightClick(mouseEvent);
+
         });
 //---------------------------------------------------------
         world.getRoot().setOnScroll(getOperations()::handleEvent);
@@ -93,10 +100,10 @@ public class Main extends Application {
                 getOperations().openHelpWindow(stage);
             }
             else if (keyCode == KeyCode.J) {
-                getOperations().interact();
+                stayBase = !stayBase;
+                leave = true;
             }
             else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
-                System.out.println("1");
                 getOperations().copyPast();
             }
             else if (keyCode == KeyCode.ESCAPE) {
@@ -106,6 +113,36 @@ public class Main extends Application {
                 getOperations().handleArrowKeys(keyCode);
             }
         });
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                for (int i = 0; i < world.getUnits().size(); i++) {
+                    Newbie unit = world.getUnits().get(i);
+                    if (stayBase && !unit.isActive()) {
+                        unit.moveToBase();
+                        for (Macro macro : world.getMacros()) {
+                            if (!macro.getType().equals("TreasuresCastle")
+                            && unit.getUnitContainer().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
+                                macro.addUnit(unit);
+                                i--;
+                            }
+                        }
+                    }
+                }
+                if(leave) {
+                    for (Macro macro : world.getMacros())
+                        if (!macro.getType().equals("TreasuresCastle"))
+                            for (int j = 0; j < macro.getUnitsIn().size(); j++) {
+                                Newbie unitIn = macro.getUnitsIn().get(j);
+                                macro.removeUnit(unitIn);
+                                j--;
+                            }
+                    leave = false;
+                }
+            }
+        };
+        timer.start();
 //---------------------------------------------------------
         stage.setScene(scene);
         stage.show();
