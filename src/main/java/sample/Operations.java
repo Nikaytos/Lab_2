@@ -17,7 +17,7 @@ import sample.objects.Macro.TreasuresCastle;
 import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -67,26 +67,27 @@ public class Operations {
     }
 
     public void handleArrowKeys(KeyCode keyCode) {
-        double dx = 0.0;
-        double dy = 0.0;
+        int speed = 15;
+        int dx = 0;
+        int dy = 0;
         int direction = 0;
         switch (keyCode) {
-            case W -> dy = -10;
-            case S -> dy = 10;
+            case W -> dy = -speed;
+            case S -> dy = speed;
             case A -> {
-                dx = -10;
+                dx = -speed;
                 direction = 1;
             }
             case D -> {
-                dx = 10;
+                dx = speed;
                 direction = -1;
             }
             default -> {
                 return;
             }
         }
-        double finalDx = dx;
-        double finalDy = dy;
+        int finalDx = dx;
+        int finalDy = dy;
         int finalDirection = direction;
         Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
@@ -105,17 +106,33 @@ public class Operations {
         Main.getWorld().addNewMacro(new TreasuresCastle());
     }
 
-    public void mouseLeftClick(MouseEvent mouseEvent) throws IOException {
+    public void mouseLeftClick(MouseEvent mouseEvent) {
         Optional<Newbie> lastNewbie = Main.getWorld().getUnits().stream()
-                .filter(n -> n.mouseIsActive(mouseEvent.getX(), mouseEvent.getY()))
+                .filter(n -> n.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()))
                 .reduce((n1, n2) -> n2);
+
         if (lastNewbie.isPresent()) {
             lastNewbie.get().flipActivation();
+            return;
         }
-        else {
-            new NewChangeUnitDlg(mouseEvent.getX(), mouseEvent.getY(), -1).display();
-            System.out.println("Got control back!");
-        }
+
+
+        new NewChangeUnitDlg(mouseEvent.getX(), mouseEvent.getY(), -1).display();
+        System.out.println("Got control back!");
+    }
+
+    public void mouseRightClick(MouseEvent mouseEvent) {
+        Main.getWorld().getMacros().stream()
+                .filter(macro -> macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()))
+                .findFirst()
+                .ifPresent(macro -> {
+                    for (int i = 0; i < macro.getUnitsIn().size(); i++) {
+                        Newbie unit = macro.getUnitsIn().get(i);
+                        macro.removeUnit(unit);
+                        i--;
+                    }
+                });
+
     }
 
     public void deleteActivationUnits() {
@@ -142,23 +159,24 @@ public class Operations {
         return mouseY;
     }
 
-    public void interact() {
+    public void copyPast() {
+        ArrayList<Newbie> temp = new ArrayList<>();
         for (Newbie unit : Main.getWorld().getUnits()) {
             if (unit.isActive()) {
-                for (Macro macro : Main.getWorld().getMacros()) {
-                    macro.interact(unit);
+                try {
+                    Newbie clone = unit.clone();
+                    temp.add(clone);
+                }
+                catch (CloneNotSupportedException e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Помилка кронування");
+                    alert.showAndWait();
                 }
             }
         }
-    }
-
-    public void copyPast() {
-        for (Newbie unit : Main.getWorld().getUnits()) {
-            if (unit.isActive()) {
-                Newbie clone = unit.clone();
-                Main.getWorld().addNewUnit(clone);
-                break;
-            }
+        for (Newbie unit : temp) {
+            Main.getWorld().addNewUnit(unit);
         }
+
     }
 }
