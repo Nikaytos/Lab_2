@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javafx.scene.paint.Color;
@@ -28,8 +29,10 @@ public class BaseGood extends Macro {
         MAX_MACRO = new Point((int) (500 - MACRO_WH.width - 5), (int) (MAX_Y - MACRO_WH.height - 5));
         MIN_MACRO = new Point((int) (5 - MACRO_WH.x), (int) (5 - MACRO_WH.y));
 
+        unitsIn = new ArrayList<>();
         macroContainer = new Group();
         type = "BaseGood";
+        team = "GOOD";
 
         border = new Rectangle();
         border.setFill(Color.rgb(0, 100, 255, 0.5));
@@ -46,7 +49,7 @@ public class BaseGood extends Macro {
     @Override
     public void setCoordinates() {
         x = 200;
-        y = getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY())) + MIN_MACRO.getY();
+        y = (int) (getRandom().nextInt((int) (MAX_MACRO.getY() - MIN_MACRO.getY() + 1)) + MIN_MACRO.getY());
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 60);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);
@@ -58,15 +61,19 @@ public class BaseGood extends Macro {
     }
 
     @Override
-    public void interact(Newbie newbie) {
-        if (newbie.getUnitImage().getLayoutBounds().intersects(this.border.getBoundsInParent())) {
-            if (newbie.getUnitTeam().equals("GOOD")) {
-                newbie.setUnitHealth(100.0);
-            }
-            else {
-                System.out.println("вон атсудава");
-            }
+    public void addUnit(Newbie newbie) {
+        if (newbie.getUnitTeam().equals("GOOD")) {
+            unitsIn.add(newbie);
+            Main.getWorld().deleteUnit(newbie);
+        }
+        else {
+            System.out.println("вон атсудава");
         }
     }
 
+    @Override
+    public void removeUnit(Newbie newbie) {
+        Main.getWorld().addNewUnit(newbie);
+        unitsIn.remove(newbie);
+    }
 }
