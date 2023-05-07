@@ -1,5 +1,6 @@
 package sample.objects.Macro;
 
+import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.Bloom;
@@ -15,10 +16,11 @@ import sample.objects.Micro.Newbie;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 public abstract class Macro {
-    protected double x;
-    protected double y;
+    protected int x;
+    protected int y;
 
     protected double FONT_SIZE;
     protected Rectangle2D.Double IMAGE_WH;
@@ -31,9 +33,11 @@ public abstract class Macro {
     protected ImageView macroImage;
     protected Label macroName;
 
+    protected ArrayList<Newbie> unitsIn;
     protected Group macroContainer;
 
     protected String type = "Nothing";
+    protected String team = "Nothing";
 
     public void initialize() {
         border.setStroke(Color.BLACK);
@@ -66,11 +70,15 @@ public abstract class Macro {
         macroImage.setClip(clipRect);
     }
 
-    public double getX() {
+    public Rectangle getBorder() {
+        return border;
+    }
+
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
@@ -82,6 +90,18 @@ public abstract class Macro {
         return type;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
+    public ArrayList<Newbie> getUnitsIn() {
+        return unitsIn;
+    }
+
+    public boolean mouseIsOn(double mx, double my) {
+        return macroContainer.getBoundsInParent().contains(new Point2D(mx, my));
+    }
     public abstract void setCoordinates();
-    public abstract void interact(Newbie newbie);
+    public void addUnit(Newbie newbie) {};
+    public void removeUnit(Newbie newbie) {};
 }
