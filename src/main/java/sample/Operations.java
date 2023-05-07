@@ -9,14 +9,13 @@ import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import sample.dlg.ChooseUnitToChangeDlg;
 import sample.dlg.HelpWindow;
-import sample.dlg.NewChangeUnitDlg;
+import sample.dlg.NewChangeUnitDlg.NewChangeUnitDlg;
 import sample.objects.Macro.BaseBad;
 import sample.objects.Macro.BaseGood;
 import sample.objects.Macro.Macro;
 import sample.objects.Macro.TreasuresCastle;
 import sample.objects.Micro.Newbie;
 import sample.objects.SeaOfThieves;
-
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +23,13 @@ import java.util.Optional;
 public class Operations {
     private double mouseX = -1;
     private double mouseY = -1;
+
+    public double getMouseX() {
+        return mouseX;
+    }
+    public double getMouseY() {
+        return mouseY;
+    }
 
     public void createStage(Stage stage) {
         stage.setTitle("Sea of Thieves");
@@ -58,7 +64,7 @@ public class Operations {
     }
 
     public void createNewUnit(String team, double x, double y) {
-        Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y));
+        Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y), false);
     }
 
     public void openHelpWindow(Stage stage) {
@@ -116,6 +122,18 @@ public class Operations {
             return;
         }
 
+        for (Macro macro : Main.getWorld().getMacros()) {
+            if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
+                for (Newbie unit : Main.getWorld().getUnits()) {
+                    if (unit.isActive()
+                            && macro.getTeam().equals(unit.getUnitTeam())) {
+                        unit.setOrder(true);
+                        unit.setBigTarget(macro);
+                    }
+                }
+                return;
+            }
+        }
 
         new NewChangeUnitDlg(mouseEvent.getX(), mouseEvent.getY(), -1).display();
         System.out.println("Got control back!");
@@ -132,7 +150,6 @@ public class Operations {
                         i--;
                     }
                 });
-
     }
 
     public void deleteActivationUnits() {
@@ -149,14 +166,6 @@ public class Operations {
             mouseX = ((ScrollEvent) event).getX();
             mouseY = ((ScrollEvent) event).getY();
         }
-    }
-
-    public double getMouseX() {
-        return mouseX;
-    }
-
-    public double getMouseY() {
-        return mouseY;
     }
 
     public void copyPast() {
