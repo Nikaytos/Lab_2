@@ -16,9 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Main;
-import sample.objects.SeaOfThieves;
+import sample.dlg.NewChangeUnitDlg.NewChangeUnitDlg;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
