@@ -195,7 +195,7 @@ public class Operations {
         new NewChangeUnit(mouseEvent.getX(), mouseEvent.getY(), -1).display();
     }
 
-    public void mouseRightClick(MouseEvent mouseEvent) {
+    public void mouseMiddleClick(MouseEvent mouseEvent) {
         Main.getWorld().getMacros().stream()
                 .filter(macro -> macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()))
                 .findFirst()
