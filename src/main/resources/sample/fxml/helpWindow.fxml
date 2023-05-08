@@ -73,7 +73,7 @@
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Створення або виділення юніта" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label text="Створити або виділити юніт" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
