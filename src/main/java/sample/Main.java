@@ -13,6 +13,7 @@ import sample.objects.SeaOfThieves;
 
 import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main extends Application {
 
@@ -133,6 +134,7 @@ public class Main extends Application {
         stage.show();
         getOperations().createStartMacro();
         getOperations().createStartNewbie();
+
     }
 
     public static void main(String[] args) {
