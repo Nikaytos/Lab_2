@@ -57,6 +57,8 @@ public class Main extends Application {
             MouseButton mouseButton = mouseEvent.getButton();
             if (mouseButton == MouseButton.PRIMARY)
                 getOperations().mouseLeftClick(mouseEvent);
+            else if (mouseButton == MouseButton.SECONDARY)
+                getOperations().mouseRightClick(mouseEvent);
             else if (mouseButton == MouseButton.MIDDLE && !stayBase)
                 getOperations().mouseMiddleClick(mouseEvent);
 

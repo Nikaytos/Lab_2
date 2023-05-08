@@ -32,7 +32,7 @@ public class NewChangeUnit {
     }
 
     public static void display()  {
-        window.setTitle("Створення нового персонажа");
+        window.setTitle("Створення нового юніта");
 
         Parent alert;
         try {

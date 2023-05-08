@@ -93,6 +93,22 @@ public abstract class Macro {
     public ArrayList<Newbie> getUnitsIn() {
         return unitsIn;
     }
+    public ArrayList<String> getParamsToChange(int index ){
+        Newbie n = unitsIn.get(index);
+        ArrayList<String> arr= new ArrayList<>();
+        arr.add( n.getUnitName() );
+        arr.add( Double.toString(n.getUnitHealth()) );
+        arr.add( n.getUnitTeam() );
+        arr.add( Integer.toString(n.getX()) );
+        arr.add( Integer.toString(n.getY()) );
+        arr.add( Boolean.toString(n.isActive()));
+        return arr;
+    }
+    public ArrayList<String> getNames() {
+        ArrayList<String> arr = new ArrayList<>();
+        unitsIn.forEach(n -> arr.add(n.toString()));
+        return arr;
+    }
 
     public boolean mouseIsOn(double mx, double my) {
         return macroContainer.getBoundsInParent().contains(new Point2D(mx, my));

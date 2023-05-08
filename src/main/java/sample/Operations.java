@@ -9,6 +9,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import sample.dlg.chooseUnitToChange.CUTC;
 import sample.dlg.helpWindow.HelpWindow;
+import sample.dlg.macroWindow.MacroWindow;
 import sample.dlg.newChangeUnitDlg.NewChangeUnit;
 import sample.dlg.settings.Settings;
 import sample.objects.SeaOfThieves;
@@ -193,6 +194,16 @@ public class Operations {
 
         System.out.println("Створення юніта. . .");
         new NewChangeUnit(mouseEvent.getX(), mouseEvent.getY(), -1).display();
+    }
+
+    public void mouseRightClick(MouseEvent mouseEvent) {
+        if (!Main.isStayBase()) {
+            for (Macro macro : Main.getWorld().getMacros()) {
+                if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()) && !macro.getUnitsIn().isEmpty()) {
+                    new MacroWindow(macro).display();
+                }
+            }
+        }
     }
 
     public void mouseMiddleClick(MouseEvent mouseEvent) {

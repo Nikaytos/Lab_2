@@ -20,4 +20,6 @@ module sample.oop_game {
     opens sample.dlg.helpWindow to javafx.fxml;
     exports sample.dlg.chooseUnitToChange;
     opens sample.dlg.chooseUnitToChange to javafx.fxml;
+    exports sample.dlg.macroWindow;
+    opens sample.dlg.macroWindow to javafx.fxml;
 }
