@@ -10,7 +10,8 @@ import javafx.stage.Stage;
 import sample.dlg.chooseUnitToChange.CUTC;
 import sample.dlg.helpWindow.HelpWindow;
 import sample.dlg.macroWindow.MacroWindow;
-import sample.dlg.newChangeUnitDlg.NewChangeUnit;
+import sample.dlg.newChangeUnit.NewChangeUnit;
+import sample.dlg.requestsWindow.RequestsWindow;
 import sample.dlg.settings.Settings;
 import sample.objects.SeaOfThieves;
 import sample.objects.macro.BaseBad;
@@ -92,6 +93,10 @@ public class Operations {
         } else System.out.println("Юніти йдуть до своєї бази. . .");
     }
 
+    public void requests() {
+        new RequestsWindow().display();
+    }
+
     public void copyPaste() {
         System.out.println("Клонування юніта. . .");
         ArrayList<Newbie> temp = new ArrayList<>();
@@ -150,7 +155,11 @@ public class Operations {
         int finalDirection = direction;
         Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
-                .forEach(newbie -> newbie.move(finalDx, finalDy, finalDirection));
+                .forEach(newbie -> {
+                    newbie.move(finalDx, finalDy, finalDirection);
+                    newbie.setOrder(false);
+                    newbie.setBigTarget(null);
+                });
     }
 
     public void createStartNewbie() {
@@ -198,11 +207,10 @@ public class Operations {
 
     public void mouseRightClick(MouseEvent mouseEvent) {
         if (!Main.isStayBase()) {
-            for (Macro macro : Main.getWorld().getMacros()) {
-                if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()) && !macro.getUnitsIn().isEmpty()) {
-                    new MacroWindow(macro).display();
-                }
-            }
+            Main.getWorld().getMacros().stream()
+                    .filter(macro -> macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()) && !macro.getUnitsIn().isEmpty())
+                    .findFirst()
+                    .ifPresent(macro -> new MacroWindow(macro).display());
         }
     }
 

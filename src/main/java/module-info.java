@@ -12,8 +12,8 @@ module sample.oop_game {
     opens sample.objects.macro to javafx.fxml;
     exports sample.objects.micro;
     opens sample.objects.micro to javafx.fxml;
-    exports sample.dlg.newChangeUnitDlg;
-    opens sample.dlg.newChangeUnitDlg to javafx.fxml;
+    exports sample.dlg.newChangeUnit;
+    opens sample.dlg.newChangeUnit to javafx.fxml;
     exports sample.dlg.settings;
     opens sample.dlg.settings to javafx.fxml;
     exports sample.dlg.helpWindow;
@@ -22,4 +22,6 @@ module sample.oop_game {
     opens sample.dlg.chooseUnitToChange to javafx.fxml;
     exports sample.dlg.macroWindow;
     opens sample.dlg.macroWindow to javafx.fxml;
+    exports sample.dlg.requestsWindow;
+    opens sample.dlg.requestsWindow to javafx.fxml;
 }

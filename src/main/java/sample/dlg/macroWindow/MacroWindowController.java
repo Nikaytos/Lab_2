@@ -3,8 +3,6 @@ package sample.dlg.macroWindow;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import sample.dlg.chooseUnitToChange.CUTC;
-import sample.dlg.newChangeUnitDlg.NewChangeUnit;
 import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
@@ -23,13 +21,12 @@ public class MacroWindowController {
 
         int count=1;
         for( String s:units ) {
-            cBox.getItems().add(count +" "+ s);
-            count++;
+            cBox.getItems().add(count++ +". "+ s);
         }
 
         okButton.setOnAction(e -> {
             if (cBox.getValue() != null) {
-                String[] strChoice = cBox.getValue().split(" ");
+                String[] strChoice = cBox.getValue().split(". ");
                 Newbie unit = MacroWindow.getMacro().getUnitsIn().get(Integer.parseInt(strChoice[0])-1);
                 MacroWindow.getMacro().removeUnit(unit);
             }

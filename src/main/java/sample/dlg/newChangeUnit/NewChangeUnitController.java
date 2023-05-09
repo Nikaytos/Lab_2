@@ -1,4 +1,4 @@
-package sample.dlg.newChangeUnitDlg;
+package sample.dlg.newChangeUnit;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,7 +10,7 @@ import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
 
-import static sample.dlg.newChangeUnitDlg.NewChangeUnit.*;
+import static sample.dlg.newChangeUnit.NewChangeUnit.*;
 
 public class NewChangeUnitController {
 

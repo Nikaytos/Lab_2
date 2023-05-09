@@ -13,7 +13,6 @@ import sample.objects.SeaOfThieves;
 
 import java.util.Date;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Main extends Application {
 
@@ -86,13 +85,15 @@ public class Main extends Application {
                 getOperations().openHW();
             } else if (keyCode == KeyCode.J) {
                 getOperations().moveToBase();
+            } else if (keyCode == KeyCode.O) {
+                getOperations().requests();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
                 getOperations().copyPaste();
             } else if (keyCode == KeyCode.ESCAPE) {
                 getOperations().deactivationUnits();
             } else if (keyEvent.isControlDown() && keyEvent.isAltDown() && keyCode == KeyCode.S) {
                 getOperations().settings();
-            } else {
+            } else if (keyCode == KeyCode.W || keyCode == KeyCode.A || keyCode == KeyCode.S || keyCode == KeyCode.D) {
                 getOperations().handleArrowKeys(keyCode);
             }
         });
@@ -107,6 +108,7 @@ public class Main extends Application {
                         for (Macro macro : world.getMacros()) {
                             if (macro.getTeam().equals(unit.getUnitTeam())
                                     && unit.getUnitContainer().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
+                                unit.setInMacro(macro.getName());
                                 macro.addUnit(unit);
                                 i--;
                                 break;
@@ -118,6 +120,7 @@ public class Main extends Application {
                         unit.moveToBase(macro);
                         if (macro.getTeam().equals(unit.getUnitTeam())
                                 && unit.getUnitContainer().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
+                            unit.setInMacro(macro.getName());
                             unit.setOrder(false);
                             unit.setBigTarget(null);
                             unit.setActive(false);

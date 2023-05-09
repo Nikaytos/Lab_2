@@ -7,14 +7,13 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.dlg.chooseUnitToChange.CUTCController">
    <children>
       <StackPane style="-fx-padding: 10px; -fx-background-color: #1abc9c; -fx-border-color: #16a085; -fx-border-width: 6;">
          <children>
             <HBox alignment="CENTER" spacing="10.0">
                <children>
-                  <ComboBox fx:id="cBox" maxWidth="410.0" style="-fx-background-color: #dfe6e9; -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.5), 10, 0, -3, 3);" />
+                  <ComboBox fx:id="cBox" style="-fx-background-color: #dfe6e9; -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.5), 10, 0, -3, 3);" />
                   <Button fx:id="okButton" mnemonicParsing="false" style="-fx-background-color: #55efc4; -fx-text-fill: #222f3e; -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.5), 10, 0, -3, 3);" text="OK">
                      <font>
                         <Font name="System Bold" size="16.0" />

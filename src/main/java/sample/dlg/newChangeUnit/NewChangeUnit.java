@@ -1,4 +1,4 @@
-package sample.dlg.newChangeUnitDlg;
+package sample.dlg.newChangeUnit;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

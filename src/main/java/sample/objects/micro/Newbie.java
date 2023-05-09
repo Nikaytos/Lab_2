@@ -68,6 +68,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected String unitTeam;
     protected int x;
     protected int y;
+    protected String inMacro;
     protected ImageView unitImage;
     protected Rectangle healthBar;
     protected Rectangle healthBarBackground;
@@ -98,6 +99,9 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     }
     public int getY() {
         return y;
+    }
+    public String getInMacro() {
+        return inMacro;
     }
     public int getDirection() {
         return direction;
@@ -148,6 +152,9 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public void setY(int y) {
         this.y = y;
         setCoordinates();
+    }
+    public void setInMacro(String inMacro) {
+        this.inMacro = inMacro;
     }
     public void setDirection(int direction) {
         this.direction = direction;
@@ -428,6 +435,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
                 ", team=" + unitTeam +
                 ", x=" + x +
                 ", y=" + y +
+                ", active=" + active +
                 '}';
     }
 

@@ -81,9 +81,31 @@ public class SeaOfThieves {
             return arr;
         }
 
-    public ArrayList<String> getNames() {
+    public ArrayList<String> getUnitsNames() {
         ArrayList<String> arr = new ArrayList<>();
         units.forEach(n -> arr.add(n.toString()));
+        return arr;
+    }
+
+    public ArrayList<String> getMacrosNames() {
+        ArrayList<String> arr = new ArrayList<>();
+        macros.forEach(n -> arr.add(n.toString()));
+        return arr;
+    }
+
+    public ArrayList<Newbie> getAllUnits() {
+        ArrayList<Newbie> arr = new ArrayList<>();
+        arr.addAll(units);
+        arr.addAll(macros.get(0).getUnitsIn());
+        arr.addAll(macros.get(1).getUnitsIn());
+        return arr;
+    }
+
+    public ArrayList<String> getAllUnitsNames() {
+        ArrayList<String> arr = new ArrayList<>();
+        units.forEach(n -> arr.add(n.toString()));
+        macros.get(0).getUnitsIn().forEach(n -> arr.add(n.toString()));
+        macros.get(1).getUnitsIn().forEach(n -> arr.add(n.toString()));
         return arr;
     }
 }
