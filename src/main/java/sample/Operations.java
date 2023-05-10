@@ -87,6 +87,7 @@ public class Operations {
                 if (!macro.getType().equals("TreasuresCastle"))
                     for (int j = 0; j < macro.getUnitsIn().size(); j++) {
                         Newbie unitIn = macro.getUnitsIn().get(j);
+                        unitIn.setInMacro("null");
                         macro.removeUnit(unitIn);
                         j--;
                     }
@@ -221,6 +222,7 @@ public class Operations {
                 .ifPresent(macro -> {
                     for (int i = 0; i < macro.getUnitsIn().size(); i++) {
                         Newbie unit = macro.getUnitsIn().get(i);
+                        unit.setInMacro("null");
                         macro.removeUnit(unit);
                         i--;
                     }

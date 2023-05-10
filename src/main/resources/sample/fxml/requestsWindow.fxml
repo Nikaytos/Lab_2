@@ -60,7 +60,7 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
          <children>
-            <ListView fx:id="listView" style="-fx-background-radius: 10; -fx-border-color: #16a085; -fx-border-width: 6;" />
+            <ListView fx:id="listFirst" style="-fx-background-radius: 10; -fx-border-color: #16a085; -fx-border-width: 6;" />
             <GridPane fx:id="container3" alignment="CENTER" style="-fx-background-color: #FFFFFF; -fx-border-color: #16a085; -fx-border-width: 6;" vgap="40.0" visible="false">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -151,7 +151,7 @@
                         </Label>
                      </children>
                   </GridPane>
-                  <ListView fx:id="listMacro" minWidth="-Infinity" visible="false" GridPane.rowIndex="1" />
+                  <ListView fx:id="listSecond" minWidth="-Infinity" visible="false" GridPane.rowIndex="1" />
                </children>
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

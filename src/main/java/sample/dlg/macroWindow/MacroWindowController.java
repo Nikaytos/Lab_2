@@ -28,6 +28,7 @@ public class MacroWindowController {
             if (cBox.getValue() != null) {
                 String[] strChoice = cBox.getValue().split(". ");
                 Newbie unit = MacroWindow.getMacro().getUnitsIn().get(Integer.parseInt(strChoice[0])-1);
+                unit.setInMacro("null");
                 MacroWindow.getMacro().removeUnit(unit);
             }
             MacroWindow.getWindow().close();

@@ -191,6 +191,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public Newbie(String name, double health, String team, int x, int y, boolean active) {
 
         type = "Newbie";
+        inMacro = "null";
 
         unitName = new Label();
         Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);

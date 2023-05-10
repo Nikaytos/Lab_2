@@ -31,9 +31,9 @@ public class RequestsWindowController {
     TextField textField;
 
     @FXML
-    ListView<String> listView;
+    ListView<String> listFirst;
     @FXML
-    ListView<String> listMacro;
+    ListView<String> listSecond;
 
     @FXML
     GridPane container1;
@@ -73,11 +73,11 @@ public class RequestsWindowController {
 
         firstButton.setOnAction(e -> {
             count = 1;
-            listView.getItems().clear();
+            listFirst.getItems().clear();
             for (String name : Main.getWorld().getAllUnitsNames())
-                listView.getItems().add(count++ + ". " + name);
+                listFirst.getItems().add(count++ + ". " + name);
             if (Main.getWorld().getAllUnitsNames().isEmpty()) {
-                listView.getItems().add("No one");
+                listFirst.getItems().add("No one");
             }
             container1.setVisible(false);
             getWindow().setWidth(700);
@@ -86,10 +86,10 @@ public class RequestsWindowController {
             request = "first";
         });
         secondButton.setOnAction(e -> {
-            listView.getItems().clear();
+            listFirst.getItems().clear();
             count = 1;
             for (String name : Main.getWorld().getMacrosNames())
-                listView.getItems().add(count++ + ". " + name);
+                listFirst.getItems().add(count++ + ". " + name);
             container1.setVisible(false);
             getWindow().setWidth(700);
             getWindow().setHeight(400);
@@ -97,43 +97,86 @@ public class RequestsWindowController {
             request = "second";
         });
         thirdButton.setOnAction(e -> {
-            listMacro.getItems().clear();
+            listSecond.getItems().clear();
             count = 1;
             for (String name : Main.getWorld().getUnitsNames())
-                listMacro.getItems().add(count++ + ". " + name);
+                listSecond.getItems().add(count++ + ". " + name);
             if (Main.getWorld().getUnits().isEmpty()) {
-                listMacro.getItems().add("No one");
+                listSecond.getItems().add("Немає");
             }
-            name.setText("Units that are not in macro");
+            name.setText("Юніти, які не макрооб’єктах");
+
             container1.setVisible(false);
             getWindow().setWidth(700);
             getWindow().setHeight(400);
+            okButton.setVisible(false);
             container2.setVisible(true);
-            listView.setVisible(false);
-            listMacro.setVisible(true);
+            listFirst.setVisible(false);
+            listSecond.setVisible(true);
             container3.setVisible(true);
+
             request = "third";
+        });
+        fourthButton.setOnAction(e -> {
+            name.setText("Запити по підрахуванню мікрооб'єктів");
+
+            listSecond.getItems().clear();
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.isActive()) count++;
+            listSecond.getItems().add("Кількість активних мікрооб'єктів: " + count);
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.getUnitHealth() > Newbie.MAX_HEALTH/2.0) count++;
+            listSecond.getItems().add("Кількість мікрооб'єктів з рівнем життя більше половини: " + count);
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.getUnitTeam().equals("GOOD")) count++;
+            listSecond.getItems().add("Кількість мікрооб'єктів альянсу Добрих: " + count);
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.getUnitTeam().equals("BAD")) count++;
+            listSecond.getItems().add("Кількість мікрооб'єктів лагерю Поганих: " + count);
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.getInMacro().equals("Base Good")) count++;
+            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Good: " + count);
+            count = 0;
+            for (Newbie unit : Main.getWorld().getAllUnits())
+                if (unit.getInMacro().equals("Base Bad")) count++;
+            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Bad: " + count);
+
+            container1.setVisible(false);
+            getWindow().setWidth(700);
+            getWindow().setHeight(400);
+            okButton.setVisible(false);
+            container2.setVisible(true);
+            listFirst.setVisible(false);
+            listSecond.setVisible(true);
+            container3.setVisible(true);
+
+            request = "fourth";
         });
 
         textField.setOnKeyTyped(e -> {
             switch (request) {
-                case "first" -> setListViewText(Main.getWorld().getAllUnitsNames(), listView);
+                case "first" -> setListViewText(Main.getWorld().getAllUnitsNames(), listFirst);
                 case "second" -> {
-                    if (listView.isVisible()) {
-                        setListViewText(Main.getWorld().getMacrosNames(), listView);
+                    if (listFirst.isVisible()) {
+                        setListViewText(Main.getWorld().getMacrosNames(), listFirst);
                     } else {
                         if (macro.getUnitsIn() != null) {
-                            setListViewText(macro.getNames(), listMacro);
+                            setListViewText(macro.getNames(), listSecond);
                         }
                     }
                 }
-                case "third" -> setListViewText(Main.getWorld().getUnitsNames(), listMacro);
+                case "third" -> setListViewText(Main.getWorld().getUnitsNames(), listSecond);
             }
         });
         okButton.setOnAction(e -> {
-            if (listView.getSelectionModel().getSelectedItem() != null && !listView.getSelectionModel().getSelectedItem().equals("[]")) {
+            if (listFirst.getSelectionModel().getSelectedItem() != null && !listFirst.getSelectionModel().getSelectedItem().equals("[]")) {
                 if (request.equals("first")) {
-                    String[] strChoice = listView.getSelectionModel().getSelectedItem().split(". ");
+                    String[] strChoice = listFirst.getSelectionModel().getSelectedItem().split(". ");
                     Newbie unit = Main.getWorld().getAllUnits().get(Integer.parseInt(strChoice[0]) - 1);
                     name.setText(unit.getUnitName());
                     x.setText(String.valueOf(unit.getX()));
@@ -143,53 +186,54 @@ public class RequestsWindowController {
                     active.setText(String.valueOf(unit.isActive()));
 
                     lMacro.setText(unit.getInMacro());
-                    if (lMacro.getText() == null) lMacro.setText("none");
+                    if (lMacro.getText() == null) lMacro.setText("null");
 
-                    listView.setVisible(false);
+                    listFirst.setVisible(false);
                     container3.setVisible(true);
                 } else if (request.equals("second")) {
-                    String[] strChoice = listView.getSelectionModel().getSelectedItem().split(". ");
+                    String[] strChoice = listFirst.getSelectionModel().getSelectedItem().split(". ");
                     macro = Main.getWorld().getMacros().get(Integer.parseInt(strChoice[0]) - 1);
-                    name.setText("Units in " + macro.getName());
+                    name.setText("Юніти в " + macro.getName());
 
-                    listMacro.getItems().clear();
+                    listSecond.getItems().clear();
                     count = 1;
                     if (macro.getUnitsIn() != null) {
                         if (macro.getUnitsIn().isEmpty())
-                            listMacro.getItems().add("Macro is empty");
+                            listSecond.getItems().add("Макрооб'єкт пустий");
                         else for (String name : macro.getNames())
-                            listMacro.getItems().add(count++ + ". " + name);
+                            listSecond.getItems().add(count++ + ". " + name);
                     } else
-                        listMacro.getItems().add("Macro is empty");
-                    listMacro.setVisible(true);
-                    listView.setVisible(false);
+                        listSecond.getItems().add("Макрооб'єкт пустий");
+                    listSecond.setVisible(true);
+                    listFirst.setVisible(false);
                     container3.setVisible(true);
                 }
             }
         });
         back.setOnAction(e -> {
-            if (request.equals("third")) {
+            if (request.equals("third") || request.equals("fourth")) {
+                okButton.setVisible(true);
                 container2.setVisible(false);
-                listView.setVisible(true);
-                listMacro.setVisible(false);
+                listFirst.setVisible(true);
+                listSecond.setVisible(false);
                 container3.setVisible(false);
                 getWindow().setWidth(542);
                 getWindow().setHeight(200);
                 container1.setVisible(true);
-                listMacro.getItems().clear();
+                listSecond.getItems().clear();
                 return;
             }
 
-            if (!listView.isVisible()) {
-                listView.setVisible(true);
+            if (!listFirst.isVisible()) {
+                listFirst.setVisible(true);
                 container3.setVisible(false);
-                listMacro.setVisible(false);
+                listSecond.setVisible(false);
             } else {
                 container2.setVisible(false);
                 getWindow().setWidth(542);
                 getWindow().setHeight(200);
                 container1.setVisible(true);
-                listView.getItems().clear();
+                listFirst.getItems().clear();
             }
         });
     }
@@ -198,17 +242,17 @@ public class RequestsWindowController {
         listView.getItems().clear();
 
         if (request.equals("third") && Main.getWorld().getUnits().isEmpty()) {
-            listView.getItems().add("No one");
+            listView.getItems().add("Немає");
             return;
         }
 
         if (request.equals("first") && Main.getWorld().getAllUnits().isEmpty()) {
-            listView.getItems().add("No one");
+            listView.getItems().add("Немає");
             return;
         }
 
-        if (listView == listMacro && macro.getUnitsIn().isEmpty()) {
-            listMacro.getItems().add("Macro is empty");
+        if (listView == listSecond && macro.getUnitsIn().isEmpty()) {
+            listSecond.getItems().add("Макрооб'єкт пустий");
             return;
         }
 
