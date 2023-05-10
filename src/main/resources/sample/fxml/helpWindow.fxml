@@ -47,6 +47,8 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="W, A, S, D" GridPane.halignment="RIGHT">
@@ -109,62 +111,62 @@
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="G" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                        <Label text="G" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Добавити юніт альянсу Добрих" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                        <Label text="Добавити юніт альянсу Добрих" GridPane.columnIndex="1" GridPane.rowIndex="8">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="B" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+                        <Label text="B" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Добавити юніт лагерю Поганих" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                        <Label text="Добавити юніт лагерю Поганих" GridPane.columnIndex="1" GridPane.rowIndex="9">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="CTRL+A" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                        <Label text="CTRL+A" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Виділити всі юніти" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                        <Label text="Виділити всі юніти" GridPane.columnIndex="1" GridPane.rowIndex="10">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="CTRL+V" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
+                        <Label text="CTRL+V" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Клонування виділених юнітів" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                        <Label text="Клонування виділених юнітів" GridPane.columnIndex="1" GridPane.rowIndex="11">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="INS" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
+                        <Label text="INS" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Змінити юніт" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                        <Label text="Змінити юніт" GridPane.columnIndex="1" GridPane.rowIndex="13">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="DEL" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
+                        <Label text="DEL" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Видалити юніт" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                        <Label text="Видалити юніт" GridPane.columnIndex="1" GridPane.rowIndex="14">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
@@ -175,6 +177,26 @@
                            </font>
                         </Label>
                         <Label text="Вигнати юніт з макрооб'єкту" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <font>
+                              <Font name="Verdana" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="O" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                           <font>
+                              <Font name="Verdana Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Запити" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                           <font>
+                              <Font name="Verdana" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="CTRL+ALT+S" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
+                           <font>
+                              <Font name="Verdana Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Налаштування" GridPane.columnIndex="1" GridPane.rowIndex="12">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
