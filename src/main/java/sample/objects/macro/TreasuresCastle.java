@@ -1,5 +1,6 @@
 package sample.objects.macro;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +31,8 @@ public class TreasuresCastle extends Macro {
         border.setFill(Color.rgb(255, 255, 255, 0.5));
 
         macroName = new Label("Treasures Castle");
+        macroName.setPrefWidth(IMAGE_WH.width);
+        macroName.setAlignment(Pos.CENTER);
 
         macroImage = new ImageView(new Image(Objects.requireNonNull(Main.class.getResource("images/TreasureCastle.png")).toString()));
 
@@ -42,7 +45,7 @@ public class TreasuresCastle extends Macro {
     public void setCoordinates() {
         x = (int) ( MAX_X / 2 - MACRO_WH.width / 2);
         y = (int) ( MAX_Y / 2 - MACRO_WH.height / 2);
-        macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 115);
+        macroName.setLayoutX(x);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);
         macroImage.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3);

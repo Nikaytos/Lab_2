@@ -1,5 +1,6 @@
 package sample.objects.macro;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,6 +39,8 @@ public class BaseBad extends Macro {
         border.setFill(Color.rgb(255, 0, 0, 0.5));
 
         macroName = new Label("Base Bad");
+        macroName.setPrefWidth(IMAGE_WH.width);
+        macroName.setAlignment(Pos.CENTER);
 
         macroImage = new ImageView(new Image(Objects.requireNonNull(Main.class.getResource("images/BaseBad.png")).toString()));
 
@@ -52,7 +55,7 @@ public class BaseBad extends Macro {
     public void setCoordinates() {
         x = (int) (MAX_MACRO.getX() - 200);
         y = (int) (MAX_Y/2 - MACRO_WH.height/2);
-        macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 55);
+        macroName.setLayoutX(x);
         macroName.setLayoutY(y);
         macroImage.setLayoutX(x);
         macroImage.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3 + 5);
