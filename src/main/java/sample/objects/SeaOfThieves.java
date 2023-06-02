@@ -25,6 +25,17 @@ public class SeaOfThieves {
 
     private final Text goodCoins;
     private final Text badCoins;
+    private final Text goBaseText;
+
+    private boolean goBase;
+
+    public boolean isGoBase() {
+        return goBase;
+    }
+
+    public void flipChangeAuto() {
+        goBase = !goBase;
+    }
 
     public SeaOfThieves() {
         root = new Pane();
@@ -47,12 +58,18 @@ public class SeaOfThieves {
         goodCoins.setFill(Color.WHITE);
         goodCoins.setFont(new Font("Monaco", 24));
         root.getChildren().add(goodCoins);
+
         badCoins = new Text();
         badCoins.setFill(Color.WHITE);
         badCoins.setFont(new Font("Monaco", 24));
         root.getChildren().add(badCoins);
 
+        goBaseText = new Text();
+        goBaseText.setFill(Color.WHITE);
+        goBaseText.setFont(new Font("Monaco", 24));
+        root.getChildren().add(goBaseText);
 
+        goBase = false;
     }
 
     public void askWorldwhatToDo(Newbie unit) {
@@ -66,22 +83,27 @@ public class SeaOfThieves {
     public void planning(Newbie unit, Actions ac)
     {
         unit.setProcessing(false);
-        switch(ac)
-        {
-            case TAKECOINS:
-                Main.getWorld().getMacros().get(2).aimUnit(unit);
-                break;
-            case GOBASE:
+        switch (ac) {
+            case TAKECOINS -> Main.getWorld().getMacros().get(2).aimUnit(unit);
+            case GOBASE -> {
                 if (unit.getUnitTeam().equals("GOOD"))
                     Main.getWorld().getMacros().get(0).aimUnit(unit);
                 else if (unit.getUnitTeam().equals("BAD"))
                     Main.getWorld().getMacros().get(1).aimUnit(unit);
-                break;
+            }
         }
 
     }
 
     public void whatToDo(Newbie unit){
+
+        if (Main.getWorld().isGoBase()) {
+            if (unit.getUnitTeam().equals("GOOD")) {
+                if (macros.get(0).worksWith(unit)) return;
+            } else {
+                if (macros.get(1).worksWith(unit)) return;
+            }
+        }
 
         if (unit.getUnitTeam().equals("GOOD")) {
             if (macros.get(0).worksWith(unit)) return;
@@ -135,6 +157,10 @@ public class SeaOfThieves {
         return badCoins;
     }
 
+    public Text getGoBaseText() {
+        return goBaseText;
+    }
+
     public ArrayList<Newbie> getUnits() {
         return units;
     }
@@ -170,6 +196,9 @@ public class SeaOfThieves {
     public void currentStatusINFO(){
         getGoodCoins().setText("Good coins: " + Main.getWorld().getMacros().get(0).getCoins());
         getBadCoins().setText("Bad coins: " + Main.getWorld().getMacros().get(1).getCoins());
+
+        if (Main.getWorld().isGoBase()) getGoBaseText().setText("AutoMove: All Go To Base");
+        else getGoBaseText().setText("AutoMove: Normal Auto Move");
     }
 
     public void updateChordINFO(){
@@ -178,6 +207,9 @@ public class SeaOfThieves {
 
         getBadCoins().setX(Main.getScrollX() + 20);
         getBadCoins().setY(Main.getScrollY() + 70);
+
+        getGoBaseText().setX(Main.getScrollX() + 20);
+        getGoBaseText().setY(Main.getScrollY() + 110);
 
     }
 }

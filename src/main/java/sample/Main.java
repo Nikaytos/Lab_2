@@ -82,6 +82,8 @@ public class Main extends Application {
                 getOperations().openHW();
             } else if (keyCode == KeyCode.O) {
                 getOperations().requests();
+            } else if (keyCode == KeyCode.K) {
+                getOperations().changeAuto();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
                 getOperations().copyPaste();
             } else if (keyCode == KeyCode.ESCAPE) {

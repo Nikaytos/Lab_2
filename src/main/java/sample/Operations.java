@@ -17,6 +17,7 @@ import sample.objects.macro.BaseBad;
 import sample.objects.macro.BaseGood;
 import sample.objects.macro.Macro;
 import sample.objects.macro.TreasuresCastle;
+import sample.objects.micro.Actions;
 import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
@@ -92,6 +93,17 @@ public class Operations {
 
     public void requests() {
         new RequestsWindow().display();
+    }
+
+    public void changeAuto() {
+        Main.getWorld().flipChangeAuto();
+
+        if (Main.getWorld().isGoBase())
+            for (Newbie unit : Main.getWorld().getUnits()) {
+                for (Macro macro : Main.getWorld().getMacros())
+                    macro.getUnitsIn().remove(unit);
+                Main.getWorld().askWorldplanning(unit, Actions.GOBASE );
+            }
     }
 
     public void copyPaste() {
@@ -209,6 +221,7 @@ public class Operations {
             mouseY = ((ScrollEvent) event).getY();
         }
     }
+
 
 
 }

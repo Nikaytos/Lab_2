@@ -89,17 +89,6 @@ public class TreasuresCastle extends Macro {
         if (unitIn.size() > 0) {
             Color color = Color.rgb(255, 255, 255, 0.5);
             String sColor = "white";
-            for (int i = 0; i < unitIn.size(); i++) {
-                Newbie unit = unitIn.get(i);
-                int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
-                unit.setCoinsCount(String.valueOf(countCoins));
-
-                if( Integer.parseInt(unit.getCoinsCount().getText()) > 5 ){
-                    removeUnitIn(unit);
-                    Main.getWorld().askWorldplanning(unit, Actions.GOBASE );
-                    i--;
-                }
-            }
 
             for (Newbie unit : unitIn) {
                 if (unit.getUnitTeam().equals("GOOD") && !sColor.equals("red")) {
@@ -114,6 +103,24 @@ public class TreasuresCastle extends Macro {
                 }
             }
             border.setFill(color);
+
+            for (int i = 0; i < unitIn.size(); i++) {
+
+
+                Newbie unit = unitIn.get(i);
+
+                if( Integer.parseInt(unit.getCoinsCount().getText()) >= 5 ){
+                    removeUnitIn(unit);
+                    Main.getWorld().askWorldplanning(unit, Actions.GOBASE );
+                    i--;
+                    continue;
+                }
+
+                int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
+                unit.setCoinsCount(String.valueOf(countCoins));
+
+            }
+
         }
         else border.setFill(Color.rgb(255, 255, 255, 0.5));
     }

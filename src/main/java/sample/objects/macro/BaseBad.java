@@ -97,11 +97,13 @@ public class BaseBad extends Macro {
                     unit.setUnitHealth(unit.getUnitHealth() + hpToHeal);
                 }
 
-                int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) - 1;
-                unit.setCoinsCount(String.valueOf(countCoins));
-                coins++;
-
-                if( unit.getCoinsCount().getText().equals("0") ){
+                if  (Integer.parseInt(unit.getCoinsCount().getText()) > 0) {
+                    int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) - 1;
+                    unit.setCoinsCount(String.valueOf(countCoins));
+                    coins++;
+                } else if ((Main.getWorld().isGoBase())) {
+                    continue;
+                } else {
                     removeUnitIn(unit);
                     Main.getWorld().askWorldplanning(unit, Actions.TAKECOINS );
                     i--;
