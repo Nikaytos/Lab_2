@@ -189,7 +189,7 @@ public class Operations {
                 .reduce((n1, n2) -> n2);
 
         if (lastNewbie.isPresent()) {
-            System.out.println("Виділення юніта. . .");
+            System.out.println("Виділення юніта " + lastNewbie.get());
             lastNewbie.get().flipActivation();
             for (Macro macro : Main.getWorld().getMacros()) {
                 macro.removeUnitIn(lastNewbie.get());

@@ -51,8 +51,8 @@ public class TreasuresCastle extends Macro {
 
     @Override
     public void setCoordinates() {
-        x = (int) ( MAX_X / 2 - MACRO_WH.width / 2);
-        y = (int) ( MAX_Y / 2 - MACRO_WH.height / 2);
+        x = (int) (MAX_X / 2 - MACRO_WH.width / 2);
+        y = (int) (MAX_Y / 2 - MACRO_WH.height / 2);
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 115);
         macroName.setLayoutY(y);
         unitsInLabel.setLayoutX(x);
@@ -86,42 +86,39 @@ public class TreasuresCastle extends Macro {
         if (time_current < time_delay) return;
         time_current = 0;
 
-        if (unitIn.size() > 0) {
-            Color color = Color.rgb(255, 255, 255, 0.5);
-            String sColor = "white";
+        Color color = Color.rgb(255, 255, 255, 0.5);
+        String sColor = "white";
 
-            for (Newbie unit : unitIn) {
-                if (unit.getUnitTeam().equals("GOOD") && !sColor.equals("red")) {
-                    color = Color.rgb(0, 100, 255, 0.5);
-                    sColor = "blue";
-                } else if (unit.getUnitTeam().equals("BAD") && !sColor.equals("blue")) {
-                    color = Color.rgb(255, 0, 0, 0.5);
-                    sColor = "red";
-                } else {
-                    color = Color.rgb(255, 0, 255, 0.5);
-                    break;
-                }
+        for (Newbie unit : unitIn) {
+            if (unit.getUnitTeam().equals("GOOD") && !sColor.equals("red")) {
+                color = Color.rgb(0, 100, 255, 0.5);
+                sColor = "blue";
+            } else if (unit.getUnitTeam().equals("BAD") && !sColor.equals("blue")) {
+                color = Color.rgb(255, 0, 0, 0.5);
+                sColor = "red";
+            } else {
+                color = Color.rgb(255, 0, 255, 0.5);
+                break;
             }
-            border.setFill(color);
+        }
+        border.setFill(color);
 
-            for (int i = 0; i < unitIn.size(); i++) {
+        for (int i = 0; i < unitIn.size(); i++) {
 
 
-                Newbie unit = unitIn.get(i);
+            Newbie unit = unitIn.get(i);
 
-                if( Integer.parseInt(unit.getCoinsCount().getText()) >= 5 ){
-                    removeUnitIn(unit);
-                    Main.getWorld().askWorldplanning(unit, Actions.GOBASE );
-                    i--;
-                    continue;
-                }
-
-                int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
-                unit.setCoinsCount(String.valueOf(countCoins));
-
+            if (Integer.parseInt(unit.getCoinsCount().getText()) >= 5) {
+                removeUnitIn(unit);
+                Main.getWorld().askWorldplanning(unit, Actions.GOBASE);
+                i--;
+                continue;
             }
+
+            int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
+            unit.setCoinsCount(String.valueOf(countCoins));
 
         }
-        else border.setFill(Color.rgb(255, 255, 255, 0.5));
+
     }
 }

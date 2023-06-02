@@ -203,7 +203,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
-        coins = new Coins(5);
+        coins = new Coins(0);
         unitContainer = new Group();
         shadow = new DropShadow();
         shadowActive = new DropShadow();

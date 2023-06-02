@@ -26,6 +26,7 @@ public class SeaOfThieves {
     private final Text goodCoins;
     private final Text badCoins;
     private final Text goBaseText;
+    private final Text activeUnits;
 
     private boolean goBase;
 
@@ -68,6 +69,11 @@ public class SeaOfThieves {
         goBaseText.setFill(Color.WHITE);
         goBaseText.setFont(new Font("Monaco", 24));
         root.getChildren().add(goBaseText);
+
+        activeUnits = new Text();
+        activeUnits.setFill(Color.WHITE);
+        activeUnits.setFont(new Font("Monaco", 24));
+        root.getChildren().add(activeUnits);
 
         goBase = false;
     }
@@ -161,6 +167,10 @@ public class SeaOfThieves {
         return goBaseText;
     }
 
+    public Text getActiveUnits() {
+        return activeUnits;
+    }
+
     public ArrayList<Newbie> getUnits() {
         return units;
     }
@@ -199,6 +209,18 @@ public class SeaOfThieves {
 
         if (Main.getWorld().isGoBase()) getGoBaseText().setText("AutoMove: All Go To Base");
         else getGoBaseText().setText("AutoMove: Normal Auto Move");
+
+        int count = 0;
+        Newbie tmp = null;
+        for (Newbie unit : units) {
+            if (unit.isActive()) {
+                tmp = unit;
+                count++;
+            }
+        }
+        if (count > 1) getActiveUnits().setText("Активовано " + count + " юнітів");
+        else if (count == 1) getActiveUnits().setText("Активовано юніт " + tmp.getUnitName());
+        else if (count == 0) getActiveUnits().setText("Немає активних юнітів");
     }
 
     public void updateChordINFO(){
@@ -210,6 +232,9 @@ public class SeaOfThieves {
 
         getGoBaseText().setX(Main.getScrollX() + 20);
         getGoBaseText().setY(Main.getScrollY() + 110);
+
+        getActiveUnits().setX(Main.getScrollX() + 20);
+        getActiveUnits().setY(Main.getScrollY() + 150);
 
     }
 }
