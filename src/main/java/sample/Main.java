@@ -63,10 +63,10 @@ public class Main extends Application {
                 getOperations().activateUnits();
             } else if (keyCode == KeyCode.G) {
                 System.out.println("Створення юніта альянсу Добрих. . .");
-                operations.createNewUnit("GOOD", getOperations().getMouseX(), getOperations().getMouseY());
+                getOperations().createNewUnit("GOOD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.B) {
                 System.out.println("Створення юніта лагерю Поганих. . .");
-                operations.createNewUnit("BAD", getOperations().getMouseX(), getOperations().getMouseY());
+                getOperations().createNewUnit("BAD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.H) {
                 getOperations().openHW();
             } else if (keyCode == KeyCode.O) {
