@@ -26,9 +26,6 @@ public class Coins implements Cloneable {
         count.setLayoutX(x);
         count.setLayoutY(y);
     }
-    public void setCount(Label count) {
-        this.count = count;
-    }
 
     public Label getCount() {
         return count;

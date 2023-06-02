@@ -69,7 +69,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected Coins coins;
     protected int x;
     protected int y;
-    protected String inMacro;
     protected ImageView unitImage;
     protected Rectangle healthBar;
     protected Rectangle healthBarBackground;
@@ -104,9 +103,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public int getY() {
         return y;
     }
-    public String getInMacro() {
-        return inMacro;
-    }
     public int getDirection() {
         return direction;
     }
@@ -125,7 +121,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public Macro getBigTarget() {
         return bigTarget;
     }
-
     public Label getCoinsCount() {
         return coins.getCount();
     }
@@ -133,7 +128,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public void setCoinsCount(String count) {
         this.coins.getCount().setText(count);
     }
-
     public void setUnitName(String name) {
         unitName.setText(name);
     }
@@ -165,9 +159,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         this.y = y;
         setCoordinates();
     }
-    public void setInMacro(String inMacro) {
-        this.inMacro = inMacro;
-    }
+
     public void setDirection(int direction) {
         this.direction = direction;
         unitImage.setScaleX(direction);
@@ -205,14 +197,13 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public Newbie(String name, double health, String team, int x, int y, boolean active) {
 
         type = "Newbie";
-        inMacro = "null";
 
         unitName = new Label();
         Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
-        coins = new Coins(0);
+        coins = new Coins(5);
         unitContainer = new Group();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
@@ -486,25 +477,29 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         Newbie clone = (Newbie) super.clone();
 
         clone.coins = (Coins)this.coins.clone();
+
         clone.unitName = new Label();
         clone.unitImage = new ImageView(this.unitImage.getImage());
+        clone.unitImage.setScaleX(this.unitImage.getScaleX());
         clone.healthBar = new Rectangle(0, 0, this.healthBar.getWidth(), this.healthBar.getHeight());
         clone.healthBarBackground = new Rectangle(0, 0, this.healthBarBackground.getWidth(), this.healthBarBackground.getHeight());
         clone.unitContainer = new Group();
         clone.shadow = new DropShadow();
         clone.shadowActive = new DropShadow();
-        clone.active = false;
-        clone.setUnitName(this.getUnitName());
+        clone.setUnitName(this.getUnitName()+"-cl");
         clone.setUnitHealth(this.getUnitHealth());
         clone.setUnitTeam(this.getUnitTeam());
 
         clone.initialize();
 
+        clone.flipActivation();
+        clone.flipActivation();
+
         clone.setX((int) parseValue(Double.toString(this.getX() + this.getUnitImage().getLayoutBounds().getMaxX() + 10), this.getX(), MIN_UNIT.x, MAX_UNIT.x));
 
         clone.spawnTransition();
 
-        clone.unitContainer.getChildren().addAll(clone.unitName, clone.healthBarBackground, clone.healthBar, clone.unitImage);
+        clone.unitContainer.getChildren().addAll(clone.unitName, clone.healthBarBackground, clone.healthBar, clone.unitImage, clone.coins.getCount());
         return clone;
     }
 

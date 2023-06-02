@@ -22,6 +22,8 @@ public abstract class Macro {
     protected int x;
     protected int y;
 
+    protected int coins;
+
     protected double FONT_SIZE;
     protected Rectangle2D.Double IMAGE_WH;
     protected Point MIN_MACRO;
@@ -87,6 +89,10 @@ public abstract class Macro {
         return y;
     }
 
+    public int getCoins() {
+        return coins;
+    }
+
     public int getCenterX() {
         return (int) getMacroContainer().getBoundsInParent().getCenterX();
     }
@@ -97,14 +103,6 @@ public abstract class Macro {
 
     public Group getMacroContainer() {
         return macroContainer;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getTeam() {
-        return team;
     }
 
     public Label getUnitsInLabel() {
@@ -124,18 +122,14 @@ public abstract class Macro {
     public boolean mouseIsOn(double mx, double my) {
         return macroContainer.getBoundsInParent().contains(new Point2D(mx, my));
     }
+
     public abstract void setCoordinates();
 
     public void addUnitIn(Newbie newbie) {}
+
     public void removeUnitIn(Newbie newbie) {}
 
-    public void lifeCycle() {
-
-    }
-
-    public ImageView getMacroImage() {
-        return macroImage;
-    }
+    public void lifeCycle() {}
 
     @Override
     public String toString() {
@@ -150,7 +144,6 @@ public abstract class Macro {
         if (unitIn.contains(unit)) return true;
 
         if (unit.getUnitImage().getBoundsInParent().intersects(getMacroContainer().getBoundsInParent())) {
-            unit.setInMacro(getName());
             unit.setProcessing(true);
             addUnitIn(unit);
             return true;

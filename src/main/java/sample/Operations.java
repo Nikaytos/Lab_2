@@ -73,7 +73,6 @@ public class Operations {
             for (Macro macro : Main.getWorld().getMacros()) {
                 macro.removeUnitIn(n);
                 n.setProcessing(false);
-                n.setInMacro("null");
             }
         });
     }
@@ -157,7 +156,6 @@ public class Operations {
                     newbie.setOrder(false);
                     newbie.setBigTarget(null);
                     newbie.setProcessing(false);
-                    newbie.setInMacro("null");
                 });
     }
 
@@ -184,7 +182,6 @@ public class Operations {
             for (Macro macro : Main.getWorld().getMacros()) {
                 macro.removeUnitIn(lastNewbie.get());
                 lastNewbie.get().setProcessing(false);
-                lastNewbie.get().setInMacro("null");
             }
             return;
         }

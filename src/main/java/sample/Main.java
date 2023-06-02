@@ -20,7 +20,10 @@ public class Main extends Application {
     private static final Operations operations = new Operations();
 
     private static final ScrollPane scrollPane = new ScrollPane(world.getRoot());
-    private static final Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
+    private static final Scene scene = new Scene(scrollPane, 1920, 1080);
+
+    private static int scrollX;
+    private static int scrollY;
 
     public static Random getRandom() {
         return random;
@@ -33,6 +36,14 @@ public class Main extends Application {
     }
     public static Scene getScene() {
         return scene;
+    }
+
+    public static int getScrollX() {
+        return scrollX;
+    }
+
+    public static int getScrollY() {
+        return scrollY;
     }
 
     @Override
@@ -84,6 +95,23 @@ public class Main extends Application {
             }
         });
 
+        scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, bounds) -> {
+
+            Main.scrollX = -1 * (int) bounds.getMinX();
+            Main.scrollY = -1 * (int) bounds.getMinY();
+
+            world.updateChordINFO();
+
+//            if (world.getShips().size() == 0){
+//                currentStatusINFO();
+//            }
+
+//            world.getMiniMap().getPane().setLayoutX(scrollX + 1310);
+//            world.getMiniMap().getPane().setLayoutY(scrollY + scene.getHeight() - world.getMiniMap().getPane().getHeight() - 650);
+//            world.getMiniMap().getMapArea().setLayoutX(scrollX*MiniMap.getSCALE());
+//            world.getMiniMap().getMapArea().setLayoutY(scrollY*MiniMap.getSCALE());
+        });
+
         stage.setScene(scene);
         stage.show();
         getOperations().createStartMacro();
@@ -93,6 +121,8 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
                 world.lifeCycle();
+
+                world.currentStatusINFO();
             }
         };
         timer.start();

@@ -13,6 +13,7 @@ import java.util.Objects;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import sample.Main;
+import sample.objects.micro.Actions;
 import sample.objects.micro.Newbie;
 import sample.objects.SeaOfThieves;
 
@@ -92,20 +93,28 @@ public class BaseGood extends Macro {
             if (unit.getUnitTeam().equals("GOOD")) {
                 if (unit.getUnitHealth() < 100) {
                     unit.setUnitHealth(unit.getUnitHealth() + hpToHeal);
-                } else {
-                    unit.setUnitHealth((double) Newbie.MAX_HEALTH);
                 }
-            }
-            else if (unit.getUnitTeam().equals("BAD")) {
-                if (unit.getUnitHealth() > 0) {
-                    unit.setUnitHealth(unit.getUnitHealth() - hpToHeal);
-                } else {
-                    unitIn.remove(unit);
-                    Main.getWorld().deleteUnit(unit);
-                    getUnitsInLabel().setText("Units in: " + unitIn.size());
+
+                int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) - 1;
+                unit.setCoinsCount(String.valueOf(countCoins));
+                coins++;
+
+                if( unit.getCoinsCount().getText().equals("0") ){
+                    removeUnitIn(unit);
+                    Main.getWorld().askWorldplanning(unit, Actions.TAKECOINS );
                     i--;
                 }
             }
+//            else if (unit.getUnitTeam().equals("BAD")) {
+//                if (unit.getUnitHealth() > 0) {
+//                    unit.setUnitHealth(unit.getUnitHealth() - hpToHeal);
+//                } else {
+//                    unitIn.remove(unit);
+//                    Main.getWorld().deleteUnit(unit);
+//                    getUnitsInLabel().setText("Units in: " + unitIn.size());
+//                    i--;
+//                }
+//            }
         }
     }
 }

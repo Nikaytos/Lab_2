@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import sample.Main;
 import sample.objects.SeaOfThieves;
+import sample.objects.micro.Actions;
 import sample.objects.micro.Newbie;
 
 import static sample.objects.SeaOfThieves.MAX_X;
@@ -88,9 +89,16 @@ public class TreasuresCastle extends Macro {
         if (unitIn.size() > 0) {
             Color color = Color.rgb(255, 255, 255, 0.5);
             String sColor = "white";
-            for (Newbie unit : unitIn) {
+            for (int i = 0; i < unitIn.size(); i++) {
+                Newbie unit = unitIn.get(i);
                 int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
                 unit.setCoinsCount(String.valueOf(countCoins));
+
+                if( Integer.parseInt(unit.getCoinsCount().getText()) > 5 ){
+                    removeUnitIn(unit);
+                    Main.getWorld().askWorldplanning(unit, Actions.GOBASE );
+                    i--;
+                }
             }
 
             for (Newbie unit : unitIn) {

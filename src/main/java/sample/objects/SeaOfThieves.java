@@ -3,8 +3,12 @@ package sample.objects;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import sample.Main;
 import sample.objects.macro.Macro;
+import sample.objects.micro.Actions;
 import sample.objects.micro.Newbie;
 
 import java.util.ArrayList;
@@ -19,6 +23,9 @@ public class SeaOfThieves {
     private final ArrayList<Newbie> units;
     private final ArrayList<Macro> macros;
 
+    private final Text goodCoins;
+    private final Text badCoins;
+
     public SeaOfThieves() {
         root = new Pane();
         root.setMinWidth(MAX_X);
@@ -26,6 +33,7 @@ public class SeaOfThieves {
 
         units = new ArrayList<>();
         macros = new ArrayList<>();
+
 
         Image mapImage = new Image(Objects.requireNonNull(Main.class.getResource("images/bg.jpeg")).toString());
         ImageView bg = new ImageView(mapImage);
@@ -35,10 +43,42 @@ public class SeaOfThieves {
         bg.setSmooth(true);
         root.getChildren().add(bg);
 
+        goodCoins = new Text();
+        goodCoins.setFill(Color.WHITE);
+        goodCoins.setFont(new Font("Monaco", 24));
+        root.getChildren().add(goodCoins);
+        badCoins = new Text();
+        badCoins.setFill(Color.WHITE);
+        badCoins.setFont(new Font("Monaco", 24));
+        root.getChildren().add(badCoins);
+
+
     }
 
     public void askWorldwhatToDo(Newbie unit) {
         whatToDo(unit);
+    }
+
+    public void askWorldplanning(Newbie unit, Actions ac) {
+        planning(unit, ac);
+    }
+
+    public void planning(Newbie unit, Actions ac)
+    {
+        unit.setProcessing(false);
+        switch(ac)
+        {
+            case TAKECOINS:
+                Main.getWorld().getMacros().get(2).aimUnit(unit);
+                break;
+            case GOBASE:
+                if (unit.getUnitTeam().equals("GOOD"))
+                    Main.getWorld().getMacros().get(0).aimUnit(unit);
+                else if (unit.getUnitTeam().equals("BAD"))
+                    Main.getWorld().getMacros().get(1).aimUnit(unit);
+                break;
+        }
+
     }
 
     public void whatToDo(Newbie unit){
@@ -74,21 +114,6 @@ public class SeaOfThieves {
     }
 
     public void lifeCycle() {
-//        for (Newbie unit : units) {
-//            if (unit.isOrder()) {
-//                Macro macro = unit.getBigTarget();
-//                unit.moveToBase(macro);
-//                if (unit.getUnitContainer().getBoundsInParent().contains(macro.getMacroContainer().getBoundsInParent().getCenterX(), macro.getMacroContainer().getBoundsInParent().getCenterY())) {
-//                    unit.setInMacro(macro.getName());
-//                    unit.setOrder(false);
-//                    unit.setBigTarget(null);
-//                    unit.setActive(false);
-//                    macro.addUnitIn(unit);
-//                    break;
-//                }
-//            }
-//        }
-
         macros.get(0).lifeCycle();
         macros.get(1).lifeCycle();
         macros.get(2).lifeCycle();
@@ -100,6 +125,14 @@ public class SeaOfThieves {
 
     public Pane getRoot() {
         return root;
+    }
+
+    public Text getGoodCoins() {
+        return goodCoins;
+    }
+
+    public Text getBadCoins() {
+        return badCoins;
     }
 
     public ArrayList<Newbie> getUnits() {
@@ -132,5 +165,19 @@ public class SeaOfThieves {
         ArrayList<String> arr = new ArrayList<>();
         macros.forEach(n -> arr.add(n.toString()));
         return arr;
+    }
+
+    public void currentStatusINFO(){
+        getGoodCoins().setText("Good coins: " + Main.getWorld().getMacros().get(0).getCoins());
+        getBadCoins().setText("Bad coins: " + Main.getWorld().getMacros().get(1).getCoins());
+    }
+
+    public void updateChordINFO(){
+        getGoodCoins().setX(Main.getScrollX() + 20);
+        getGoodCoins().setY(Main.getScrollY() + 30);
+
+        getBadCoins().setX(Main.getScrollX() + 20);
+        getBadCoins().setY(Main.getScrollY() + 70);
+
     }
 }

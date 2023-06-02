@@ -99,9 +99,13 @@ public class RequestsWindowController {
         thirdButton.setOnAction(e -> {
             listSecond.getItems().clear();
             count = 1;
-            for (String name : Main.getWorld().getUnitsNames())
-                listSecond.getItems().add(count++ + ". " + name);
-            if (Main.getWorld().getUnits().isEmpty()) {
+            ArrayList<String> tmp = new ArrayList<>();
+            for (Macro macro : Main.getWorld().getMacros())
+                tmp.addAll(macro.getNames());
+            for (String unit : Main.getWorld().getUnitsNames())
+                if (!tmp.contains(unit))
+                    listSecond.getItems().add(count++ + ". " + unit);
+            if (listSecond.getItems().isEmpty()) {
                 listSecond.getItems().add("Немає");
             }
             name.setText("Юніти, які не макрооб’єктах");
@@ -137,14 +141,9 @@ public class RequestsWindowController {
             for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getUnitTeam().equals("BAD")) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів лагерю Поганих: " + count);
-            count = 0;
-            for (Newbie unit : Main.getWorld().getUnits())
-                if (unit.getInMacro().equals("Base Good")) count++;
-            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Good: " + count);
-            count = 0;
-            for (Newbie unit : Main.getWorld().getUnits())
-                if (unit.getInMacro().equals("Base Bad")) count++;
-            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Bad: " + count);
+            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Good: " + Main.getWorld().getMacros().get(0).getUnitsIn().size());
+            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Bad: " + Main.getWorld().getMacros().get(1).getUnitsIn().size());
+            listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Treasures Castle: " + Main.getWorld().getMacros().get(2).getUnitsIn().size());
 
             container1.setVisible(false);
             getWindow().setWidth(700);
@@ -184,9 +183,10 @@ public class RequestsWindowController {
                     health.setText(String.valueOf(unit.getUnitHealth()));
                     team.setText(unit.getUnitTeam());
                     active.setText(String.valueOf(unit.isActive()));
-
-                    lMacro.setText(unit.getInMacro());
-                    if (lMacro.getText() == null) lMacro.setText("null");
+                    for (Macro macro : Main.getWorld().getMacros())
+                        if (macro.getUnitsIn().contains(unit))
+                            lMacro.setText(macro.getName());
+                    if (lMacro.getText().equals("")) lMacro.setText("null");
 
                     listFirst.setVisible(false);
                     container3.setVisible(true);
