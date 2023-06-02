@@ -37,6 +37,22 @@ public class SeaOfThieves {
 
     }
 
+    public void askWorldwhatToDo(Newbie unit) {
+        whatToDo(unit);
+    }
+
+    public void whatToDo(Newbie unit){
+
+        if (unit.getUnitTeam().equals("GOOD")) {
+            if (macros.get(0).worksWith(unit)) return;
+        } else {
+            if (macros.get(1).worksWith(unit)) return;
+        }
+        if( macros.get(2).worksWith(unit) )return;
+
+        macros.get(2).aimUnit(unit);
+    }
+
     public void addNewUnit(Newbie unit) {
         units.add(unit);
         root.getChildren().add(unit.getUnitContainer());
@@ -55,6 +71,31 @@ public class SeaOfThieves {
     public void deleteMacro(Macro macro) {
         root.getChildren().remove(macro.getMacroContainer());
         macros.remove(macro);
+    }
+
+    public void lifeCycle() {
+//        for (Newbie unit : units) {
+//            if (unit.isOrder()) {
+//                Macro macro = unit.getBigTarget();
+//                unit.moveToBase(macro);
+//                if (unit.getUnitContainer().getBoundsInParent().contains(macro.getMacroContainer().getBoundsInParent().getCenterX(), macro.getMacroContainer().getBoundsInParent().getCenterY())) {
+//                    unit.setInMacro(macro.getName());
+//                    unit.setOrder(false);
+//                    unit.setBigTarget(null);
+//                    unit.setActive(false);
+//                    macro.addUnitIn(unit);
+//                    break;
+//                }
+//            }
+//        }
+
+        macros.get(0).lifeCycle();
+        macros.get(1).lifeCycle();
+        macros.get(2).lifeCycle();
+
+        for (Newbie unit : units) {
+            unit.autoMove();
+        }
     }
 
     public Pane getRoot() {
@@ -90,22 +131,6 @@ public class SeaOfThieves {
     public ArrayList<String> getMacrosNames() {
         ArrayList<String> arr = new ArrayList<>();
         macros.forEach(n -> arr.add(n.toString()));
-        return arr;
-    }
-
-    public ArrayList<Newbie> getAllUnits() {
-        ArrayList<Newbie> arr = new ArrayList<>();
-        arr.addAll(units);
-        arr.addAll(macros.get(0).getUnitsIn());
-        arr.addAll(macros.get(1).getUnitsIn());
-        return arr;
-    }
-
-    public ArrayList<String> getAllUnitsNames() {
-        ArrayList<String> arr = new ArrayList<>();
-        units.forEach(n -> arr.add(n.toString()));
-        macros.get(0).getUnitsIn().forEach(n -> arr.add(n.toString()));
-        macros.get(1).getUnitsIn().forEach(n -> arr.add(n.toString()));
         return arr;
     }
 }

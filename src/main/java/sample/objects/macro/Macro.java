@@ -32,8 +32,9 @@ public abstract class Macro {
     protected Rectangle border;
     protected ImageView macroImage;
     protected Label macroName;
+    protected Label unitsInLabel;
 
-    protected ArrayList<Newbie> unitsIn;
+    protected ArrayList<Newbie> unitIn;
     protected Group macroContainer;
 
     protected String type = "Nothing";
@@ -56,6 +57,10 @@ public abstract class Macro {
         nameEffect.setSpread(0.6);
         nameEffect.setInput(macroName.getEffect());
         macroName.setEffect(nameEffect);
+
+        unitsInLabel.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE-4));
+        unitsInLabel.setTextFill(Color.WHITE);
+        unitsInLabel.setEffect(new Bloom());
 
         macroImage.setFitWidth(IMAGE_WH.getWidth());
         macroImage.setFitHeight(IMAGE_WH.getHeight());
@@ -82,6 +87,14 @@ public abstract class Macro {
         return y;
     }
 
+    public int getCenterX() {
+        return (int) getMacroContainer().getBoundsInParent().getCenterX();
+    }
+
+    public int getCenterY() {
+        return (int) getMacroContainer().getBoundsInParent().getCenterY();
+    }
+
     public Group getMacroContainer() {
         return macroContainer;
     }
@@ -94,12 +107,17 @@ public abstract class Macro {
         return team;
     }
 
-    public ArrayList<Newbie> getUnitsIn() {
-        return unitsIn;
+    public Label getUnitsInLabel() {
+        return unitsInLabel;
     }
+
+    public ArrayList<Newbie> getUnitsIn() {
+        return unitIn;
+    }
+
     public ArrayList<String> getNames() {
         ArrayList<String> arr = new ArrayList<>();
-        unitsIn.forEach(n -> arr.add(n.toString()));
+        unitIn.forEach(n -> arr.add(n.toString()));
         return arr;
     }
 
@@ -107,8 +125,17 @@ public abstract class Macro {
         return macroContainer.getBoundsInParent().contains(new Point2D(mx, my));
     }
     public abstract void setCoordinates();
-    public void addUnit(Newbie newbie) {}
-    public void removeUnit(Newbie newbie) {}
+
+    public void addUnitIn(Newbie newbie) {}
+    public void removeUnitIn(Newbie newbie) {}
+
+    public void lifeCycle() {
+
+    }
+
+    public ImageView getMacroImage() {
+        return macroImage;
+    }
 
     @Override
     public String toString() {
@@ -117,5 +144,22 @@ public abstract class Macro {
                 ", x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    public boolean worksWith(Newbie unit) {
+        if (unitIn.contains(unit)) return true;
+
+        if (unit.getUnitImage().getBoundsInParent().intersects(getMacroContainer().getBoundsInParent())) {
+            unit.setInMacro(getName());
+            unit.setProcessing(true);
+            addUnitIn(unit);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void aimUnit(Newbie unit) {
+        unit.setAim(  getCenterX(), getCenterY() );
     }
 }

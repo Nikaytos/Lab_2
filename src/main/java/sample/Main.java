@@ -7,8 +7,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import sample.objects.macro.Macro;
-import sample.objects.micro.Newbie;
 import sample.objects.SeaOfThieves;
 
 import java.util.Date;
@@ -23,14 +21,6 @@ public class Main extends Application {
 
     private static final ScrollPane scrollPane = new ScrollPane(world.getRoot());
     private static final Scene scene = new Scene(scrollPane, SeaOfThieves.MAX_X, SeaOfThieves.MAX_Y);
-
-    private static boolean stayBase = false;
-    public static void setStayBase(boolean stayBase) {
-        Main.stayBase = stayBase;
-    }
-    public static boolean isStayBase() {
-        return stayBase;
-    }
 
     public static Random getRandom() {
         return random;
@@ -57,10 +47,6 @@ public class Main extends Application {
             MouseButton mouseButton = mouseEvent.getButton();
             if (mouseButton == MouseButton.PRIMARY)
                 getOperations().mouseLeftClick(mouseEvent);
-            else if (mouseButton == MouseButton.SECONDARY)
-                getOperations().mouseRightClick(mouseEvent);
-            else if (mouseButton == MouseButton.MIDDLE && !stayBase)
-                getOperations().mouseMiddleClick(mouseEvent);
 
         });
 
@@ -70,11 +56,11 @@ public class Main extends Application {
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode keyCode = keyEvent.getCode();
             if (keyCode == KeyCode.DELETE && !world.getUnits().isEmpty()) {
-                getOperations().deleteNewbies();
-            } else if (keyCode == KeyCode.INSERT && !world.getUnits().isEmpty()) {
-                getOperations().openCUTC();
+                getOperations().deleteUnits();
+            } else if (keyCode == KeyCode.INSERT) {
+                getOperations().openCreateUnit();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
-                getOperations().activateNewbies();
+                getOperations().activateUnits();
             } else if (keyCode == KeyCode.G) {
                 System.out.println("Створення юніта альянсу Добрих. . .");
                 operations.createNewUnit("GOOD", getOperations().getMouseX(), getOperations().getMouseY());
@@ -83,8 +69,6 @@ public class Main extends Application {
                 operations.createNewUnit("BAD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.H) {
                 getOperations().openHW();
-            } else if (keyCode == KeyCode.J) {
-                getOperations().moveToBase();
             } else if (keyCode == KeyCode.O) {
                 getOperations().requests();
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.V) {
@@ -93,50 +77,25 @@ public class Main extends Application {
                 getOperations().deactivationUnits();
             } else if (keyEvent.isControlDown() && keyEvent.isAltDown() && keyCode == KeyCode.S) {
                 getOperations().settings();
+            } else if (keyCode == KeyCode.Z && !world.getUnits().isEmpty()) {
+                getOperations().editUnit();
             } else if (keyCode == KeyCode.W || keyCode == KeyCode.A || keyCode == KeyCode.S || keyCode == KeyCode.D) {
                 getOperations().handleArrowKeys(keyCode);
             }
         });
 
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                for (int i = 0; i < world.getUnits().size(); i++) {
-                    Newbie unit = world.getUnits().get(i);
-                    if (stayBase && !unit.isActive()) {
-                        unit.moveToBase(null);
-                        for (Macro macro : world.getMacros()) {
-                            if (macro.getTeam().equals(unit.getUnitTeam())
-                                    && unit.getUnitContainer().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
-                                unit.setInMacro(macro.getName());
-                                macro.addUnit(unit);
-                                i--;
-                                break;
-                            }
-                        }
-                    }
-                    if (unit.isOrder()) {
-                        Macro macro = unit.getBigTarget();
-                        unit.moveToBase(macro);
-                        if (macro.getTeam().equals(unit.getUnitTeam())
-                                && unit.getUnitContainer().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
-                            unit.setInMacro(macro.getName());
-                            unit.setOrder(false);
-                            unit.setBigTarget(null);
-                            unit.setActive(false);
-                            macro.addUnit(unit);
-                            break;
-                        }
-                    }
-                }
-            }
-        };
-        timer.start();
-
         stage.setScene(scene);
         stage.show();
         getOperations().createStartMacro();
         getOperations().createStartNewbie();
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                world.lifeCycle();
+            }
+        };
+        timer.start();
 
     }
 

@@ -9,7 +9,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.stage.Stage;
 import sample.dlg.chooseUnitToChange.CUTC;
 import sample.dlg.helpWindow.HelpWindow;
-import sample.dlg.macroWindow.MacroWindow;
 import sample.dlg.newChangeUnit.NewChangeUnit;
 import sample.dlg.requestsWindow.RequestsWindow;
 import sample.dlg.settings.Settings;
@@ -31,6 +30,7 @@ public class Operations {
     public double getMouseX() {
         return mouseX;
     }
+
     public double getMouseY() {
         return mouseY;
     }
@@ -45,7 +45,7 @@ public class Operations {
         stage.setMaximized(true);
     }
 
-    public void deleteNewbies() {
+    public void deleteUnits() {
         System.out.println("Видалення всіх виділенних юнітів. . .");
         for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
             Newbie newbie = Main.getWorld().getUnits().get(i);
@@ -56,14 +56,26 @@ public class Operations {
         }
     }
 
-    public void openCUTC() {
+    public void openCreateUnit() {
+        System.out.println("Створення юніта. . .");
+        new NewChangeUnit(0, 0, -1).display();
+    }
+
+    public void editUnit() {
         System.out.println("Відкриття меню зміни юнітів. . .");
         new CUTC().display();
     }
 
-    public void activateNewbies() {
+    public void activateUnits() {
         System.out.println("Виділення всіх юнітів на карті. . .");
-        Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(Newbie::flipActivation);
+        Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(n -> {
+            n.flipActivation();
+            for (Macro macro : Main.getWorld().getMacros()) {
+                macro.removeUnitIn(n);
+                n.setProcessing(false);
+                n.setInMacro("null");
+            }
+        });
     }
 
     public void createNewUnit() {
@@ -79,21 +91,6 @@ public class Operations {
         new HelpWindow().display();
     }
 
-    public void moveToBase() {
-        Main.setStayBase(!Main.isStayBase());
-        if (!Main.isStayBase()) {
-            System.out.println("Вигнання юнітів з баз. . .");
-            for (Macro macro : Main.getWorld().getMacros())
-                if (!macro.getType().equals("TreasuresCastle"))
-                    for (int j = 0; j < macro.getUnitsIn().size(); j++) {
-                        Newbie unitIn = macro.getUnitsIn().get(j);
-                        unitIn.setInMacro("null");
-                        macro.removeUnit(unitIn);
-                        j--;
-                    }
-        } else System.out.println("Юніти йдуть до своєї бази. . .");
-    }
-
     public void requests() {
         new RequestsWindow().display();
     }
@@ -104,10 +101,9 @@ public class Operations {
         for (Newbie unit : Main.getWorld().getUnits()) {
             if (unit.isActive()) {
                 try {
-                    Newbie clone = unit.clone();
+                    Newbie clone = (Newbie)unit.clone();
                     temp.add(clone);
-                }
-                catch (CloneNotSupportedException e) {
+                } catch (CloneNotSupportedException e) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText("Помилка кронування");
                     alert.showAndWait();
@@ -160,6 +156,8 @@ public class Operations {
                     newbie.move(finalDx, finalDy, finalDirection);
                     newbie.setOrder(false);
                     newbie.setBigTarget(null);
+                    newbie.setProcessing(false);
+                    newbie.setInMacro("null");
                 });
     }
 
@@ -183,50 +181,26 @@ public class Operations {
         if (lastNewbie.isPresent()) {
             System.out.println("Виділення юніта. . .");
             lastNewbie.get().flipActivation();
+            for (Macro macro : Main.getWorld().getMacros()) {
+                macro.removeUnitIn(lastNewbie.get());
+                lastNewbie.get().setProcessing(false);
+                lastNewbie.get().setInMacro("null");
+            }
             return;
         }
 
         for (Macro macro : Main.getWorld().getMacros()) {
             if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
-                boolean flg = false;
-                for (Newbie unit : Main.getWorld().getUnits()) {
-                    if (unit.isActive()
-                            && macro.getTeam().equals(unit.getUnitTeam())) {
+                for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
+                    Newbie unit = Main.getWorld().getUnits().get(i);
+                    if (unit.isActive()) {
                         unit.setOrder(true);
                         unit.setBigTarget(macro);
-                        flg = true;
                     }
                 }
-                if (flg) System.out.println("Рух виділених юнітів до макрооб'єкту. . .");
                 return;
             }
         }
-
-        System.out.println("Створення юніта. . .");
-        new NewChangeUnit(mouseEvent.getX(), mouseEvent.getY(), -1).display();
-    }
-
-    public void mouseRightClick(MouseEvent mouseEvent) {
-        if (!Main.isStayBase()) {
-            Main.getWorld().getMacros().stream()
-                    .filter(macro -> macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()) && !macro.getUnitsIn().isEmpty())
-                    .findFirst()
-                    .ifPresent(macro -> new MacroWindow(macro).display());
-        }
-    }
-
-    public void mouseMiddleClick(MouseEvent mouseEvent) {
-        Main.getWorld().getMacros().stream()
-                .filter(macro -> macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY()))
-                .findFirst()
-                .ifPresent(macro -> {
-                    for (int i = 0; i < macro.getUnitsIn().size(); i++) {
-                        Newbie unit = macro.getUnitsIn().get(i);
-                        unit.setInMacro("null");
-                        macro.removeUnit(unit);
-                        i--;
-                    }
-                });
     }
 
     public void mouseMove(Event event) {
@@ -238,4 +212,6 @@ public class Operations {
             mouseY = ((ScrollEvent) event).getY();
         }
     }
+
+
 }

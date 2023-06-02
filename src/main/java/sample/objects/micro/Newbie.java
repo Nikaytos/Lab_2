@@ -51,7 +51,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
             "Isaac", "John", "Kevin", "Liam", "Matthew", "Nathan", "Oliver", "Peter", "Quentin",
             "Robert", "Samuel", "Thomas", "Ulysses", "Victor", "William", "Xavier", "Yves", "Zachary"};
 
-    protected static int defaultValueHealth() {
+    protected static double defaultValueHealth() {
         return getRandom().nextInt(MAX_HEALTH - MIN_HEALTH + 1) + MIN_HEALTH;
     }
     protected static int defaultValueX() {
@@ -66,6 +66,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected Label unitName;
     protected double unitHealth;
     protected String unitTeam;
+    protected Coins coins;
     protected int x;
     protected int y;
     protected String inMacro;
@@ -75,9 +76,12 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected DropShadow shadow;
     protected DropShadow shadowActive;
     protected boolean active;
+    protected boolean processing;
     protected int direction;
     protected boolean order;
     protected Macro bigTarget;
+    protected int aimx;
+    protected int aimy;
 
     public Group getUnitContainer() {
         return unitContainer;
@@ -120,6 +124,14 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     }
     public Macro getBigTarget() {
         return bigTarget;
+    }
+
+    public Label getCoinsCount() {
+        return coins.getCount();
+    }
+
+    public void setCoinsCount(String count) {
+        this.coins.getCount().setText(count);
     }
 
     public void setUnitName(String name) {
@@ -186,6 +198,8 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
 
         unitImage.setLayoutX(x);
         unitImage.setLayoutY(healthBarBackground.getLayoutY() + healthBarBackground.getHeight());
+
+        coins.setCoordinates((int) (healthBarBackground.getLayoutX()+healthBarBackground.getWidth()+5), (int) healthBarBackground.getLayoutY());
     }
 
     public Newbie(String name, double health, String team, int x, int y, boolean active) {
@@ -198,10 +212,12 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
+        coins = new Coins(0);
         unitContainer = new Group();
         shadow = new DropShadow();
         shadowActive = new DropShadow();
         order = false;
+        processing = false;
 
         setUnitName(name);
         setUnitHealth(health);
@@ -209,11 +225,12 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         initialize();
         setX(x);
         setY(y);
+        clearAim();
         setActive(active);
 
         spawnTransition();
 
-        unitContainer.getChildren().addAll(unitName, healthBarBackground, healthBar, unitImage);
+        unitContainer.getChildren().addAll(unitName, healthBarBackground, healthBar, unitImage, coins.getCount());
     }
 
     public Newbie() {
@@ -387,15 +404,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         return unitImage.getBoundsInParent().contains(new Point2D(mx, my));
     }
 
-    public void moveToBase(Macro m) {
-        if (m == null) {
-            for (Macro macro : Main.getWorld().getMacros()) {
-                if (!macro.getTeam().equals(unitTeam)) continue;
-                simpleMove(macro.getX(), macro.getY());
-            }
-        } else simpleMove(m.getX(), m.getY());
-    }
-
     public void move(int dx, int dy, int dir) {
         int finalDX = x + dx;
         int finalDY = y + dy;
@@ -428,6 +436,39 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         move(dx, dy, dir);
     }
 
+    public void setAim( int ax, int ay ){
+        aimx = ax;
+        aimy = ay;
+    }
+    public boolean isEmptyAim()
+    {
+        return (aimx < 0) && (aimy < 0);
+    }
+
+    public void clearAim()
+    {
+        aimx = aimy = -1000;
+    }
+
+    public void setProcessing(boolean processing) {
+        this.processing = processing;
+    }
+
+    public void autoMove() {
+
+        if (active) return;
+
+        if (processing) return;
+
+        if (isEmptyAim()) {
+            Main.getWorld().askWorldwhatToDo(this);
+        } else {
+            if ((Math.abs(x - aimx) + Math.abs(y - aimy)) < 10.0) {
+                clearAim();
+            } else simpleMove(aimx, aimy);
+        }
+    }
+
     @Override
     public String toString() {
         return "Newbie{" +
@@ -441,8 +482,10 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     }
 
     @Override
-    public Newbie clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         Newbie clone = (Newbie) super.clone();
+
+        clone.coins = (Coins)this.coins.clone();
         clone.unitName = new Label();
         clone.unitImage = new ImageView(this.unitImage.getImage());
         clone.healthBar = new Rectangle(0, 0, this.healthBar.getWidth(), this.healthBar.getHeight());

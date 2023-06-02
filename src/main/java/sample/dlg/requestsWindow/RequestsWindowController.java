@@ -74,9 +74,9 @@ public class RequestsWindowController {
         firstButton.setOnAction(e -> {
             count = 1;
             listFirst.getItems().clear();
-            for (String name : Main.getWorld().getAllUnitsNames())
+            for (String name : Main.getWorld().getUnitsNames())
                 listFirst.getItems().add(count++ + ". " + name);
-            if (Main.getWorld().getAllUnitsNames().isEmpty()) {
+            if (Main.getWorld().getUnitsNames().isEmpty()) {
                 listFirst.getItems().add("No one");
             }
             container1.setVisible(false);
@@ -122,27 +122,27 @@ public class RequestsWindowController {
 
             listSecond.getItems().clear();
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.isActive()) count++;
             listSecond.getItems().add("Кількість активних мікрооб'єктів: " + count);
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getUnitHealth() > Newbie.MAX_HEALTH/2.0) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів з рівнем життя більше половини: " + count);
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getUnitTeam().equals("GOOD")) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів альянсу Добрих: " + count);
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getUnitTeam().equals("BAD")) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів лагерю Поганих: " + count);
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getInMacro().equals("Base Good")) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Good: " + count);
             count = 0;
-            for (Newbie unit : Main.getWorld().getAllUnits())
+            for (Newbie unit : Main.getWorld().getUnits())
                 if (unit.getInMacro().equals("Base Bad")) count++;
             listSecond.getItems().add("Кількість мікрооб'єктів, які належать макрооб'єкту Base Bad: " + count);
 
@@ -160,7 +160,7 @@ public class RequestsWindowController {
 
         textField.setOnKeyTyped(e -> {
             switch (request) {
-                case "first" -> setListViewText(Main.getWorld().getAllUnitsNames(), listFirst);
+                case "first" -> setListViewText(Main.getWorld().getUnitsNames(), listFirst);
                 case "second" -> {
                     if (listFirst.isVisible()) {
                         setListViewText(Main.getWorld().getMacrosNames(), listFirst);
@@ -177,7 +177,7 @@ public class RequestsWindowController {
             if (listFirst.getSelectionModel().getSelectedItem() != null && !listFirst.getSelectionModel().getSelectedItem().equals("[]")) {
                 if (request.equals("first")) {
                     String[] strChoice = listFirst.getSelectionModel().getSelectedItem().split(". ");
-                    Newbie unit = Main.getWorld().getAllUnits().get(Integer.parseInt(strChoice[0]) - 1);
+                    Newbie unit = Main.getWorld().getUnits().get(Integer.parseInt(strChoice[0]) - 1);
                     name.setText(unit.getUnitName());
                     x.setText(String.valueOf(unit.getX()));
                     y.setText(String.valueOf(unit.getY()));
@@ -246,12 +246,12 @@ public class RequestsWindowController {
             return;
         }
 
-        if (request.equals("first") && Main.getWorld().getAllUnits().isEmpty()) {
+        if (request.equals("first") && Main.getWorld().getUnits().isEmpty()) {
             listView.getItems().add("Немає");
             return;
         }
 
-        if (listView == listSecond && macro.getUnitsIn().isEmpty()) {
+        if (listView == listSecond && macro.getNames().isEmpty()) {
             listSecond.getItems().add("Макрооб'єкт пустий");
             return;
         }

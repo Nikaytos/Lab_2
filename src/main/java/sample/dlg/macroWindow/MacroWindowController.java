@@ -29,7 +29,7 @@ public class MacroWindowController {
                 String[] strChoice = cBox.getValue().split(". ");
                 Newbie unit = MacroWindow.getMacro().getUnitsIn().get(Integer.parseInt(strChoice[0])-1);
                 unit.setInMacro("null");
-                MacroWindow.getMacro().removeUnit(unit);
+                MacroWindow.getMacro().removeUnitIn(unit);
             }
             MacroWindow.getWindow().close();
         });
