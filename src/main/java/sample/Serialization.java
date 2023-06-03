@@ -36,9 +36,14 @@ public class Serialization {
                 unitMaps.add(unitMap);
             }
 
+            List<Integer> coins = new ArrayList<>();
+            coins.add(Main.getWorld().getMacros().get(0).getCoins());
+            coins.add(Main.getWorld().getMacros().get(1).getCoins());
+
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("units", unitMaps);
             hashMap.put("macros", Main.getWorld().getMacros());
+            hashMap.put("coins", coins);
             encoder.writeObject(hashMap);
             encoder.close();
         } catch (FileNotFoundException e) {
@@ -64,9 +69,13 @@ public class Serialization {
 
             HashMap<String, Object> hashMap = (HashMap<String, Object>)decoder.readObject();
 
+            List<Integer> coins = new ArrayList<>((ArrayList<Integer>) hashMap.get("coins"));
             for (Macro macro : (ArrayList<Macro>)hashMap.get("macros")){
                 Main.getWorld().addNewMacro(macro);
             }
+            Main.getWorld().getMacros().get(0).setCoins(coins.get(0));
+            Main.getWorld().getMacros().get(1).setCoins(coins.get(1));
+
             ArrayList<HashMap<String, Object>> unitMaps = (ArrayList<HashMap<String, Object>>)hashMap.get("units");
             for (HashMap<String, Object> unitMap : unitMaps) {
                 String type = (String)unitMap.get("type");
@@ -94,6 +103,11 @@ public class Serialization {
                     }
                 }
             }
+
+
+
+
+
             decoder.close();
         } catch (FileNotFoundException e) {
             System.out.println("Помилка відкриття файлу");

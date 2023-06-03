@@ -107,9 +107,15 @@ public class SeaOfThieves {
 
         if (Main.getWorld().isGoBase()) {
             if (unit.getUnitTeam().equals("GOOD")) {
-                if (macros.get(0).worksWith(unit)) return;
+                if (!macros.get(0).worksWith(unit)) {
+                    macros.get(0).aimUnit(unit);
+                    return;
+                }
             } else {
-                if (macros.get(1).worksWith(unit)) return;
+                if (!macros.get(1).worksWith(unit)) {
+                    macros.get(1).aimUnit(unit);
+                    return;
+                }
             }
         }
 

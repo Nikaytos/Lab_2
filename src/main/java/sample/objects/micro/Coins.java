@@ -1,7 +1,11 @@
 package sample.objects.micro;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Bloom;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class Coins implements Cloneable {
     private Label count;
@@ -10,6 +14,8 @@ public class Coins implements Cloneable {
         String str= Integer.toString(f);
 
         count = new Label(str);
+
+        count.setFont(Font.font("System", FontWeight.BOLD, count.getFont().getSize()));
         count.setTextFill(Color.YELLOW);
 
         setCoordinates(x, y);

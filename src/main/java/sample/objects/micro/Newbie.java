@@ -229,14 +229,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         System.out.print("Random newbie appeared: " + this + "\n");
     }
 
-    static {
-        System.out.println("Та нехай почнеться битва!");
-    }
-
-    {
-        System.out.println("Ласкаво просимо до світу піратів!");
-    }
-
     protected void initialize() {
         unitName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
         unitName.setTextFill(Color.WHITE);
@@ -572,17 +564,12 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         return Objects.hash(unitContainer, type, unitName, unitHealth, unitTeam, x, y, unitImage, healthBar, healthBarBackground, shadow, shadowActive, active, direction);
     }
     public int compareTo(Newbie o) {
-        if( unitHealth<o.unitHealth )return -1;
-        if( unitHealth>o.unitHealth )return 1;
-        return 0;
+        return this.unitName.getText().compareTo(o.unitName.getText());
     }
-    public static Comparator<Newbie> HealthComparator
-            = new Comparator<Newbie>() {
+    public static class HealthComparator implements Comparator<Newbie> {
         @Override
         public int compare(Newbie f1, Newbie f2) {
-            if (f1.unitHealth < f2.unitHealth) return -1;
-            if (f1.unitHealth > f2.unitHealth) return 1;
-            return 0;
+            return Double.compare(f1.unitHealth, f2.unitHealth);
         }
     };
 }

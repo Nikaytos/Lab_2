@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import sample.Main;
 import sample.objects.micro.Newbie;
 
 import java.awt.Point;
@@ -93,6 +94,10 @@ public abstract class Macro {
         return coins;
     }
 
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
     public int getCenterX() {
         return (int) getMacroContainer().getBoundsInParent().getCenterX();
     }
@@ -141,6 +146,8 @@ public abstract class Macro {
     }
 
     public boolean worksWith(Newbie unit) {
+
+
         if (unitIn.contains(unit)) return true;
 
         if (unit.getUnitImage().getBoundsInParent().intersects(getMacroContainer().getBoundsInParent())) {
