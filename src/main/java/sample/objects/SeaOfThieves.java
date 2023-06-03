@@ -92,10 +92,12 @@ public class SeaOfThieves {
         switch (ac) {
             case TAKECOINS -> Main.getWorld().getMacros().get(2).aimUnit(unit);
             case GOBASE -> {
-                if (unit.getUnitTeam().equals("GOOD"))
+                if (unit.getUnitTeam().equals("GOOD")) {
                     Main.getWorld().getMacros().get(0).aimUnit(unit);
-                else if (unit.getUnitTeam().equals("BAD"))
+                }
+                else if (unit.getUnitTeam().equals("BAD")) {
                     Main.getWorld().getMacros().get(1).aimUnit(unit);
+                }
             }
         }
 
@@ -182,8 +184,10 @@ public class SeaOfThieves {
     public ArrayList<String> getParamsToChange(int index ){
             Newbie n = units.get(index);
             ArrayList<String> arr= new ArrayList<>();
+            arr.add( n.getType() );
             arr.add( n.getUnitName() );
             arr.add( Double.toString(n.getUnitHealth()) );
+            arr.add( Integer.toString(n.getIntCoins()) );
             arr.add( n.getUnitTeam() );
             arr.add( Integer.toString(n.getX()) );
             arr.add( Integer.toString(n.getY()) );
@@ -235,6 +239,17 @@ public class SeaOfThieves {
 
         getActiveUnits().setX(Main.getScrollX() + 20);
         getActiveUnits().setY(Main.getScrollY() + 150);
+    }
 
+    public void infoOnTop() {
+        root.getChildren().remove(getGoodCoins());
+        root.getChildren().remove(getBadCoins());
+        root.getChildren().remove(getGoBaseText());
+        root.getChildren().remove(getActiveUnits());
+
+        root.getChildren().add(getGoodCoins());
+        root.getChildren().add(getBadCoins());
+        root.getChildren().add(getGoBaseText());
+        root.getChildren().add(getActiveUnits());
     }
 }

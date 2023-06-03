@@ -57,7 +57,7 @@ public class BaseBad extends Macro {
     @Override
     public void setCoordinates() {
         x = (int) (MAX_MACRO.getX() - 200);
-        y = (int) (MAX_Y / 2 - MACRO_WH.height / 2);
+        y = (int) (MAX_Y * 3 / 4 - MACRO_WH.height / 2);
         macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 55);
         macroName.setLayoutY(y);
         unitsInLabel.setLayoutX(x);
@@ -97,10 +97,10 @@ public class BaseBad extends Macro {
                     unit.setUnitHealth(unit.getUnitHealth() + hpToHeal);
                 }
 
-                if  (Integer.parseInt(unit.getCoinsCount().getText()) > 0) {
-                    int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) - 1;
+                if  (unit.getIntCoins() > 4) {
+                    int countCoins = unit.getIntCoins() - 5;
                     unit.setCoinsCount(String.valueOf(countCoins));
-                    coins++;
+                    coins+=5;
                 } else if ((Main.getWorld().isGoBase())) {
                     continue;
                 } else {

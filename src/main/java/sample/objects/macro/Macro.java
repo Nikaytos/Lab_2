@@ -153,6 +153,7 @@ public abstract class Macro {
     }
 
     public void aimUnit(Newbie unit) {
-        unit.setAim(  getCenterX(), getCenterY() );
+        unit.setBigTarget(this);
+        unit.setAim((int) (getCenterX()-unit.getUnitContainer().getBoundsInParent().getWidth()/2), (int) (getCenterY()-unit.getUnitContainer().getBoundsInParent().getHeight()/2));
     }
 }

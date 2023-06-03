@@ -18,11 +18,15 @@ import sample.objects.macro.BaseGood;
 import sample.objects.macro.Macro;
 import sample.objects.macro.TreasuresCastle;
 import sample.objects.micro.Actions;
+import sample.objects.micro.Enjoyer;
 import sample.objects.micro.Newbie;
+import sample.objects.micro.Pro;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+
+import static sample.Main.getRandom;
 
 public class Operations {
     private double mouseX = -1;
@@ -79,11 +83,17 @@ public class Operations {
     }
 
     public void createNewUnit() {
-        Main.getWorld().addNewUnit(new Newbie());
+        String type = Newbie.TYPES[getRandom().nextInt(Newbie.TYPES.length)];
+
+        switch (type) {
+            case "Newbie" -> Main.getWorld().addNewUnit(new Newbie());
+            case "Enjoyer" -> Main.getWorld().addNewUnit(new Enjoyer());
+            case "Pro" -> Main.getWorld().addNewUnit(new Pro());
+        }
     }
 
     public void createNewUnit(String team, double x, double y) {
-        Newbie.createNewUnit("", "", team, Double.toString(x), Double.toString(y), false);
+        Newbie.createNewUnit("", "", "", "", team, Double.toString(x), Double.toString(y), false);
     }
 
     public void openHW() {
@@ -165,13 +175,11 @@ public class Operations {
                 .filter(Newbie::isActive)
                 .forEach(newbie -> {
                     newbie.move(finalDx, finalDy, finalDirection);
-                    newbie.setOrder(false);
-                    newbie.setBigTarget(null);
                     newbie.setProcessing(false);
                 });
     }
 
-    public void createStartNewbie() {
+    public void createStartUnits() {
         for (int i = 0; i <= Math.random() * 10; i++) {
             createNewUnit();
         }
@@ -198,18 +206,18 @@ public class Operations {
             return;
         }
 
-        for (Macro macro : Main.getWorld().getMacros()) {
-            if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
-                for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
-                    Newbie unit = Main.getWorld().getUnits().get(i);
-                    if (unit.isActive()) {
-                        unit.setOrder(true);
-                        unit.setBigTarget(macro);
-                    }
-                }
-                return;
-            }
-        }
+//        for (Macro macro : Main.getWorld().getMacros()) {
+//            if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
+//                for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
+//                    Newbie unit = Main.getWorld().getUnits().get(i);
+//                    if (unit.isActive()) {
+//                        unit.setOrder(true);
+//                        unit.setBigTarget(macro);
+//                    }
+//                }
+//                return;
+//            }
+//        }
     }
 
     public void mouseMove(Event event) {
@@ -223,5 +231,9 @@ public class Operations {
     }
 
 
-
+    public void activeUnitSayHello() {
+        for (Newbie unit : Main.getWorld().getUnits())
+            if (unit.isActive())
+                unit.sayHello();
+    }
 }

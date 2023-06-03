@@ -1,7 +1,9 @@
 package sample;
 
 import sample.objects.macro.Macro;
+import sample.objects.micro.Enjoyer;
 import sample.objects.micro.Newbie;
+import sample.objects.micro.Pro;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -22,14 +24,14 @@ public class Serialization {
             List<Map<String, Object>> unitMaps = new ArrayList<>();
             for (Newbie unit : units) {
                 Map<String, Object> unitMap = new HashMap<>();
+                unitMap.put("type", unit.getType());
                 unitMap.put("name", unit.getUnitName());
                 unitMap.put("health", unit.getUnitHealth());
+                unitMap.put("coins", unit.getIntCoins());
                 unitMap.put("team", unit.getUnitTeam());
                 unitMap.put("x", unit.getX());
                 unitMap.put("y", unit.getY());
                 unitMap.put("active", unit.isActive());
-                unitMap.put("order", unit.isOrder());
-                unitMap.put("bigTarget", unit.getBigTarget());
                 unitMap.put("direction", unit.getDirection());
                 unitMaps.add(unitMap);
             }
@@ -67,11 +69,30 @@ public class Serialization {
             }
             ArrayList<HashMap<String, Object>> unitMaps = (ArrayList<HashMap<String, Object>>)hashMap.get("units");
             for (HashMap<String, Object> unitMap : unitMaps) {
-                Newbie unit = new Newbie((String)unitMap.get("name"), (Double) unitMap.get("health"), (String)unitMap.get("team"), (Integer)unitMap.get("x"), (Integer)unitMap.get("y"), (Boolean)unitMap.get("active"));
-                unit.setOrder((Boolean)unitMap.get("order"));
-                unit.setBigTarget((Macro) unitMap.get("bigTarget"));
-                unit.setDirection((Integer)unitMap.get("direction"));
-                Main.getWorld().addNewUnit(unit);
+                String type = (String)unitMap.get("type");
+                Newbie newbie;
+                Enjoyer enjoyer;
+                Pro pro;
+                switch (type) {
+                    case "Newbie" -> {
+                        newbie = new Newbie((String) unitMap.get("name"), (Double) unitMap.get("health"), (Integer) unitMap.get("coins"), (String) unitMap.get("team"), (Integer) unitMap.get("x"), (Integer) unitMap.get("y"), (Boolean) unitMap.get("active"));
+                        newbie.setActive((Boolean) unitMap.get("active"));
+                        newbie.setDirection((Integer)unitMap.get("direction"));
+                        Main.getWorld().addNewUnit(newbie);
+                    }
+                    case "Enjoyer" -> {
+                        enjoyer = new Enjoyer((String) unitMap.get("name"), (Double) unitMap.get("health"), (Integer) unitMap.get("coins"), (String) unitMap.get("team"), (Integer) unitMap.get("x"), (Integer) unitMap.get("y"), (Boolean) unitMap.get("active"));
+                        enjoyer.setActive((Boolean) unitMap.get("active"));
+                        enjoyer.setDirection((Integer)unitMap.get("direction"));
+                        Main.getWorld().addNewUnit(enjoyer);
+                    }
+                    case "Pro"  -> {
+                        pro = new Pro((String) unitMap.get("name"), (Double) unitMap.get("health"), (Integer) unitMap.get("coins"), (String) unitMap.get("team"), (Integer) unitMap.get("x"), (Integer) unitMap.get("y"), (Boolean) unitMap.get("active"));
+                        pro.setActive((Boolean) unitMap.get("active"));
+                        pro.setDirection((Integer)unitMap.get("direction"));
+                        Main.getWorld().addNewUnit(pro);
+                    }
+                }
             }
             decoder.close();
         } catch (FileNotFoundException e) {

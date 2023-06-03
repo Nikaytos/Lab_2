@@ -92,6 +92,8 @@ public class Main extends Application {
                 getOperations().settings();
             } else if (keyCode == KeyCode.Z && !world.getUnits().isEmpty()) {
                 getOperations().editUnit();
+            } else if (keyCode == KeyCode.ENTER) {
+                getOperations().activeUnitSayHello();
             } else if (keyCode == KeyCode.W || keyCode == KeyCode.A || keyCode == KeyCode.S || keyCode == KeyCode.D) {
                 getOperations().handleArrowKeys(keyCode);
             }
@@ -117,12 +119,14 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         getOperations().createStartMacro();
-        getOperations().createStartNewbie();
+        getOperations().createStartUnits();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 world.lifeCycle();
+
+                world.infoOnTop();
 
                 world.currentStatusINFO();
             }

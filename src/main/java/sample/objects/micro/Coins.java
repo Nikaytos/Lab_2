@@ -31,6 +31,10 @@ public class Coins implements Cloneable {
         return count;
     }
 
+    public int getCoinsCount() {
+        return Integer.parseInt(count.getText());
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         String str = count.getText();

@@ -21,7 +21,7 @@ import static sample.objects.SeaOfThieves.MAX_Y;
 
 public class TreasuresCastle extends Macro {
 
-    private final int time_delay = 40;
+    private final int time_delay = 10;
     private int time_current = 0;
 
     public TreasuresCastle() {
@@ -108,14 +108,14 @@ public class TreasuresCastle extends Macro {
 
             Newbie unit = unitIn.get(i);
 
-            if (Integer.parseInt(unit.getCoinsCount().getText()) >= 5) {
+            if (unit.getIntCoins() >= 40) {
                 removeUnitIn(unit);
                 Main.getWorld().askWorldplanning(unit, Actions.GOBASE);
                 i--;
                 continue;
             }
 
-            int countCoins = Integer.parseInt(unit.getCoinsCount().getText()) + 1;
+            int countCoins = unit.getIntCoins() + 1;
             unit.setCoinsCount(String.valueOf(countCoins));
 
         }

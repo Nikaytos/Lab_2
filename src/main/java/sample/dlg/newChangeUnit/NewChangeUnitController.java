@@ -15,10 +15,16 @@ import static sample.dlg.newChangeUnit.NewChangeUnit.*;
 public class NewChangeUnitController {
 
     @FXML
+    ComboBox<String> typeBox;
+
+    @FXML
     TextField nameText;
 
     @FXML
     TextField healthText;
+
+    @FXML
+    TextField coinsText;
 
     @FXML
     ComboBox<String> teamBox;
@@ -40,8 +46,13 @@ public class NewChangeUnitController {
 
     @FXML
     void initialize() {
+        typeBox.getItems().add("Newbie");
+        typeBox.getItems().add("Enjoyer");
+        typeBox.getItems().add("Pro");
+        teamBox.getItems().add("BAD");
         nameText.setPromptText(String.format("Ліміт - %d символів", Newbie.MAX_LENGTH_NAME));
         healthText.setPromptText(String.format("Від %d до %d", Newbie.MIN_HEALTH, Newbie.MAX_HEALTH));
+        coinsText.setPromptText(String.format("Від %d до %d", Newbie.MIN_COINS, Newbie.MAX_COINS));
         teamBox.getItems().add("GOOD");
         teamBox.getItems().add("BAD");
         xText.setPromptText(String.format("Від %d до %d", Newbie.getMIN_UNIT().x, Newbie.getMAX_UNIT().x));
@@ -50,8 +61,13 @@ public class NewChangeUnitController {
         yText.setText(Double.toString(getY()));
 
         okButton.setOnAction(e -> {
+            String cType = "";
+            if (typeBox.getValue() != null) {
+                cType = typeBox.getValue();
+            }
             String sName = nameText.getText();
             String sHealth = healthText.getText();
+            String sCoins = coinsText.getText();
             String cTeam = "";
             if (teamBox.getValue() != null) {
                 cTeam = teamBox.getValue();
@@ -60,17 +76,19 @@ public class NewChangeUnitController {
             String sY = yText.getText();
             boolean action = activeCB.isSelected();
             if(getUnitIndex() == -1){
-                Newbie.createNewUnit(sName, sHealth, cTeam, sX, sY, action);
+                Newbie.createNewUnit(cType, sName, sHealth, sCoins, cTeam, sX, sY, action);
             }
             else{
-                Newbie.changeUnit(getUnitIndex(), sName, sHealth, cTeam, sX, sY, action);
+                Newbie.changeUnit(getUnitIndex(), cType, sName, sHealth, sCoins, cTeam, sX, sY, action);
             }
             NewChangeUnit.getWindow().close();
         });
 
         xButton.setOnAction(e -> {
+            typeBox.setValue("");
             nameText.setText("");
             healthText.setText("");
+            coinsText.setText("");
             teamBox.setValue("");
             xText.setText("");
             yText.setText("");
@@ -79,12 +97,14 @@ public class NewChangeUnitController {
         ArrayList<String> paramsToChange;
         if (!(getUnitIndex() == -1)) {
             paramsToChange = Main.getWorld().getParamsToChange(getUnitIndex());
-            nameText.setText(paramsToChange.get(0));
-            healthText.setText(paramsToChange.get(1));
-            teamBox.setValue(paramsToChange.get(2));
-            xText.setText(paramsToChange.get(3));
-            yText.setText(paramsToChange.get(4));
-            activeCB.setSelected(Boolean.parseBoolean(paramsToChange.get(5)));
+            typeBox.setValue(paramsToChange.get(0));
+            nameText.setText(paramsToChange.get(1));
+            healthText.setText(paramsToChange.get(2));
+            coinsText.setText(paramsToChange.get(3));
+            teamBox.setValue(paramsToChange.get(4));
+            xText.setText(paramsToChange.get(5));
+            yText.setText(paramsToChange.get(6));
+            activeCB.setSelected(Boolean.parseBoolean(paramsToChange.get(7)));
         }
     }
 }
