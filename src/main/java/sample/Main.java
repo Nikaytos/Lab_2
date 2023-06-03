@@ -94,6 +94,8 @@ public class Main extends Application {
                 getOperations().editUnit();
             } else if (keyCode == KeyCode.ENTER) {
                 getOperations().activeUnitSayHello();
+            } else if (keyCode == KeyCode.DIGIT0) {
+                getOperations().activePro();
             } else if (keyCode == KeyCode.W || keyCode == KeyCode.A || keyCode == KeyCode.S || keyCode == KeyCode.D) {
                 getOperations().handleArrowKeys(keyCode);
             }

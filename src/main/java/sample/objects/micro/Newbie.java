@@ -465,10 +465,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         aimy = ay;
     }
 
-    public Macro getBigTarget() {
-        return bigTarget;
-    }
-
     public void setBigTarget(Macro macro) {
         bigTarget = macro;
     }
