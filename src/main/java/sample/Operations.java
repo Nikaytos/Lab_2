@@ -228,13 +228,6 @@ public class Operations {
         }
     }
 
-
-    public void activeUnitSayHello() {
-        for (Newbie unit : Main.getWorld().getUnits())
-            if (unit.isActive())
-                unit.sayHello();
-    }
-
     public void activePro() {
         for (Newbie unit : Main.getWorld().getUnits())
             if (unit instanceof Pro)
