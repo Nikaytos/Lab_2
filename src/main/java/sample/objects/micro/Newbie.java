@@ -19,13 +19,12 @@ import javafx.scene.text.FontWeight;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 import static javafx.util.Duration.millis;
 import static javafx.util.Duration.seconds;
+
 import sample.Main;
 import sample.objects.SeaOfThieves;
 import sample.objects.macro.Macro;
@@ -40,7 +39,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected static final Rectangle2D.Double UNIT_CONTAINER_BOUNDS = new Rectangle2D.Double(0, 0, IMAGE_SIZE, IMAGE_SIZE + HEALTH_HEIGHT + FONT_SIZE * 1.3 + 5);
     protected static final Point MAX_UNIT = new Point((int) (SeaOfThieves.MAX_X - 5 - UNIT_CONTAINER_BOUNDS.width), (int) (SeaOfThieves.MAX_Y - 5 - UNIT_CONTAINER_BOUNDS.height));
     protected static final Point MIN_UNIT = new Point(5, 5);
-    public static final int SPEED = 5;
 
     public static final int MAX_LENGTH_NAME = 7;
     public static final int MAX_HEALTH = 100;
@@ -57,12 +55,15 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected static double defaultValueHealth() {
         return getRandom().nextInt(MAX_HEALTH - MIN_HEALTH + 1) + MIN_HEALTH;
     }
+
     protected static int defaultValueCoins() {
         return getRandom().nextInt(MAX_COINS - MIN_COINS + 1) + MIN_COINS;
     }
+
     protected static int defaultValueX() {
         return getRandom().nextInt(MAX_UNIT.x - MIN_UNIT.x + 1) + MIN_UNIT.x;
     }
+
     protected static int defaultValueY() {
         return getRandom().nextInt(MAX_UNIT.y - MIN_UNIT.y + 1) + MIN_UNIT.y;
     }
@@ -75,6 +76,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected Coins coins;
     protected int x;
     protected int y;
+    protected final int speed = 5;
     protected ImageView unitImage;
     protected Rectangle healthBar;
     protected Rectangle healthBarBackground;
@@ -90,49 +92,84 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public Group getUnitContainer() {
         return unitContainer;
     }
+
     public String getUnitName() {
         return unitName.getText();
     }
+
     public double getUnitHealth() {
         return unitHealth;
     }
+
     public ImageView getUnitImage() {
         return unitImage;
     }
+
     public String getUnitTeam() {
         return unitTeam;
     }
+
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
     }
+
     public int getDirection() {
         return direction;
     }
+
     public boolean isActive() {
         return active;
     }
+
     public static Point getMAX_UNIT() {
         return MAX_UNIT;
     }
+
     public static Point getMIN_UNIT() {
         return MIN_UNIT;
     }
+
     public int getIntCoins() {
         return coins.getCoinsCount();
     }
+
     public String getType() {
         return type;
+    }
+
+    public boolean isEmptyAim() {
+        return (aimx < 0) && (aimy < 0);
+    }
+
+    public void setAim(int ax, int ay) {
+        aimx = ax;
+        aimy = ay;
+    }
+
+    public void setBigTarget(Macro macro) {
+        bigTarget = macro;
+    }
+
+    public void clearAim() {
+        aimx = aimy = -1000;
+    }
+
+    public void setProcessing(boolean processing) {
+        this.processing = processing;
     }
 
     public void setCoinsCount(String count) {
         this.coins.getCount().setText(count);
     }
+
     public void setUnitName(String name) {
         unitName.setText(name);
     }
+
     public void setUnitHealth(Double unitHealth) {
         this.unitHealth = unitHealth;
         double healthPercentage = this.unitHealth / MAX_HEALTH;
@@ -145,6 +182,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         }
         healthBar.setWidth(healthPercentage * IMAGE_SIZE);
     }
+
     public void setUnitTeam(String team) {
         unitTeam = team;
         if (team.equals("GOOD")) {
@@ -153,10 +191,12 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
             shadow.setColor(Color.RED);
         }
     }
+
     public void setX(int x) {
         this.x = x;
         setCoordinates();
     }
+
     public void setY(int y) {
         this.y = y;
         setCoordinates();
@@ -166,11 +206,11 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         this.direction = direction;
         unitImage.setScaleX(direction);
     }
+
     public void setActive(boolean active) {
         if (!active) {
             unitImage.setEffect(shadow);
-        }
-        else unitImage.setEffect(shadowActive);
+        } else unitImage.setEffect(shadowActive);
         this.active = active;
     }
 
@@ -186,7 +226,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         unitImage.setLayoutX(x);
         unitImage.setLayoutY(healthBarBackground.getLayoutY() + healthBarBackground.getHeight());
 
-        coins.setCoordinates((int) (healthBarBackground.getLayoutX()+healthBarBackground.getWidth()+5), (int) healthBarBackground.getLayoutY());
+        coins.setCoordinates((int) (healthBarBackground.getLayoutX() + healthBarBackground.getWidth() + 5), (int) healthBarBackground.getLayoutY());
     }
 
     public Newbie(String name, double health, int iCoins, String team, int x, int y, boolean active) {
@@ -419,8 +459,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public void flipActivation() {
         if (active) {
             unitImage.setEffect(shadow);
-        }
-        else unitImage.setEffect(shadowActive);
+        } else unitImage.setEffect(shadowActive);
         active = !active;
     }
 
@@ -443,44 +482,19 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         int dx = 0;
         int dy = 0;
         int dir = 0;
-        if (x < this.x - SPEED){
-            dx = -SPEED;
+        if (x < this.x - speed) {
+            dx = -speed;
             dir = 1;
-        }
-        else if (x > this.x + SPEED){
-            dx = SPEED;
+        } else if (x > this.x + speed) {
+            dx = speed;
             dir = -1;
         }
-        if (y > this.y + SPEED){
-            dy = SPEED;
-        }
-        else if (y < this.y - SPEED){
-            dy = -SPEED;
+        if (y > this.y + speed) {
+            dy = speed;
+        } else if (y < this.y - speed) {
+            dy = -speed;
         }
         move(dx, dy, dir);
-    }
-
-    public void setAim( int ax, int ay ){
-        aimx = ax;
-        aimy = ay;
-    }
-
-    public void setBigTarget(Macro macro) {
-        bigTarget = macro;
-    }
-
-    public boolean isEmptyAim()
-    {
-        return (aimx < 0) && (aimy < 0);
-    }
-
-    public void clearAim()
-    {
-        aimx = aimy = -1000;
-    }
-
-    public void setProcessing(boolean processing) {
-        this.processing = processing;
     }
 
     public void autoMove() {
@@ -498,10 +512,22 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         }
     }
 
-    public void sayHello() {
-        System.out.print(type + " ");
-        System.out.print(unitName.getText() + ":");
-        System.out.println(" Hello");
+    public void heal() {
+        double healthNew = getUnitHealth() + 1;
+        if (healthNew < MAX_HEALTH) {
+            setUnitHealth(healthNew);
+        } else setUnitHealth((double) MAX_HEALTH);
+    }
+
+    public boolean takeDamage() {
+        double healthNew = getUnitHealth() - 3;
+        if (healthNew > MIN_HEALTH) {
+            setUnitHealth(healthNew);
+            return false;
+        } else {
+            setUnitHealth((double) MIN_HEALTH);
+            return true;
+        }
     }
 
     @Override
@@ -521,7 +547,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public Object clone() throws CloneNotSupportedException {
         Newbie clone = (Newbie) super.clone();
 
-        clone.coins = (Coins)this.coins.clone();
+        clone.coins = (Coins) this.coins.clone();
 
         clone.unitName = new Label();
         clone.unitImage = new ImageView(this.unitImage.getImage());
@@ -531,7 +557,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         clone.unitContainer = new Group();
         clone.shadow = new DropShadow();
         clone.shadowActive = new DropShadow();
-        clone.setUnitName(this.getUnitName()+"-cl");
+        clone.setUnitName(this.getUnitName() + "-cl");
         clone.setUnitHealth(this.getUnitHealth());
         clone.setUnitTeam(this.getUnitTeam());
 
@@ -548,24 +574,14 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         return clone;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Newbie newbie = (Newbie) o;
-        return Double.compare(newbie.unitHealth, unitHealth) == 0 && x == newbie.x && y == newbie.y && active == newbie.active && direction == newbie.direction && Objects.equals(unitContainer, newbie.unitContainer) && Objects.equals(type, newbie.type) && Objects.equals(unitName, newbie.unitName) && Objects.equals(unitTeam, newbie.unitTeam) && Objects.equals(unitImage, newbie.unitImage) && Objects.equals(healthBar, newbie.healthBar) && Objects.equals(healthBarBackground, newbie.healthBarBackground) && Objects.equals(shadow, newbie.shadow) && Objects.equals(shadowActive, newbie.shadowActive);
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(unitContainer, type, unitName, unitHealth, unitTeam, x, y, unitImage, healthBar, healthBarBackground, shadow, shadowActive, active, direction);
-    }
     public int compareTo(Newbie o) {
         return this.unitName.getText().compareTo(o.unitName.getText());
     }
+
     public static class HealthComparator implements Comparator<Newbie> {
         @Override
         public int compare(Newbie f1, Newbie f2) {
             return Double.compare(f1.unitHealth, f2.unitHealth);
         }
-    };
+    }
 }

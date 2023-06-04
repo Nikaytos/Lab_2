@@ -21,7 +21,6 @@ import static sample.objects.SeaOfThieves.MAX_Y;
 
 public class BaseGood extends Macro {
 
-    private final int hpToHeal = 1;
     private final int time_delay = 40;
     private int time_current = 0;
 
@@ -55,7 +54,7 @@ public class BaseGood extends Macro {
     public void setCoordinates() {
         x = 200;
         y = (int) (MAX_Y / 4 - MACRO_WH.height / 2);
-        macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 60);
+        macroName.setLayoutX(x);
         macroName.setLayoutY(y);
         unitsInLabel.setLayoutX(x);
         unitsInLabel.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3);
@@ -91,14 +90,14 @@ public class BaseGood extends Macro {
         for (int i = 0; i < unitIn.size(); i++) {
             Newbie unit = unitIn.get(i);
             if (unit.getUnitTeam().equals("GOOD")) {
-                if (unit.getUnitHealth() < 100) {
-                    unit.setUnitHealth(unit.getUnitHealth() + hpToHeal);
-                }
+                unit.heal();
 
                 if  (unit.getIntCoins() > 4) {
                     int countCoins = unit.getIntCoins() - 5;
                     unit.setCoinsCount(String.valueOf(countCoins));
                     coins+=5;
+                } else if (unit.getUnitHealth() != Newbie.MAX_HEALTH) {
+                    continue;
                 } else if ((Main.getWorld().isGoBase())) {
                     continue;
                 } else {

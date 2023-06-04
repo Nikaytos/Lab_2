@@ -26,8 +26,9 @@ public class TreasuresCastle extends Macro {
 
     public TreasuresCastle() {
         FONT_SIZE = 20 * SeaOfThieves.SIZE;
+        BORDER_WH = new Rectangle2D.Double(-15, -5, 10, 10);
         IMAGE_WH = new Rectangle2D.Double(0, 0, 256 * SeaOfThieves.SIZE, 166 * SeaOfThieves.SIZE);
-        MACRO_WH = new Rectangle2D.Double(0, 0, IMAGE_WH.getWidth(), IMAGE_WH.getHeight() + FONT_SIZE * 1.3 + FONT_SIZE * 1.3 + 5);
+        MACRO_WH = new Rectangle2D.Double(BORDER_WH.x, BORDER_WH.y, IMAGE_WH.getWidth() + BORDER_WH.width, IMAGE_WH.getHeight() + FONT_SIZE * 1.3 + FONT_SIZE * 1.3 + 5 + BORDER_WH.height);
 
         unitIn = new ArrayList<>();
         macroContainer = new Group();
@@ -53,16 +54,16 @@ public class TreasuresCastle extends Macro {
     public void setCoordinates() {
         x = (int) (MAX_X / 2 - MACRO_WH.width / 2);
         y = (int) (MAX_Y / 2 - MACRO_WH.height / 2);
-        macroName.setLayoutX(x + IMAGE_WH.getWidth() / 2 - 115);
+        macroName.setLayoutX(x);
         macroName.setLayoutY(y);
         unitsInLabel.setLayoutX(x);
         unitsInLabel.setLayoutY(macroName.getLayoutY() + FONT_SIZE * 1.3);
         macroImage.setLayoutX(x);
         macroImage.setLayoutY(unitsInLabel.getLayoutY() + FONT_SIZE * 1.3 + 5);
-        border.setLayoutX(x - 10);
-        border.setLayoutY(y - 10);
-        border.setWidth(MACRO_WH.width + 20);
-        border.setHeight(MACRO_WH.height + 20);
+        border.setLayoutX(x + BORDER_WH.x);
+        border.setLayoutY(y + BORDER_WH.y);
+        border.setWidth(MACRO_WH.width + BORDER_WH.width);
+        border.setHeight(MACRO_WH.height + BORDER_WH.height + BORDER_WH.y);
     }
 
 
@@ -98,6 +99,7 @@ public class TreasuresCastle extends Macro {
                 sColor = "red";
             } else {
                 color = Color.rgb(255, 0, 255, 0.5);
+                sColor = "purple";
                 break;
             }
         }
@@ -107,6 +109,14 @@ public class TreasuresCastle extends Macro {
 
 
             Newbie unit = unitIn.get(i);
+
+            if (sColor.equals("purple"))
+                if (unit.takeDamage()) {
+                    removeUnitIn(unit);
+                    Main.getWorld().askWorldplanning(unit, Actions.GOBASE);
+                    i--;
+                    continue;
+                }
 
             if (unit.getIntCoins() >= 40) {
                 removeUnitIn(unit);

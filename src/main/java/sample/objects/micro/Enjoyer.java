@@ -34,6 +34,8 @@ public class Enjoyer extends Newbie{
         initialize();
         setX(x);
         setY(y);
+        clearAim();
+        setActive(active);
 
         spawnTransition();
 
@@ -51,10 +53,26 @@ public class Enjoyer extends Newbie{
         System.out.print("Random enjoyer appeared: " + this + "\n");
     }
 
-    public void sayHello() {
-        System.out.print(type + " ");
-        System.out.print(unitName.getText() + ":");
-        System.out.println(" Hello");
+    @Override
+    public void heal() {
+        double healthNew = getUnitHealth() + 2;
+        if (healthNew < MAX_HEALTH) {
+            setUnitHealth(healthNew);
+        }
+        else setUnitHealth((double) MAX_HEALTH);
+    }
+
+    @Override
+    public boolean takeDamage() {
+        double healthNew = getUnitHealth() - 2;
+        if (healthNew > MIN_HEALTH) {
+            setUnitHealth(healthNew);
+            return false;
+        }
+        else {
+            setUnitHealth((double) MIN_HEALTH);
+            return true;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package sample.objects.macro;
 
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.effect.Bloom;
@@ -52,6 +53,8 @@ public abstract class Macro {
         macroName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
         macroName.setTextFill(Color.WHITE);
         macroName.setEffect(new Bloom());
+        macroName.setAlignment(Pos.CENTER);
+        macroName.setPrefWidth(IMAGE_WH.width);
 
         DropShadow nameEffect = new DropShadow();
         nameEffect.setBlurType(BlurType.GAUSSIAN);
