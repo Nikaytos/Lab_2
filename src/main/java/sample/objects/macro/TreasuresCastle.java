@@ -87,6 +87,16 @@ public class TreasuresCastle extends Macro {
         if (time_current < time_delay) return;
         time_current = 0;
 
+        String sColor = "white";
+
+        changeColor();
+
+        if (border.getFill().equals(Color.rgb(255, 0, 255, 0.5))) sColor = "pink";
+
+        getCoinsFromCastle(sColor);
+    }
+
+    private void changeColor() {
         Color color = Color.rgb(255, 255, 255, 0.5);
         String sColor = "white";
 
@@ -99,26 +109,39 @@ public class TreasuresCastle extends Macro {
                 sColor = "red";
             } else {
                 color = Color.rgb(255, 0, 255, 0.5);
-                sColor = "purple";
                 break;
             }
         }
-        border.setFill(color);
 
+        border.setFill(color);
+    }
+
+    private void getCoinsFromCastle(String sColor) {
         for (int i = 0; i < unitIn.size(); i++) {
 
 
             Newbie unit = unitIn.get(i);
 
-            if (sColor.equals("purple"))
-                if (unit.takeDamage()) {
+            if (sColor.equals("pink")) {
+                int damage = 0;
+
+                for (Newbie unitDamage : unitIn)
+                    if (!unitDamage.getUnitTeam().equals(unit.getUnitTeam()))
+                        switch (unitDamage.getType()) {
+                            case "Newbie" -> damage+=1;
+                            case "Enjoyer" -> damage+=2;
+                            case "Pro" -> damage+=3;
+                        }
+
+                if (unit.takeDamage(damage)) {
                     removeUnitIn(unit);
                     Main.getWorld().askWorldplanning(unit, Actions.GOBASE);
                     i--;
                     continue;
                 }
+            }
 
-            if (unit.getIntCoins() >= 40) {
+            if (unit.getIntCoins() >= 100) {
                 removeUnitIn(unit);
                 Main.getWorld().askWorldplanning(unit, Actions.GOBASE);
                 i--;
@@ -129,6 +152,5 @@ public class TreasuresCastle extends Macro {
             unit.setCoinsCount(String.valueOf(countCoins));
 
         }
-
     }
 }

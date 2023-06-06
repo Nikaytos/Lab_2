@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import sample.Main;
+import sample.MiniMap;
 import sample.objects.macro.Macro;
 import sample.objects.micro.Actions;
 import sample.objects.micro.Newbie;
@@ -22,6 +23,7 @@ public class SeaOfThieves {
     private final Pane root;
     private final ArrayList<Newbie> units;
     private final ArrayList<Macro> macros;
+    private MiniMap miniMap;
 
     private final Text goodCoins;
     private final Text badCoins;
@@ -45,7 +47,6 @@ public class SeaOfThieves {
 
         units = new ArrayList<>();
         macros = new ArrayList<>();
-
 
         Image mapImage = new Image(Objects.requireNonNull(Main.class.getResource("images/bg.jpeg")).toString());
         ImageView bg = new ImageView(mapImage);
@@ -74,6 +75,9 @@ public class SeaOfThieves {
         activeUnits.setFill(Color.WHITE);
         activeUnits.setFont(new Font("Monaco", 24));
         root.getChildren().add(activeUnits);
+
+        miniMap = new MiniMap();
+        root.getChildren().addAll(miniMap.getPane());
 
         goBase = false;
     }
@@ -132,21 +136,29 @@ public class SeaOfThieves {
     public void addNewUnit(Newbie unit) {
         units.add(unit);
         root.getChildren().add(unit.getUnitContainer());
+        this.miniMap.addUnit(unit);
     }
 
     public void deleteUnit(Newbie unit) {
         root.getChildren().remove(unit.getUnitContainer());
         units.remove(unit);
+        this.miniMap.deleteUnit(unit);
     }
 
     public void addNewMacro(Macro macro) {
         macros.add(macro);
         root.getChildren().add(macro.getMacroContainer());
+        this.miniMap.addMacro(macro);
     }
 
     public void deleteMacro(Macro macro) {
         root.getChildren().remove(macro.getMacroContainer());
         macros.remove(macro);
+        this.miniMap.deleteMacro(macro);
+    }
+
+    public MiniMap getMiniMap() {
+        return miniMap;
     }
 
     public void lifeCycle() {
@@ -245,6 +257,8 @@ public class SeaOfThieves {
 
         getActiveUnits().setX(Main.getScrollX() + 20);
         getActiveUnits().setY(Main.getScrollY() + 150);
+
+
     }
 
     public void infoOnTop() {
@@ -252,10 +266,12 @@ public class SeaOfThieves {
         root.getChildren().remove(getBadCoins());
         root.getChildren().remove(getGoBaseText());
         root.getChildren().remove(getActiveUnits());
+        root.getChildren().remove(getMiniMap().getPane());
 
         root.getChildren().add(getGoodCoins());
         root.getChildren().add(getBadCoins());
         root.getChildren().add(getGoBaseText());
         root.getChildren().add(getActiveUnits());
+        root.getChildren().add(getMiniMap().getPane());
     }
 }

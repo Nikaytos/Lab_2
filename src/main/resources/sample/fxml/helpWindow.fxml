@@ -76,37 +76,27 @@
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Створити або виділити юніт" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label text="Виділити юніт" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="СКМ" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                        <Label text="ESC" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Вигнати юнітів з макрооб'єкту" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label text="Видалити виділення всіх юнітів" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="ESC" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                        <Label text="J" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                            <font>
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Видалити виділення всіх юнітів" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                           <font>
-                              <Font name="Verdana" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="J" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
-                           <font>
-                              <Font name="Verdana Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="Рух юнітів до макрооб'єкту" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <Label text="Рух юнітів до макрооб'єкту" GridPane.columnIndex="1" GridPane.rowIndex="5">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
@@ -156,7 +146,7 @@
                               <Font name="Verdana Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label text="Змінити юніт" GridPane.columnIndex="1" GridPane.rowIndex="13">
+                        <Label text="Створити юніт" GridPane.columnIndex="1" GridPane.rowIndex="13">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
@@ -167,16 +157,6 @@
                            </font>
                         </Label>
                         <Label text="Видалити юніт" GridPane.columnIndex="1" GridPane.rowIndex="14">
-                           <font>
-                              <Font name="Verdana" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="ПКМ" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                           <font>
-                              <Font name="Verdana Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label text="Вигнати юніт з макрооб'єкту" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>
@@ -197,6 +177,26 @@
                            </font>
                         </Label>
                         <Label text="Налаштування" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                           <font>
+                              <Font name="Verdana" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Z" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="Verdana Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Змінити юніт" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="Verdana" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="K" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                           <font>
+                              <Font name="Verdana Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Рух юнітів до бази" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <font>
                               <Font name="Verdana" size="12.0" />
                            </font>

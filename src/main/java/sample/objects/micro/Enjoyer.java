@@ -13,7 +13,6 @@ import java.util.Objects;
 import static sample.Main.getRandom;
 
 public class Enjoyer extends Newbie{
-
     public Enjoyer(String name, double health, int iCoins, String team, int x, int y, boolean active) {
         super(name,  health,  iCoins ,  team, x, y, active);
         type = "Enjoyer";
@@ -63,8 +62,8 @@ public class Enjoyer extends Newbie{
     }
 
     @Override
-    public boolean takeDamage() {
-        double healthNew = getUnitHealth() - 2;
+    public boolean takeDamage(double damage) {
+        double healthNew = getUnitHealth() - damage/1.2;
         if (healthNew > MIN_HEALTH) {
             setUnitHealth(healthNew);
             return false;

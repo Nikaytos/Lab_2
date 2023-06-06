@@ -19,6 +19,8 @@ import sample.objects.micro.Newbie;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public abstract class Macro {
     protected int x;
@@ -97,6 +99,10 @@ public abstract class Macro {
         return coins;
     }
 
+    public ImageView getMacroImage() {
+        return macroImage;
+    }
+
     public void setCoins(int coins) {
         this.coins = coins;
     }
@@ -123,7 +129,10 @@ public abstract class Macro {
 
     public ArrayList<String> getNames() {
         ArrayList<String> arr = new ArrayList<>();
-        unitIn.forEach(n -> arr.add(n.toString()));
+        Comparator<Newbie> myComparator= new Newbie.HealthComparator();
+        Newbie[] unitArray = unitIn.toArray(new Newbie[0]);
+        Arrays.sort(unitArray, myComparator);
+        Arrays.stream(unitArray).forEach(n -> arr.add(n.toString()));
         return arr;
     }
 

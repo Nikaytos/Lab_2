@@ -141,6 +141,14 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         return type;
     }
 
+    public DropShadow getShadow() {
+        return shadow;
+    }
+
+    public DropShadow getShadowActive() {
+        return shadowActive;
+    }
+
     public boolean isEmptyAim() {
         return (aimx < 0) && (aimy < 0);
     }
@@ -268,6 +276,15 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
                 false);
         System.out.print("Random newbie appeared: " + this + "\n");
     }
+
+    static {
+        System.out.println("Та нехай почнеться битва!");
+    }
+
+    {
+        System.out.println("Ласкаво просимо до світу піратів!");
+    }
+
 
     protected void initialize() {
         unitName.setFont(Font.font("System", FontWeight.BOLD, FONT_SIZE));
@@ -423,7 +440,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
 
         switch (cType) {
             case "Newbie" -> {
-                newbie = new Enjoyer(name, h, coins, team, x, y, active);
+                newbie = new Newbie(name, h, coins, team, x, y, active);
                 Main.getWorld().deleteUnit(Main.getWorld().getUnits().get(unitIndex));
                 Main.getWorld().addNewUnit(newbie);
                 s2 = newbie.toString();
@@ -519,8 +536,8 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         } else setUnitHealth((double) MAX_HEALTH);
     }
 
-    public boolean takeDamage() {
-        double healthNew = getUnitHealth() - 3;
+    public boolean takeDamage(double damage) {
+        double healthNew = getUnitHealth() - damage;
         if (healthNew > MIN_HEALTH) {
             setUnitHealth(healthNew);
             return false;
@@ -581,7 +598,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public static class HealthComparator implements Comparator<Newbie> {
         @Override
         public int compare(Newbie f1, Newbie f2) {
-            return Double.compare(f1.unitHealth, f2.unitHealth);
+            return Double.compare(f2.unitHealth, f1.unitHealth);
         }
     }
 }

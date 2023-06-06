@@ -64,8 +64,8 @@ public class Pro extends Enjoyer{
     }
 
     @Override
-    public boolean takeDamage() {
-        double healthNew = getUnitHealth() - 1;
+    public boolean takeDamage(double damage) {
+        double healthNew = getUnitHealth() - damage/1.5;
         if (healthNew > MIN_HEALTH) {
             setUnitHealth(healthNew);
             return false;

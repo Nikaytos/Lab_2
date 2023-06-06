@@ -102,6 +102,7 @@ public class RequestsWindowController {
             ArrayList<String> tmp = new ArrayList<>();
             for (Macro macro : Main.getWorld().getMacros())
                 tmp.addAll(macro.getNames());
+
             for (String unit : Main.getWorld().getUnitsNames())
                 if (!tmp.contains(unit))
                     listSecond.getItems().add(count++ + ". " + unit);
@@ -251,7 +252,7 @@ public class RequestsWindowController {
             return;
         }
 
-        if (listView == listSecond && macro.getNames().isEmpty()) {
+        if (macro != null && listView == listSecond && macro.getNames().isEmpty()) {
             listSecond.getItems().add("Макрооб'єкт пустий");
             return;
         }

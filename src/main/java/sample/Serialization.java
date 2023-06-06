@@ -104,12 +104,9 @@ public class Serialization {
                 }
             }
 
-
-
-
-
             decoder.close();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             System.out.println("Помилка відкриття файлу");
         }
     }

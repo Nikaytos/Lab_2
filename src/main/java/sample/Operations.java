@@ -51,7 +51,6 @@ public class Operations {
     }
 
     public void deleteUnits() {
-        System.out.println("Видалення всіх виділенних юнітів. . .");
         for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
             Newbie newbie = Main.getWorld().getUnits().get(i);
             if (newbie.isActive()) {
@@ -62,17 +61,14 @@ public class Operations {
     }
 
     public void openCreateUnit() {
-        System.out.println("Створення юніта. . .");
         new NewChangeUnit(0, 0, -1).display();
     }
 
     public void editUnit() {
-        System.out.println("Відкриття меню зміни юнітів. . .");
         new CUTC().display();
     }
 
     public void activateUnits() {
-        System.out.println("Виділення всіх юнітів на карті. . .");
         Main.getWorld().getUnits().stream().filter(n -> !n.isActive()).forEach(n -> {
             n.flipActivation();
             for (Macro macro : Main.getWorld().getMacros()) {
@@ -97,7 +93,6 @@ public class Operations {
     }
 
     public void openHW() {
-        System.out.println("Відкриття довідки. . .");
         new HelpWindow().display();
     }
 
@@ -117,7 +112,6 @@ public class Operations {
     }
 
     public void copyPaste() {
-        System.out.println("Клонування юніта. . .");
         ArrayList<Newbie> temp = new ArrayList<>();
         for (Newbie unit : Main.getWorld().getUnits()) {
             if (unit.isActive()) {
@@ -137,14 +131,12 @@ public class Operations {
     }
 
     public void deactivationUnits() {
-        System.out.println("Деактивація юнітів. . .");
         Main.getWorld().getUnits().stream()
                 .filter(Newbie::isActive)
                 .forEach(Newbie::flipActivation);
     }
 
     public void settings() {
-        System.out.println("Відкриття налаштувань. . .");
         new Settings().display();
     }
 

@@ -49,7 +49,6 @@ public class NewChangeUnitController {
         typeBox.getItems().add("Newbie");
         typeBox.getItems().add("Enjoyer");
         typeBox.getItems().add("Pro");
-        teamBox.getItems().add("BAD");
         nameText.setPromptText(String.format("Ліміт - %d символів", Newbie.MAX_LENGTH_NAME));
         healthText.setPromptText(String.format("Від %d до %d", Newbie.MIN_HEALTH, Newbie.MAX_HEALTH));
         coinsText.setPromptText(String.format("Від %d до %d", Newbie.MIN_COINS, Newbie.MAX_COINS));

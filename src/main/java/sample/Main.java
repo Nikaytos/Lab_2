@@ -25,15 +25,22 @@ public class Main extends Application {
     private static int scrollX;
     private static int scrollY;
 
+    public static ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
     public static Random getRandom() {
         return random;
     }
+
     public static SeaOfThieves getWorld() {
         return world;
     }
+
     public static Operations getOperations() {
         return operations;
     }
+
     public static Scene getScene() {
         return scene;
     }
@@ -55,8 +62,7 @@ public class Main extends Application {
         getOperations().createStage(stage);
 
         world.getRoot().setOnMouseClicked(mouseEvent -> {
-            MouseButton mouseButton = mouseEvent.getButton();
-            if (mouseButton == MouseButton.PRIMARY)
+            if (mouseEvent.getButton() == MouseButton.PRIMARY)
                 getOperations().mouseLeftClick(mouseEvent);
 
         });
@@ -73,10 +79,8 @@ public class Main extends Application {
             } else if (keyEvent.isControlDown() && keyCode == KeyCode.A) {
                 getOperations().activateUnits();
             } else if (keyCode == KeyCode.G) {
-                System.out.println("Створення юніта альянсу Добрих. . .");
                 getOperations().createNewUnit("GOOD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.B) {
-                System.out.println("Створення юніта лагерю Поганих. . .");
                 getOperations().createNewUnit("BAD", getOperations().getMouseX(), getOperations().getMouseY());
             } else if (keyCode == KeyCode.H) {
                 getOperations().openHW();
@@ -106,14 +110,10 @@ public class Main extends Application {
 
             world.updateChordINFO();
 
-//            if (world.getShips().size() == 0){
-//                currentStatusINFO();
-//            }
-
-//            world.getMiniMap().getPane().setLayoutX(scrollX + 1310);
-//            world.getMiniMap().getPane().setLayoutY(scrollY + scene.getHeight() - world.getMiniMap().getPane().getHeight() - 650);
-//            world.getMiniMap().getMapArea().setLayoutX(scrollX*MiniMap.getSCALE());
-//            world.getMiniMap().getMapArea().setLayoutY(scrollY*MiniMap.getSCALE());
+            world.getMiniMap().getPane().setLayoutX(scrollX + 10);
+            world.getMiniMap().getPane().setLayoutY(scrollY + scene.getHeight() - world.getMiniMap().getPane().getHeight() - 25);
+            world.getMiniMap().getMainArea().setLayoutX(scrollX * MiniMap.getSCALE());
+            world.getMiniMap().getMainArea().setLayoutY(scrollY * MiniMap.getSCALE());
         });
 
         stage.setScene(scene);
@@ -124,6 +124,8 @@ public class Main extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                world.getMiniMap().updateMap();
+
                 world.lifeCycle();
 
                 world.infoOnTop();
