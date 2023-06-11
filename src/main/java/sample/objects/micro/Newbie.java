@@ -577,6 +577,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         clone.setUnitName(this.getUnitName() + "-cl");
         clone.setUnitHealth(this.getUnitHealth());
         clone.setUnitTeam(this.getUnitTeam());
+        clone.direction = direction;
 
         clone.initialize();
 
