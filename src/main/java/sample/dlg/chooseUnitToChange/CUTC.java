@@ -27,7 +27,7 @@ public class CUTC {
         window.setTitle("Оберіть юніт для зміни:");
         Parent alert;
         try {
-            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/chooseUnitToChange.fxml")));
+            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/CUTC.fxml")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

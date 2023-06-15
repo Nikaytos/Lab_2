@@ -105,19 +105,7 @@ public class BaseGood extends Macro {
                     Main.getWorld().askWorldplanning(unit, Actions.TAKECOINS );
                     i--;
                 }
-
-
             }
-//            else if (unit.getUnitTeam().equals("BAD")) {
-//                if (unit.getUnitHealth() > 0) {
-//                    unit.setUnitHealth(unit.getUnitHealth() - hpToHeal);
-//                } else {
-//                    unitIn.remove(unit);
-//                    Main.getWorld().deleteUnit(unit);
-//                    getUnitsInLabel().setText("Units in: " + unitIn.size());
-//                    i--;
-//                }
-//            }
         }
     }
 }

@@ -36,7 +36,7 @@ public class NewChangeUnit {
 
         Parent alert;
         try {
-            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/newChangeUnitDlg.fxml")));
+            alert = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("fxml/newChangeUnit.fxml")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

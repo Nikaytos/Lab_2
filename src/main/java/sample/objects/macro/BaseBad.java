@@ -108,16 +108,6 @@ public class BaseBad extends Macro {
                     i--;
                 }
             }
-//            else if (unit.getUnitTeam().equals("GOOD")) {
-//                if (unit.getUnitHealth() > 0) {
-//                    unit.setUnitHealth(unit.getUnitHealth() - hpToHeal);
-//                } else {
-//                    unitIn.remove(unit);
-//                    Main.getWorld().deleteUnit(unit);
-//                    getUnitsInLabel().setText("Units in: " + unitIn.size());
-//                    i--;
-//                }
-//            }
         }
     }
 }
