@@ -133,6 +133,31 @@ public class SeaOfThieves {
         macros.get(2).aimUnit(unit);
     }
 
+    public void unitsLifeCycle() {
+        for (int i = 0; i < units.size(); i++) {
+            Newbie unit = units.get(i);
+            unit.autoMove();
+
+            for (Newbie unitOn : units) {
+                if (!unit.equals(unitOn)
+                        && !unit.getUnitTeam().equals(unitOn.getUnitTeam())
+                        && unit.getUnitImage().getBoundsInParent().intersects(unitOn.getUnitImage().getBoundsInParent())) {
+                    int damage = 0;
+                    switch (unitOn.getType()) {
+                        case "Newbie" -> damage+=1;
+                        case "Enjoyer" -> damage+=2;
+                        case "Pro" -> damage+=3;
+                    }
+                    if (unit.takeDamage(damage)) {
+                        deleteUnit(unit);
+                        i--;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     public void addNewUnit(Newbie unit) {
         units.add(unit);
         root.getChildren().add(unit.getUnitContainer());
@@ -166,9 +191,7 @@ public class SeaOfThieves {
         macros.get(1).lifeCycle();
         macros.get(2).lifeCycle();
 
-        for (Newbie unit : units) {
-            unit.autoMove();
-        }
+        unitsLifeCycle();
     }
 
     public Pane getRoot() {

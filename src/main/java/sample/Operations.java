@@ -196,18 +196,6 @@ public class Operations {
             }
         }
 
-//        for (Macro macro : Main.getWorld().getMacros()) {
-//            if (macro.mouseIsOn(mouseEvent.getX(), mouseEvent.getY())) {
-//                for (int i = 0; i < Main.getWorld().getUnits().size(); i++) {
-//                    Newbie unit = Main.getWorld().getUnits().get(i);
-//                    if (unit.isActive()) {
-//                        unit.setOrder(true);
-//                        unit.setBigTarget(macro);
-//                    }
-//                }
-//                return;
-//            }
-//        }
     }
 
     public void mouseMove(Event event) {
@@ -224,5 +212,16 @@ public class Operations {
         for (Newbie unit : Main.getWorld().getUnits())
             if (unit instanceof Pro)
                 unit.setActive(true);
+    }
+
+    public void enterMacro() {
+        for (Newbie unit : Main.getWorld().getUnits())
+            for (Macro macro : Main.getWorld().getMacros())
+                if (unit.isActive()
+                && unit.getUnitImage().getBoundsInParent().intersects(macro.getMacroContainer().getBoundsInParent())) {
+                    unit.setProcessing(true);
+                    unit.setActive(false);
+                    macro.addUnitIn(unit);
+                }
     }
 }

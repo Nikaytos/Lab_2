@@ -108,6 +108,13 @@ public class BaseBad extends Macro {
                     i--;
                 }
             }
+            else {
+                if (unit.takeDamage(2)) {
+                    removeUnitIn(unit);
+                    Main.getWorld().deleteUnit(unit);
+                    i--;
+                }
+            }
         }
     }
 }
