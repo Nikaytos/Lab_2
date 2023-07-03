@@ -18,7 +18,7 @@ public class Enjoyer extends Newbie{
         type = "Enjoyer";
 
         unitName = new Label();
-        Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/enjoyer.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
+        img = new Image(Objects.requireNonNull(Main.class.getResource("images/enjoyer.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);

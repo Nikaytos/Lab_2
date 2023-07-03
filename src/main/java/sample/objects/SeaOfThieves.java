@@ -15,6 +15,8 @@ import sample.objects.micro.Newbie;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 public class SeaOfThieves {
     final public static int MAX_X = 3000;
     final public static  int MAX_Y = 2000;
@@ -31,6 +33,12 @@ public class SeaOfThieves {
     private final Text activeUnits;
 
     private boolean goBase;
+
+    private boolean victory = false;
+
+    public void setVictory(boolean victory) {
+        this.victory = victory;
+    }
 
     public boolean isGoBase() {
         return goBase;
@@ -108,6 +116,49 @@ public class SeaOfThieves {
     }
 
     public void whatToDo(Newbie unit){
+        if (unit.isMonster()) {
+            int countEated = 0;
+            for (Newbie eatUnit : units) {
+                if (eatUnit.isEated()) countEated++;
+            }
+            if (countEated == units.size()-2) {
+                if (!victory) {
+                    Newbie monster1 = null;
+                    Newbie monster2 = null;
+                    for (Newbie unitMonster : units) {
+                        if (unitMonster.getMonsterTeam() == 1) monster1 = unitMonster;
+                        if (unitMonster.getMonsterTeam() == 2) monster2 = unitMonster;
+                    }
+                    if (monster1.getCountEat() > monster2.getCountEat()) System.out.println("Монстр1 виграв");
+                    else if (monster1.getCountEat() < monster2.getCountEat()) System.out.println("Монстр2 виграв");
+                    else System.out.println("Переможців немає!");
+                    victory = true;
+                }
+                return;
+            }
+            int distance = -1;
+            Newbie finalUnit = null;
+            for (Newbie unitTarget : units) {
+                if (!unitTarget.isMonster() && !unitTarget.isEated()) {
+                    int tmp;
+                    tmp = abs(unitTarget.getX()-unit.getX()) + abs(unitTarget.getY()-unit.getY());
+                    if (distance != -1) {
+                        if (tmp < distance) {
+                            finalUnit = unitTarget;
+                            distance = tmp;
+                        }
+                    }
+                    else {
+                        finalUnit = unitTarget;
+                        distance = tmp;
+                    }
+                }
+            }
+
+            unit.setUnitTarget(finalUnit);
+            unit.setAim((int) (finalUnit.getUnitContainer().getBoundsInParent().getCenterX()-unit.getUnitContainer().getBoundsInParent().getWidth()/2), (int) (finalUnit.getUnitContainer().getBoundsInParent().getCenterY()-unit.getUnitContainer().getBoundsInParent().getHeight()/2));
+            return;
+        }
 
         if (Main.getWorld().isGoBase()) {
             if (unit.getUnitTeam().equals("GOOD")) {
@@ -139,7 +190,11 @@ public class SeaOfThieves {
             unit.autoMove();
 
             for (Newbie unitOn : units) {
-                if (!unit.equals(unitOn)
+                if (!unit.isEated()
+                        && !unitOn.isEated()
+                        && !unit.isMonster()
+                        && !unitOn.isMonster()
+                        && !unit.equals(unitOn)
                         && !unit.getUnitTeam().equals(unitOn.getUnitTeam())
                         && unit.getUnitImage().getBoundsInParent().intersects(unitOn.getUnitImage().getBoundsInParent())) {
                     int damage = 0;
@@ -296,5 +351,14 @@ public class SeaOfThieves {
         root.getChildren().add(getGoBaseText());
         root.getChildren().add(getActiveUnits());
         root.getChildren().add(getMiniMap().getPane());
+    }
+
+    public void updateMonsters() {
+        for (Newbie unit : units) {
+            unit.setMonster(false);
+            unit.setEated(false);
+            unit.clearAim();
+            unit.setProcessing(false);
+        }
     }
 }

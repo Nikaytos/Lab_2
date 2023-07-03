@@ -100,6 +100,8 @@ public class Main extends Application {
                 getOperations().activePro();
             } else if (keyCode == KeyCode.ENTER) {
                 getOperations().enterMacro();
+            } else if (keyCode == KeyCode.M && world.getUnits().size()>2) {
+                getOperations().newMonsters();
             } else if (keyCode == KeyCode.W || keyCode == KeyCode.A || keyCode == KeyCode.S || keyCode == KeyCode.D) {
                 getOperations().handleArrowKeys(keyCode);
             }

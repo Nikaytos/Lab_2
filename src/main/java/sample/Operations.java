@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import sample.dlg.chooseUnitToChange.CUTC;
 import sample.dlg.helpWindow.HelpWindow;
 import sample.dlg.newChangeUnit.NewChangeUnit;
+import sample.dlg.newMonsters.NewMonsters;
 import sample.dlg.requestsWindow.RequestsWindow;
 import sample.dlg.settings.Settings;
 import sample.objects.SeaOfThieves;
@@ -223,5 +224,9 @@ public class Operations {
                     unit.setActive(false);
                     macro.addUnitIn(unit);
                 }
+    }
+
+    public void newMonsters() {
+        new NewMonsters().display();
     }
 }

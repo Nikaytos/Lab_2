@@ -22,4 +22,6 @@ module sample.oop_game {
     opens sample.dlg.chooseUnitToChange to javafx.fxml;
     exports sample.dlg.requestsWindow;
     opens sample.dlg.requestsWindow to javafx.fxml;
+    exports sample.dlg.newMonsters;
+    opens sample.dlg.newMonsters to javafx.fxml;
 }

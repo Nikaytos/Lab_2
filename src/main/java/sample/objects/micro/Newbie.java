@@ -22,6 +22,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Comparator;
 import java.util.Objects;
 
+import static java.lang.Math.abs;
 import static javafx.util.Duration.millis;
 import static javafx.util.Duration.seconds;
 
@@ -76,8 +77,9 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected Coins coins;
     protected int x;
     protected int y;
-    protected final int speed = 5;
+    protected int speed = 5;
     protected ImageView unitImage;
+    protected Image img;
     protected Rectangle healthBar;
     protected Rectangle healthBarBackground;
     protected DropShadow shadow;
@@ -88,6 +90,31 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     protected int aimx;
     protected int aimy;
     protected Macro bigTarget;
+    protected Newbie unitTarget;
+    protected boolean monster;
+    protected int monsterTeam;
+    protected int countEat;
+    protected boolean eated;
+
+    public Newbie getUnitTarget() {
+        return unitTarget;
+    }
+
+    public void setUnitTarget(Newbie unitTarget) {
+        this.unitTarget = unitTarget;
+    }
+
+    public int getMonsterTeam() {
+        return monsterTeam;
+    }
+
+    public int getCountEat() {
+        return countEat;
+    }
+
+    public boolean isMonster() {
+        return monster;
+    }
 
     public Group getUnitContainer() {
         return unitContainer;
@@ -104,6 +131,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
     public ImageView getUnitImage() {
         return unitImage;
     }
+
 
     public String getUnitTeam() {
         return unitTeam;
@@ -151,6 +179,42 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
 
     public boolean isEmptyAim() {
         return (aimx < 0) && (aimy < 0);
+    }
+
+    public boolean isEated() {
+        return eated;
+    }
+
+
+    public void setEated(boolean eated) {
+        this.eated = eated;
+    }
+
+    public void setMonsterTeam(int monsterTeam) {
+        this.monsterTeam = monsterTeam;
+    }
+
+    public void setMonster(boolean monster) {
+        this.monster = monster;
+        if (monster) {
+            Image imgMonster;
+            if (monsterTeam == 1) {
+                imgMonster = new Image(Objects.requireNonNull(Main.class.getResource("images/monster.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
+            }
+            else {
+                imgMonster = new Image(Objects.requireNonNull(Main.class.getResource("images/monster2.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
+            }
+            getUnitImage().setImage(imgMonster);
+            speed = 10;
+        } else {
+            getUnitImage().setImage(img);
+            speed = 5;
+            getUnitImage().setScaleX(direction);
+            getUnitImage().setScaleY(1);
+        }
+        countEat = 0;
+        processing = false;
+        clearAim();
     }
 
     public void setAim(int ax, int ay) {
@@ -242,7 +306,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         type = "Newbie";
 
         unitName = new Label();
-        Image img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
+        img = new Image(Objects.requireNonNull(Main.class.getResource("images/newbie.png")).toString(), IMAGE_SIZE, IMAGE_SIZE, false, true);
         unitImage = new ImageView(img);
         healthBar = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
         healthBarBackground = new Rectangle(0, 0, IMAGE_SIZE, HEALTH_HEIGHT);
@@ -251,6 +315,7 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         shadow = new DropShadow();
         shadowActive = new DropShadow();
         processing = false;
+        countEat = 0;
 
         setUnitName(name);
         setUnitHealth(health);
@@ -264,6 +329,8 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         spawnTransition();
 
         unitContainer.getChildren().addAll(unitName, healthBarBackground, healthBar, unitImage, coins.getCount());
+
+        Main.getWorld().setVictory(false);
     }
 
     public Newbie() {
@@ -275,6 +342,8 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
                 defaultValueY(),
                 false);
         System.out.print("Random newbie appeared: " + this + "\n");
+
+        Main.getWorld().setVictory(false);
     }
 
     static {
@@ -334,20 +403,6 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
         shadowActive.setRadius(10);
         shadowActive.setSpread(0.8);
         shadowActive.setInput(unitImage.getEffect());
-
-        unitImage.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), unitImage);
-            scaleTransition.setToX(1.1 * direction);
-            scaleTransition.setToY(1.1);
-            scaleTransition.play();
-        });
-
-        unitImage.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            ScaleTransition scaleTransition = new ScaleTransition(millis(100), unitImage);
-            scaleTransition.setToX(direction);
-            scaleTransition.setToY(1);
-            scaleTransition.play();
-        });
     }
 
     public static double parseValue(String value, double defaultValue, double minValue, double maxValue) {
@@ -420,6 +475,8 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
                 Main.getWorld().addNewUnit(pro);
             }
         }
+
+
     }
 
     public static void changeUnit(int unitIndex, String cType, String sName, String sHealth, String sCoins, String cTeam, String sX, String sY, boolean active) {
@@ -516,17 +573,57 @@ public class Newbie implements Cloneable, Comparable<Newbie> {
 
     public void autoMove() {
 
+        if (eated) return;
+
         if (active) return;
 
         if (processing) return;
 
-        if (isEmptyAim()) {
-            Main.getWorld().askWorldwhatToDo(this);
-        } else {
-            if (bigTarget.getMacroContainer().getBoundsInParent().contains(getUnitContainer().getBoundsInParent().getCenterX(), getUnitContainer().getBoundsInParent().getCenterY())) {
-                clearAim();
-            } else simpleMove(aimx, aimy);
+        if (monster) {
+            if (isEmptyAim()) {
+                Main.getWorld().askWorldwhatToDo(this);
+            }
+            else {
+                updateCoords();
+                if (unitTarget.getUnitContainer().getBoundsInParent().contains(getUnitContainer().getBoundsInParent().getCenterX(), getUnitContainer().getBoundsInParent().getCenterY())) {
+                    eatUnit();
+                    clearAim();
+                    setUnitTarget(null);
+                } else simpleMove(aimx, aimy);
+            }
         }
+        else {
+            if (isEmptyAim()) {
+                Main.getWorld().askWorldwhatToDo(this);
+            } else {
+                if (bigTarget.getMacroContainer().getBoundsInParent().contains(getUnitContainer().getBoundsInParent().getCenterX(), getUnitContainer().getBoundsInParent().getCenterY())) {
+                    clearAim();
+                } else simpleMove(aimx, aimy);
+            }
+        }
+    }
+
+    public void updateCoords() {
+        if (unitTarget.isEated()) {
+            clearAim();
+            return;
+        }
+        setAim((int) (unitTarget.getUnitContainer().getBoundsInParent().getCenterX()-getUnitContainer().getBoundsInParent().getWidth()/2), (int) (unitTarget.getUnitContainer().getBoundsInParent().getCenterY()-getUnitContainer().getBoundsInParent().getHeight()/2));
+    }
+
+    public void eatUnit() {
+
+        unitTarget.setEated(true);
+        if (monsterTeam == 1) {
+            unitTarget.setX(100*(countEat+1));
+            unitTarget.setY(0);
+        } else {
+            unitTarget.setX(0);
+            unitTarget.setY(100*(countEat+1));
+        }
+        countEat++;
+        getUnitImage().setScaleX((abs(getUnitImage().getScaleX())+0.1)*direction);
+        getUnitImage().setScaleY(getUnitImage().getScaleY()+0.1);
     }
 
     public void heal() {
